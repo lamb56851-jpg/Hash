@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Hash</title>
+    <title>Hash — Регистрация</title>
+    <link rel="icon" type="image/jpeg" href="Content/Logos/HashLogo.JPG">
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -19,27 +20,26 @@
             color: white;
             margin: 0;
             padding: 0;
-            /* Используем fill-available или 100vh для фиксации */
             height: 100vh;
             width: 100%;
             overflow: hidden;
             position: fixed; 
             -webkit-font-smoothing: antialiased;
             touch-action: manipulation;
+            transition: opacity 0.4s ease; /* Плавный переход для Vercel */
         }
 
-        /* Фон теперь всегда на весь экран, даже под кнопками ОС */
         .header-visual { 
             position: absolute; 
             top: 0; 
             left: 0;
             width: 100%; 
-            height: 100%; /* Растягиваем на весь экран */
+            height: 100%; 
             z-index: 1; 
         }
         .header-visual img { 
             width: 100%; 
-            height: 45vh; /* Сама картинка сверху */
+            height: 45vh; 
             object-fit: cover; 
         }
         .header-visual::after { 
@@ -62,7 +62,7 @@
 
         .modal-glass { 
             position: absolute; 
-            bottom: 0; /* Прижимаем к самому низу экрана */
+            bottom: 0; 
             left: 0;
             right: 0;
             height: 72vh; 
@@ -73,7 +73,6 @@
             z-index: 5; 
             overflow: hidden; 
             border-top: 1px solid rgba(255,255,255,0.12);
-            /* Учитываем отступ снизу для iPhone (полоска Home) */
             padding-bottom: env(safe-area-inset-bottom);
         }
 
@@ -84,7 +83,7 @@
         .scroll-content { 
             flex: 1; 
             overflow-y: auto; 
-            padding: 0 28px 60px; /* Увеличили нижний паддинг, чтобы текст не упирался в край */
+            padding: 0 28px 60px; 
             -webkit-mask-image: linear-gradient(to bottom, transparent, black 20px); 
             mask-image: linear-gradient(to bottom, transparent, black 20px); 
         }
@@ -109,7 +108,7 @@
         .val-item.done { color: var(--accent); }
         .val-dot { width: 4px; height: 4px; border-radius: 50%; background: currentColor; }
 
-        .btn-action { height: 44px; background: var(--accent); border-radius: 12px; justify-content: center; display: flex; align-items: center; font-size: 16px; font-weight: 700; color: #000; width: 100%; margin-top: 10px; border: none; }
+        .btn-action { height: 44px; background: var(--accent); border-radius: 12px; justify-content: center; display: flex; align-items: center; font-size: 16px; font-weight: 700; color: #000; width: 100%; margin-top: 10px; border: none; cursor: pointer; }
         .btn-action:active { opacity: 0.8; transform: scale(0.98); }
 
         .doc-item { margin-bottom: 22px; }
@@ -183,7 +182,7 @@
                             </div>
                         </div>
 
-                        <button class="btn-action">Продолжить</button>
+                        <button class="btn-action" onclick="goToApp()">Продолжить</button>
                         <p class="text-center text-[10px] text-white/10 mt-8 tracking-widest uppercase">Hash Alpha v1.0</p>
                     </div>
                 </div>
@@ -202,11 +201,16 @@
             { title: "Безопасно", desc: "Достаточно безопасный мессенджер, он не требует твоей почты или номера" }
         ];
 
-        function fixPosition() {
-            window.scrollTo(0, 0);
+        // ГЛАВНЫЙ ПЕРЕХОД
+        function goToApp() {
+            document.body.style.opacity = "0"; // Плавное исчезновение
+            setTimeout(() => {
+                window.location.href = "main.html"; // ПЕРЕХОД НА ГЛАВНУЮ
+            }, 400);
         }
 
-        // Запрет зума
+        function fixPosition() { window.scrollTo(0, 0); }
+
         document.addEventListener('touchstart', e => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
 
         function generateName() {
