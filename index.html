@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Hash — Welcome</title>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Hash — Secure Messenger</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
-            /* Официальные Dark Mode цвета iOS */
             --ios-bg: #000000;
-            --ios-secondary-bg: #1C1C1E; 
-            --ios-tertiary-bg: #2C2C2E;
+            /* Модалка: 0.85 прозрачность */
+            --modal-glass: rgba(28, 28, 30, 0.85); 
+            --ios-tertiary-bg: rgba(255, 255, 255, 0.08);
             --accent: #00B689;
-            --pill-bg: rgba(255, 255, 255, 0.1);
+            /* Активная плашка: темнее для контраста */
+            --segment-active: rgba(0, 0, 0, 0.4); 
         }
 
         body, html {
@@ -31,145 +32,132 @@
             position: absolute;
             top: 0;
             width: 100%;
-            height: 40vh;
+            height: 45vh;
             z-index: 1;
         }
-        .header-visual img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        /* Мягкое затемнение снизу, чтобы гифка не обрывалась резко */
+        .header-visual img { width: 100%; height: 100%; object-fit: cover; }
         .header-visual::after {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(to bottom, transparent 40%, var(--ios-bg) 100%);
+            background: linear-gradient(to bottom, transparent 0%, var(--ios-bg) 100%);
         }
 
-        /* Центрированный блок брендинга и табов */
+        /* Верхний блок: Брендинг + Табы */
         .top-container {
             position: absolute;
-            top: 10vh;
+            top: 7vh;
             width: 100%;
-            z-index: 10;
+            z-index: 20;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 20px;
         }
 
-        .branding {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        .branding { display: flex; align-items: center; gap: 12px; }
+        .logo-img { width: 46px; height: 46px; border-radius: 11px; object-fit: cover; }
+        .logo-text { font-size: 34px; font-weight: 800; letter-spacing: -0.05em; }
 
-        .logo-img {
-            width: 56px;
-            height: 56px;
-            border-radius: 14px;
-            object-fit: cover;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-        }
-
-        .logo-text {
-            font-size: 38px;
-            font-weight: 800;
-            letter-spacing: -0.05em;
-        }
-
-        /* Segmented Control (Твой физический слайдер) */
+        /* Переключатель с Блюром объектов на фоне */
         .segmented-container {
-            width: 220px;
-            background: rgba(120, 120, 128, 0.24);
-            border-radius: 999px;
+            width: 240px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 12px;
             padding: 2px;
             display: flex;
             position: relative;
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
         }
-
         .segment-item {
             flex: 1;
-            padding: 6px 0;
+            padding: 8px 0;
             font-size: 13px;
             font-weight: 600;
             text-align: center;
             z-index: 2;
             cursor: pointer;
-            color: rgba(255,255,255,0.7);
-            transition: color 0.2s;
+            color: rgba(255,255,255,0.5);
+            transition: color 0.3s ease;
         }
         .segment-item.active { color: white; }
-
+        
         .liquid-slider {
             position: absolute;
             top: 2px;
             left: 2px;
             height: calc(100% - 4px);
-            background: #636366; /* Цвет активной плашки iOS */
-            border-radius: 999px;
+            background: var(--segment-active);
+            border-radius: 10px;
             z-index: 1;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* Основная панель */
+        /* Главная модалка: Прозрачность + Блюр */
         .modal-glass {
             position: relative;
-            height: 65vh;
-            margin-top: 35vh;
-            background: var(--ios-secondary-bg);
+            height: 62vh;
+            margin-top: 38vh;
+            background: var(--modal-glass);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
             border-radius: 35px 35px 0 0;
-            z-index: 5;
-            padding: 30px 24px;
-            border-top: 1px solid rgba(255,255,255,0.05);
+            z-index: 10;
+            overflow: hidden;
+            border-top: 1px solid rgba(255,255,255,0.12);
         }
 
-        .view-section { display: none; }
-        .view-section.active { display: block; animation: fadeIn 0.4s ease; }
+        .content-wrapper {
+            display: flex;
+            width: 200%;
+            height: 100%;
+            transition: transform 0.5s cubic-bezier(0.33, 1, 0.68, 1);
+        }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .view-section {
+            width: 50%;
+            padding: 35px 28px;
+            box-sizing: border-box;
+        }
 
-        /* Поля ввода (Apple Style) */
-        .input-group { margin-bottom: 12px; }
+        /* Инпуты */
+        .input-group { margin-bottom: 16px; }
         .input-pill {
             background: var(--ios-tertiary-bg);
-            border-radius: 999px;
-            padding: 10px 16px;
+            border-radius: 14px;
+            padding: 12px 16px;
             display: flex;
             align-items: center;
-            border: 1px solid rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
         }
-        .icon-small {
-            width: 18px;
-            height: 18px;
-            margin-right: 12px;
-            filter: brightness(0) invert(1);
-            opacity: 0.5;
-        }
-        input {
-            background: transparent;
-            outline: none;
-            width: 100%;
-            font-size: 16px;
-            color: white;
-        }
-        .hint {
-            font-size: 12px;
-            color: #8E8E93;
-            padding: 6px 16px 0;
-        }
+        .icon-small { width: 18px; height: 18px; margin-right: 12px; filter: invert(1); opacity: 0.7; }
+        input { background: transparent; outline: none; width: 100%; font-size: 16px; color: white; }
+        input::placeholder { color: rgba(255,255,255,0.3); }
 
+        /* Кнопка iOS Style */
         .btn-action {
             background: var(--accent);
-            border-radius: 999px;
-            padding: 16px;
+            border-radius: 16px;
+            padding: 15px;
             font-size: 17px;
             font-weight: 700;
             color: #000;
             width: 100%;
-            margin-top: 20px;
-            box-shadow: 0 4px 15px rgba(0, 182, 137, 0.2);
+            margin-top: 10px;
+            border: none;
+            transition: transform 0.1s ease;
+        }
+        .btn-action:active { transform: scale(0.97); opacity: 0.9; }
+
+        .doc-card {
+            background: rgba(255,255,255,0.04);
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 0.5px solid rgba(255,255,255,0.05);
         }
     </style>
 </head>
@@ -187,85 +175,82 @@
 
         <div class="segmented-container" id="tabBar">
             <div class="liquid-slider" id="slider"></div>
-            <div class="segment-item active" data-target="doc-view" data-index="0">Документация</div>
-            <div class="segment-item" data-target="login-view" data-index="1">Логин</div>
+            <div class="segment-item active" onclick="slideTo(0, this)">Документация</div>
+            <div class="segment-item" onclick="slideTo(1, this)">Логин</div>
         </div>
     </div>
 
     <div class="modal-glass">
-        <div class="max-w-[400px] mx-auto h-full overflow-y-auto">
+        <div class="content-wrapper" id="contentWrapper">
             
-            <div id="doc-view" class="view-section active">
-                <h2 class="text-[24px] font-bold mb-6">О приложении</h2>
-                <div class="space-y-6">
-                    <div>
-                        <h3 class="text-[#00B689] font-bold text-sm mb-1">Полная анонимность</h3>
-                        <p class="text-[#8E8E93] text-[15px]">Hash не запрашивает доступ к контактам, геолокации или номеру телефона.</p>
+            <div class="view-section">
+                <div class="max-w-[360px] mx-auto">
+                    <h2 class="text-2xl font-bold mb-5">Принципы Hash</h2>
+                    <div class="doc-card">
+                        <div class="text-[#00B689] font-extrabold text-[11px] uppercase tracking-wider mb-1">Безопасность</div>
+                        <p class="text-[14px] text-white/70 leading-relaxed">Весь трафик внутри компании зашифрован. Мы не используем сторонние облака.</p>
                     </div>
-                    <div>
-                        <h3 class="text-[#00B689] font-bold text-sm mb-1">Сквозное шифрование</h3>
-                        <p class="text-[#8E8E93] text-[15px]">Все данные шифруются на стороне клиента. Даже мы не можем их прочитать.</p>
+                    <div class="doc-card">
+                        <div class="text-[#00B689] font-extrabold text-[11px] uppercase tracking-wider mb-1">Свобода</div>
+                        <p class="text-[14px] text-white/70 leading-relaxed">Никакой привязки к SIM-картам. Общайтесь анонимно и профессионально.</p>
                     </div>
                 </div>
             </div>
 
-            <div id="login-view" class="view-section">
-                <h2 class="text-[24px] font-bold mb-6">Создать профиль</h2>
-                
-                <div class="input-group">
-                    <div class="input-pill">
-                        <img src="https://cdn-icons-png.flaticon.com/512/6997/6997204.png" class="icon-small">
-                        <input type="text" placeholder="Ваше имя" autocomplete="off">
+            <div class="view-section">
+                <div class="max-w-[360px] mx-auto">
+                    <h2 class="text-2xl font-bold mb-5">Регистрация</h2>
+                    
+                    <div class="input-group">
+                        <div class="input-pill">
+                            <img src="https://cdn-icons-png.flaticon.com/512/6997/6997204.png" class="icon-small">
+                            <input type="text" placeholder="Ваше имя" spellcheck="false">
+                        </div>
                     </div>
-                    <p class="hint">Видимое имя в чатах</p>
-                </div>
 
-                <div class="input-group">
-                    <div class="input-pill">
-                        <span class="text-white/30 mr-2 font-medium">@</span>
-                        <input type="text" placeholder="username" autocomplete="off">
+                    <div class="input-group">
+                        <div class="input-pill">
+                            <span class="text-white/40 mr-3 font-bold">@</span>
+                            <input type="text" placeholder="username" spellcheck="false">
+                        </div>
                     </div>
-                    <p class="hint">Уникальный идентификатор</p>
-                </div>
 
-                <div class="input-group">
-                    <div class="input-pill">
-                        <img src="https://cdn-icons-png.flaticon.com/512/15773/15773700.png" class="icon-small">
-                        <input type="password" placeholder="Пароль" autocomplete="off">
+                    <div class="input-group">
+                        <div class="input-pill">
+                            <img src="https://cdn-icons-png.flaticon.com/512/15773/15773700.png" class="icon-small">
+                            <input type="password" placeholder="Пароль">
+                        </div>
                     </div>
-                    <p class="hint">Надежный пароль для входа</p>
-                </div>
 
-                <button class="btn-action">Продолжить</button>
+                    <button class="btn-action">Продолжить</button>
+                    <p class="text-center text-white/20 text-[12px] mt-6 font-medium tracking-widest">ALPHA BUILD V1.0</p>
+                </div>
             </div>
+
         </div>
     </div>
 
     <script>
-        // Твоя физика слайдера (упрощенная для 2-х позиций)
         const slider = document.getElementById('slider');
-        const segments = document.querySelectorAll('.segment-item');
-        const views = document.querySelectorAll('.view-section');
+        const wrapper = document.getElementById('contentWrapper');
+        const items = document.querySelectorAll('.segment-item');
 
-        function updateSlider(el) {
-            segments.forEach(s => s.classList.remove('active'));
+        function slideTo(index, el) {
+            items.forEach(item => item.classList.remove('active'));
             el.classList.add('active');
             
-            slider.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
             slider.style.left = el.offsetLeft + 'px';
             slider.style.width = el.offsetWidth + 'px';
-            
-            // Переключаем контент
-            views.forEach(v => v.classList.remove('active'));
-            document.getElementById(el.dataset.target).classList.add('active');
+
+            wrapper.style.transform = `translateX(-${index * 50}%)`;
         }
 
-        segments.forEach(seg => {
-            seg.addEventListener('click', () => updateSlider(seg));
+        // Корректная инициализация размеров при загрузке
+        window.addEventListener('load', () => {
+            const initial = items[0];
+            slider.style.left = initial.offsetLeft + 'px';
+            slider.style.width = initial.offsetWidth + 'px';
         });
-
-        // Инициализация
-        window.onload = () => updateSlider(segments[0]);
     </script>
 </body>
 </html>
