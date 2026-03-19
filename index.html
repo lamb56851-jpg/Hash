@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Hash — Welcome</title>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Varela+Round&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Hash — Вход</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #000000;
-            --modal-bg: rgba(12, 12, 12, 0.75); 
-            --input-bg: #080808; /* Глухой матовый фон */
-            --accent: #00C896;
-            --off-white: #FAF9F2;
+            --accent: #00B689;
+            --modal-bg: rgba(15, 15, 15, 0.8);
+            --input-bg: #121212;
+            --pill-bg: rgba(255, 255, 255, 0.1);
+            --pill-border-flying: rgba(255, 255, 255, 0.2);
         }
 
         body, html {
             background-color: var(--bg);
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Manrope", sans-serif;
             color: white;
             margin: 0;
             height: 100vh;
@@ -30,10 +30,9 @@
             position: absolute;
             top: 0;
             width: 100%;
-            height: 45vh;
+            height: 40vh;
             z-index: 1;
         }
-
         .header-visual img {
             width: 100%;
             height: 100%;
@@ -43,203 +42,263 @@
         /* Брендинг */
         .branding {
             position: absolute;
-            top: 18vh;
+            top: 12vh;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 14px;
+            gap: 16px;
             z-index: 2;
         }
-
-        .logo-sq {
-            width: 52px;
-            height: 52px;
-            background: var(--accent);
-            border-radius: 14px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 10px 30px rgba(0, 200, 150, 0.2);
+        .logo-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px; /* Скругленный квадрат */
+            object-fit: cover;
+            box-shadow: 0 10px 40px rgba(0, 182, 137, 0.3);
         }
-
-        .logo-symbol {
-            font-family: 'Varela Round', sans-serif;
-            font-size: 30px;
-            color: var(--off-white);
-            font-weight: bold;
-        }
-
         .logo-text {
-            font-size: 38px;
+            font-size: 32px;
             font-weight: 800;
-            letter-spacing: -0.04em;
-            text-transform: uppercase;
+            letter-spacing: -0.05em;
         }
 
-        /* Стеклянная модалка */
+        /* Стеклянная панель */
         .modal-glass {
             position: relative;
-            flex: 1;
-            margin-top: 35vh;
+            height: 70vh;
+            margin-top: 32vh;
             background: var(--modal-bg);
-            backdrop-filter: blur(40px);
-            -webkit-backdrop-filter: blur(40px);
+            backdrop-filter: blur(50px);
+            -webkit-backdrop-filter: blur(50px);
             border-radius: 40px 40px 0 0;
             z-index: 10;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 -15px 50px rgba(0,0,0,0.8);
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
-        .scroll-content {
+        /* Тот самый переключатель */
+        .tab-nav-container {
+            padding: 20px 40px;
+            display: flex;
+            justify-content: center;
+        }
+        .ios-tab-bar {
+            position: relative;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 99px;
+            display: flex;
+            padding: 4px;
+            width: 100%;
+            max-width: 300px;
+        }
+        .tab-item {
+            position: relative;
+            z-index: 2;
+            padding: 10px 0;
             flex: 1;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.4);
+            cursor: pointer;
+            transition: color 0.3s;
+            border: none;
+            background: none;
+        }
+        .tab-item.active { color: white; }
+        
+        .liquid-slider {
+            position: absolute;
+            top: 4px; bottom: 4px;
+            background: var(--pill-bg);
+            border-radius: 99px;
+            z-index: 1;
+            transition: background-color 0.2s, border 0.2s;
+            border: 1px solid transparent;
+        }
+        .liquid-slider.flying {
+            background-color: transparent;
+            border-color: var(--pill-border-flying);
+        }
+
+        /* Контент */
+        .content-viewport {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            padding: 0 30px 40px;
+            box-sizing: border-box;
             overflow-y: auto;
-            padding: 40px 28px 60px;
-            -webkit-overflow-scrolling: touch;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s;
         }
+        .page-docs { transform: translateX(0); opacity: 1; }
+        .page-login { transform: translateX(100%); opacity: 0; }
+        
+        .hidden-left { transform: translateX(-100%); opacity: 0; }
+        .show-right { transform: translateX(0); opacity: 1; }
 
-        /* Заголовки */
-        h2 {
-            font-size: 28px;
-            font-weight: 800;
-            letter-spacing: -0.02em;
-            text-align: center;
-            margin-bottom: 8px;
-        }
-
-        .welcome-sub {
-            font-size: 15px;
-            color: rgba(255, 255, 255, 0.4);
-            text-align: center;
-            line-height: 1.4;
-            margin-bottom: 40px;
-        }
-
-        /* Инпуты (Матовые плашки) */
+        /* Элементы форм */
         .input-pill {
             background: var(--input-bg);
-            border-radius: 20px; /* Более строгий радиус */
-            padding: 16px 20px;
+            border-radius: 99px;
+            padding: 14px 24px;
             display: flex;
             align-items: center;
             margin-bottom: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255,255,255,0.05);
         }
-
-        .icon-large {
-            width: 24px; /* Крупнее, как просил */
-            height: 24px;
-            margin-right: 16px;
-            filter: brightness(0) invert(1);
-            opacity: 0.6;
-        }
-
-        input {
-            background: transparent;
-            outline: none;
-            width: 100%;
-            font-size: 16px;
-            color: white;
-        }
-
-        /* Тексты описаний */
-        .hint {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.25);
-            line-height: 1.5;
-            padding: 0 4px 28px;
-        }
-
+        .icon-small { width: 20px; height: 20px; margin-right: 14px; opacity: 0.5; filter: invert(1); }
+        input { background: none; border: none; outline: none; color: white; width: 100%; font-size: 16px; }
+        
         .btn-action {
             background: var(--accent);
-            border-radius: 20px;
+            color: black;
+            border-radius: 99px;
             padding: 18px;
-            font-size: 16px;
             font-weight: 800;
-            color: #000;
             width: 100%;
-            margin-top: 10px;
-            transition: opacity 0.2s;
+            border: none;
+            margin-top: 20px;
+            font-size: 16px;
         }
 
-        .btn-action:active { opacity: 0.8; }
+        /* Документация */
+        .doc-item { margin-bottom: 24px; }
+        .doc-item h3 { font-size: 20px; margin-bottom: 8px; color: var(--accent); }
+        .doc-item p { font-size: 15px; color: rgba(255,255,255,0.6); line-height: 1.5; }
 
-        .footer-info {
-            text-align: center;
-            margin-top: 40px;
-        }
-
-        .alpha-tag {
-            font-size: 11px;
-            font-weight: 900;
-            letter-spacing: 0.4em;
-            color: rgba(255, 255, 255, 0.1);
-            text-transform: uppercase;
-        }
-
-        .scroll-content::-webkit-scrollbar { width: 0; }
-        * { -webkit-tap-highlight-color: transparent; }
+        ::-webkit-scrollbar { width: 0; }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        
-        <div class="header-visual">
-            <img src="https://i.ibb.co/fdpZnpt5/IMG-5887.gif" alt="background">
+    <div class="header-visual">
+        <img src="Content/GIFs/Background.gif" alt="bg" onerror="this.src='https://i.ibb.co/fdpZnpt5/IMG-5887.gif'">
+    </div>
+
+    <div class="branding">
+        <picture>
+            <source srcset="Content/Logos/HashLogo.webp" type="image/webp">
+            <img src="Content/Logos/HashLogo.png" class="logo-img" alt="Hash" onerror="this.style.background='var(--accent)'">
+        </picture>
+        <span class="logo-text">Hash</span>
+    </div>
+
+    <div class="modal-glass">
+        <div class="tab-nav-container">
+            <nav class="ios-tab-bar" id="tabBar">
+                <div class="liquid-slider" id="slider"></div>
+                <button class="tab-item active" data-index="0" id="btn-docs">Документация</button>
+                <button class="tab-item" data-index="1" id="btn-login">Логин</button>
+            </nav>
         </div>
 
-        <div class="branding">
-            <div class="logo-sq"><span class="logo-symbol">#</span></div>
-            <span class="logo-text">Hash</span>
-        </div>
-
-        <div class="modal-glass">
-            <div class="scroll-content">
-                <div class="max-w-[360px] mx-auto">
-
-                    <h2>Добро пожаловать</h2>
-                    <p class="welcome-sub">
-                        Чтобы начать общение, зарегистрируйся или войди в свой аккаунт
-                    </p>
-
-                    <div class="input-pill">
-                        <img src="https://cdn-icons-png.flaticon.com/512/6997/6997204.png" class="icon-large" alt="u">
-                        <input type="text" placeholder="Имя" autocomplete="off">
-                    </div>
-                    <p class="hint">
-                        Напиши никнейм, который будут видеть другие пользователи
-                    </p>
-
-                    <div class="input-pill">
-                        <img src="https://cdn-icons-png.flaticon.com/512/7065/7065720.png" class="icon-large" alt="t">
-                        <input type="text" placeholder="Тег" autocomplete="off">
-                    </div>
-                    <p class="hint">
-                        Придумай уникальный ник. Лучше, если он не будет связан с твоими другими профилями
-                    </p>
-
-                    <div class="input-pill">
-                        <img src="https://cdn-icons-png.flaticon.com/512/15773/15773700.png" class="icon-large" alt="p">
-                        <input type="text" placeholder="Пароль" autocomplete="off">
-                    </div>
-                    <p class="hint">
-                        Пароль не скрыт при вводе. Пожалуйста, убедись, что рядом нет посторонних глаз
-                    </p>
-
-                    <div class="footer-info">
-                        <button class="btn-action">Продолжить</button>
-                        <p class="mt-6 text-[14px] text-white/30">
-                            Уже в системе? <span class="text-[#00C896] font-extrabold cursor-pointer">Войти</span>
-                        </p>
-                        <div class="alpha-tag mt-12">ALPHA v0.1</div>
-                    </div>
-
+        <div class="content-viewport">
+            <div class="page page-docs" id="page-docs">
+                <div class="doc-item">
+                    <h3>Что такое Hash?</h3>
+                    <p>Это наш личный уголок. Мессенджер, где нет лишних глаз, рекламы и слива данных. Только свои, только по делу (и не очень).</p>
                 </div>
+                <div class="doc-item">
+                    <h3>Почему это безопасно?</h3>
+                    <p>Мы не храним твои контакты и личные данные. Всё шифруется, а доступ есть только у тех, кто в нашей банде из 50 человек.</p>
+                </div>
+                <div class="doc-item">
+                    <h3>Сколько лет проекту?</h3>
+                    <p>Hash растет вместе с нами. Это свежая версия, созданная специально, чтобы не зависеть от капризов больших площадок.</p>
+                </div>
+            </div>
+
+            <div class="page page-login" id="page-login">
+                <div class="input-pill">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1077/1077063.png" class="icon-small" alt="name">
+                    <input type="text" placeholder="Имя">
+                </div>
+                <div class="input-pill">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" class="icon-small" alt="user">
+                    <input type="text" placeholder="@юзернейм">
+                </div>
+                <div class="input-pill">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3064/3064155.png" class="icon-small" alt="pass">
+                    <input type="password" placeholder="Пароль">
+                </div>
+                <button class="btn-action">Продолжить</button>
             </div>
         </div>
     </div>
 
+    <script>
+        // Физика пружины для слайдера
+        const PHYSICS = { pos: { k: 380, d: 38, m: 1 }, scale: { k: 420, d: 24, m: 1 } };
+        const slider = document.getElementById('slider');
+        const tabs = document.querySelectorAll('.tab-item');
+        const pages = { docs: document.getElementById('page-docs'), login: document.getElementById('page-login') };
+
+        let state = { x: 0, tx: 0, vx: 0, w: 0, tw: 0, vw: 0, sx: 1, tsx: 1, vsx: 0, sy: 1, tsy: 1, vsy: 0, isMoving: false, currentIndex: 0 };
+
+        function spring(current, target, velocity, config) {
+            let force = -config.k * (current - target);
+            let damping = -config.d * velocity;
+            velocity += (force + damping) * 0.016;
+            current += velocity * 0.016;
+            return [current, velocity];
+        }
+
+        function update() {
+            const dist = Math.abs(state.x - state.tx);
+            if (state.isMoving) {
+                if (dist > 10) {
+                    slider.classList.add('flying');
+                    state.tsy = 1.15; state.tsx = 0.9;
+                } else {
+                    slider.classList.remove('flying');
+                    state.tsx = 1; state.tsy = 1;
+                    if (Math.abs(state.vx) < 0.1) state.isMoving = false;
+                }
+            }
+
+            [state.x, state.vx] = spring(state.x, state.tx, state.vx, PHYSICS.pos);
+            [state.w, state.vw] = spring(state.w, state.tw, state.vw, PHYSICS.pos);
+            [state.sx, state.vsx] = spring(state.sx, state.tsx, state.vsx, PHYSICS.scale);
+            [state.sy, state.vsy] = spring(state.sy, state.tsy, state.vsy, PHYSICS.scale);
+
+            slider.style.left = `${state.x}px`;
+            slider.style.width = `${state.w}px`;
+            slider.style.transform = `scale(${state.sx}, ${state.sy})`;
+            requestAnimationFrame(update);
+        }
+
+        function switchPage(idx) {
+            if (idx == 0) {
+                pages.docs.className = "page page-docs show-right";
+                pages.login.className = "page page-login";
+            } else {
+                pages.docs.className = "page page-docs hidden-left";
+                pages.login.className = "page page-login show-right";
+            }
+        }
+
+        function setActive(el, instant = false) {
+            tabs.forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            state.tx = el.offsetLeft;
+            state.tw = el.offsetWidth;
+            state.isMoving = true;
+            if (instant) { state.x = state.tx; state.w = state.tw; }
+            switchPage(el.dataset.index);
+        }
+
+        tabs.forEach(tab => tab.addEventListener('click', () => setActive(tab)));
+        setActive(tabs[0], true);
+        update();
+    </script>
 </body>
 </html>
