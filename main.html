@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Hash — Чаты</title>
+    <link rel="icon" type="image/jpeg" href="Content/Logos/HashLogo.JPG">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --ios-bg: #000000;
+            --accent: #00B689;
+            --tab-bar-bg: rgba(28, 28, 30, 0.92);
+            --inactive-color: #8e8e93;
+            --pill-bg: rgba(255, 255, 255, 0.12);
+            --pill-border-moving: rgba(255, 255, 255, 0.25);
+        }
+
+        body, html {
+            background-color: var(--ios-bg);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Manrope", sans-serif;
+            color: white; margin: 0; padding: 0; height: 100vh; width: 100vw;
+            overflow: hidden; position: fixed; -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- Анимация входа --- */
+        body { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(1.05); } to { opacity: 1; transform: scale(1); } }
+
+        /* --- Контейнеры экранов --- */
+        .screen {
+            position: absolute; inset: 0; display: flex; flex-direction: column;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
+        }
+        .screen-hidden-right { transform: translateX(100%); opacity: 0; pointer-events: none; }
+        .screen-hidden-left { transform: translateX(-100%); opacity: 0; pointer-events: none; }
+
+        /* --- Закрепленная шапка (Pinned) --- */
+        .pinned-panel {
+            background: var(--ios-bg);
+            padding-top: env(safe-area-inset-top);
+            z-index: 50;
+            border-bottom: 0.5px solid rgba(255,255,255,0.05);
+        }
+        .pinned-header { padding: 16px 20px 8px; }
+        .pinned-circles { display: flex; gap: 12px; margin-bottom: 15px; }
+        .pinned-item {
+            width: 62px; height: 62px; border-radius: 18px;
+            background: #1c1c1e; border: 1px solid rgba(255,255,255,0.1);
+            overflow: hidden; flex-shrink: 0;
+        }
+        .pinned-item img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .page-title { font-size: 34px; font-weight: 800; letter-spacing: -0.04em; padding: 0 20px 15px; }
+
+        /* --- Список чатов --- */
+        .scroll-area {
+            flex: 1; overflow-y: auto; padding-bottom: 120px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .chat-row {
+            display: flex; align-items: center; padding: 12px 20px; gap: 15px;
+            transition: background 0.2s; cursor: pointer;
+        }
+        .chat-row:active { background: rgba(255,255,255,0.08); }
+        
+        .avatar-box {
+            width: 54px; height: 54px; border-radius: 14px;
+            background: #1c1c1e; overflow: hidden; flex-shrink: 0;
+        }
+        .avatar-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        .chat-meta { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+        .name-container { display: flex; align-items: center; gap: 6px; }
+        .name-text { font-size: 17px; font-weight: 700; color: white; }
+        .type-text { font-size: 13px; font-weight: 500; color: var(--inactive-color); }
+
+        .verify-badge {
+            width: 16px; height: 16px; background: var(--accent);
+            -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9918/9918743.png') no-repeat center / contain;
+            mask: url('https://cdn-icons-png.flaticon.com/512/9918/9918743.png') no-repeat center / contain;
+        }
+
+        /* --- Таб Бар (Меню из твоего кода) --- */
+        .tab-bar-wrap {
+            position: fixed; bottom: calc(15px + env(safe-area-inset-bottom));
+            left: 50%; transform: translateX(-50%); width: 92%; max-width: 400px; z-index: 100;
+        }
+        .ios-tab-bar {
+            position: relative; background: var(--tab-bar-bg);
+            backdrop-filter: blur(25px) saturate(180%); -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border-radius: 38px; display: flex; padding: 4px; border: 0.5px solid rgba(255, 255, 255, 0.08);
+        }
+        .tab-item {
+            position: relative; z-index: 2; padding: 8px 0; display: flex;
+            flex-direction: column; align-items: center; flex: 1;
+            background: none; border: none; outline: none; cursor: pointer;
+        }
+        .icon-box {
+            width: 24px; height: 24px; margin-bottom: 4px; background-color: var(--inactive-color);
+            -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center;
+            transition: background-color 0.25s;
+        }
+        .tab-label { font-size: 10px; font-weight: 600; color: var(--inactive-color); transition: color 0.25s; }
+        .tab-item.active .icon-box { background-color: var(--accent); }
+        .tab-item.active .tab-label { color: var(--accent); }
+
+        .liquid-slider {
+            position: absolute; top: 4px; left: 4px; height: calc(100% - 8px);
+            background: var(--pill-bg); border-radius: 34px; z-index: 1;
+            pointer-events: none; transition: background-color 0.16s; border: 1px solid transparent;
+        }
+        .liquid-slider.flying { background-color: transparent !important; border-color: var(--pill-border-moving); }
+    </style>
+</head>
+<body>
+
+    <div id="screen-chats" class="screen">
+        <div class="pinned-panel">
+            <div class="pinned-header">
+                <div class="pinned-circles">
+                    <div class="pinned-item"><img src="Content/Logos/KeysAv.JPG"></div>
+                </div>
+            </div>
+            <h1 class="page-title">Чаты</h1>
+        </div>
+
+        <div class="scroll-area">
+            <div class="chat-row">
+                <div class="avatar-box"><img src="Content/Logos/KeysAv.JPG"></div>
+                <div class="chat-meta">
+                    <div class="name-container">
+                        <span class="name-text">Ключи</span>
+                        <div class="verify-badge"></div>
+                    </div>
+                    <span class="type-text">Бот</span>
+                </div>
+            </div>
+            <div class="chat-row">
+                <div class="avatar-box"><img src="Content/Logos/TechAv.JPG"></div>
+                <div class="chat-meta">
+                    <div class="name-container">
+                        <span class="name-text">ТехПоддержка</span>
+                    </div>
+                    <span class="type-text">Поддержка</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-settings" class="screen screen-hidden-right">
+        <div class="pinned-panel">
+            <div style="height: 60px;"></div>
+            <h1 class="page-title">Настройки</h1>
+        </div>
+        <div class="flex-1 flex flex-col items-center justify-center p-10 text-center">
+            <div class="w-20 h-20 bg-white/5 rounded-3xl mb-4 flex items-center justify-center">
+                <div class="w-10 h-10 bg-white/10 rounded-full animate-pulse"></div>
+            </div>
+            <p class="text-white/20 font-bold uppercase tracking-widest text-sm">Конфигурация Hash</p>
+            <p class="text-white/10 text-xs mt-2">v1.0.4 Alpha Build</p>
+        </div>
+    </div>
+
+    <div class="tab-bar-wrap">
+        <nav class="ios-tab-bar">
+            <div class="liquid-slider" id="slider"></div>
+            
+            <button class="tab-item active" data-index="0" onclick="navTo('chats', this)">
+                <div class="icon-box" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/6997/6997415.png'); mask-image: url('https://cdn-icons-png.flaticon.com/512/6997/6997415.png');"></div>
+                <span class="tab-label">Чаты</span>
+            </button>
+
+            <button class="tab-item" data-index="1" onclick="navTo('settings', this)">
+                <div class="icon-box" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/9959/9959489.png'); mask-image: url('https://cdn-icons-png.flaticon.com/512/9959/9959489.png');"></div>
+                <span class="tab-label">Настройки</span>
+            </button>
+        </nav>
+    </div>
+
+    <script>
+        const slider = document.getElementById('slider');
+        let mState = { x: 0, tx: 0, vx: 0, w: 0, tw: 0, vw: 0, isMoving: false };
+
+        function spring(curr, target, vel) {
+            const force = -380 * (curr - target);
+            const damp = -38 * vel;
+            vel += (force + damp) * 0.016;
+            curr += vel * 0.016;
+            return [curr, vel];
+        }
+
+        function updateMenu() {
+            if (Math.abs(mState.x - mState.tx) > 1) {
+                slider.classList.add('flying');
+            } else {
+                slider.classList.remove('flying');
+            }
+            [mState.x, mState.vx] = spring(mState.x, mState.tx, mState.vx);
+            [mState.w, mState.vw] = spring(mState.w, mState.tw, mState.vw);
+            slider.style.left = `${mState.x}px`;
+            slider.style.width = `${mState.w}px`;
+            requestAnimationFrame(updateMenu);
+        }
+
+        function navTo(screen, el) {
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            mState.tx = el.offsetLeft;
+            mState.tw = el.offsetWidth;
+
+            if (screen === 'chats') {
+                document.getElementById('screen-chats').classList.remove('screen-hidden-left');
+                document.getElementById('screen-settings').classList.add('screen-hidden-right');
+            } else {
+                document.getElementById('screen-chats').classList.add('screen-hidden-left');
+                document.getElementById('screen-settings').classList.remove('screen-hidden-right');
+            }
+        }
+
+        window.onload = () => {
+            const active = document.querySelector('.tab-item.active');
+            mState.x = active.offsetLeft;
+            mState.tx = active.offsetLeft;
+            mState.w = active.offsetWidth;
+            mState.tw = active.offsetWidth;
+            updateMenu();
+        };
+    </script>
+</body>
+</html>
