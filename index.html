@@ -19,8 +19,11 @@
             color: white;
             margin: 0;
             height: 100vh;
+            /* Убираем лишний скролл всей страницы */
             overflow: hidden;
             -webkit-font-smoothing: antialiased;
+            position: fixed; /* Фиксируем body, чтобы он не прыгал за клавиатурой */
+            width: 100%;
         }
 
         .header-visual { position: absolute; top: 0; width: 100%; height: 40vh; z-index: 1; }
@@ -55,7 +58,6 @@
         .input-hint { font-size: 11px; color: rgba(255,255,255,0.35); padding: 6px 4px 0; line-height: 1.3; }
         
         .icon-small { width: 18px; height: 18px; margin-right: 12px; filter: brightness(0) invert(1); opacity: 0.4; cursor: pointer; transition: opacity 0.2s; }
-        .icon-small:active { opacity: 0.8; }
         .at-icon { font-size: 17px; font-weight: 500; color: white; opacity: 0.4; margin-right: 12px; width: 18px; text-align: center; }
         
         input { background: transparent; outline: none; width: 100%; font-size: 15px; color: white; }
@@ -107,10 +109,11 @@
                     </div>
                 </div>
                 <div class="scroll-content">
-                    <div class="max-w-[360px] mx-auto pt-10"> <div class="input-group">
+                    <div class="max-w-[360px] mx-auto pt-10">
+                        <div class="input-group">
                             <div class="input-pill">
-                                <img src="https://cdn-icons-png.flaticon.com/512/6997/6997204.png" class="icon-small" onclick="generateName()" title="Сгенерировать">
-                                <input type="text" id="regName" placeholder="Имя" spellcheck="false">
+                                <img src="https://cdn-icons-png.flaticon.com/512/6997/6997204.png" class="icon-small" onclick="generateName()">
+                                <input type="text" id="regName" placeholder="Имя" class="form-input">
                             </div>
                             <p class="input-hint">Придумай себе имя, которое другие пользователи будут видеть. Ну, или сгенерируй рандомное, нажав на иконку слева</p>
                         </div>
@@ -118,7 +121,7 @@
                         <div class="input-group">
                             <div class="input-pill">
                                 <span class="at-icon">@</span>
-                                <input type="text" id="regUser" placeholder="username" maxlength="15" spellcheck="false" oninput="validateUser(this)">
+                                <input type="text" id="regUser" placeholder="username" maxlength="15" oninput="validateUser(this)" class="form-input">
                                 <span class="char-counter" id="userCounter">0/15</span>
                             </div>
                             <p class="input-hint">Придумай себе юзернейм, по которому пользователи смогут отметить тебя. Лучше не использовать юзернейм, совпадающий с Telegram или Instagram*</p>
@@ -127,7 +130,7 @@
                         <div class="input-group">
                             <div class="input-pill">
                                 <img src="https://cdn-icons-png.flaticon.com/512/15773/15773700.png" class="icon-small" onclick="togglePass()" id="passToggle">
-                                <input type="password" id="regPass" placeholder="Пароль" oninput="validatePass(this)">
+                                <input type="password" id="regPass" placeholder="Пароль" oninput="validatePass(this)" class="form-input">
                             </div>
                             <p class="input-hint">Придумай надежный пароль, который будет невозможно угадать</p>
                             <div class="val-list">
@@ -156,6 +159,13 @@
             { title: "Безопасно", desc: "Достаточно безопасный мессенджер, он не требует твоей почты или номера" }
         ];
 
+        // Фикс "съезжания" сайта после клавиатуры
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('blur', () => {
+                window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+            });
+        });
+
         function generateName() {
             const adj = ['Silent', 'Swift', 'Bright', 'Neon', 'Lunar', 'Iron', 'Rapid', 'Cool', 'Vivid', 'Deep'];
             const noun = ['Shadow', 'Fox', 'Hawk', 'Wave', 'Node', 'Byte', 'Sky', 'Void', 'Rain', 'Storm'];
@@ -165,7 +175,6 @@
         }
 
         function validateUser(el) {
-            // Разрешаем только латиницу, цифры, точки и подчеркивания
             el.value = el.value.replace(/[^a-zA-Z0-9._]/g, '');
             document.getElementById('userCounter').innerText = `${el.value.length}/15`;
         }
