@@ -8,43 +8,64 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
-            --ios-bg: #000000;
-            --ios-glass: rgba(28, 28, 30, 0.85); 
-            --ios-tertiary: rgba(255, 255, 255, 0.08);
+            --ios-bg: #FFFFFF;
+            --ios-glass: rgba(245, 245, 247, 0.8); 
+            --ios-text: #000000;
             --accent: #00B689;
-            --segment-active: rgba(255, 255, 255, 0.18); 
+            --segment-active: #FFFFFF; 
         }
 
         body, html {
             background-color: var(--ios-bg);
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Manrope", sans-serif;
-            color: white;
+            color: var(--ios-text);
             margin: 0;
             height: 100vh;
             overflow: hidden;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Фоновая гифка */
+        /* Фоновая гифка с прозрачностью */
         .header-visual {
             position: absolute;
             top: 0;
             width: 100%;
-            height: 40vh;
+            height: 45vh;
             z-index: 1;
+            opacity: 0.9;
         }
         .header-visual img { width: 100%; height: 100%; object-fit: cover; }
-        .header-visual::after {
-            content: '';
+
+        /* Плавный блюр и переход в белый к низу */
+        .blur-gradient {
             position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, transparent 10%, var(--ios-bg) 90%);
+            top: 15vh;
+            left: 0;
+            width: 100%;
+            height: 30vh;
+            z-index: 2;
+            background: linear-gradient(to bottom, 
+                rgba(255,255,255,0) 0%, 
+                rgba(255,255,255,0.5) 40%, 
+                rgba(255,255,255,1) 100%);
+            backdrop-filter: blur(0px);
+        }
+        /* Усиливающийся блюр */
+        .blur-overlay {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 15vh;
+            z-index: 3;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            mask-image: linear-gradient(to bottom, transparent, black);
+            -webkit-mask-image: linear-gradient(to bottom, transparent, black);
         }
 
-        /* Верхний контент */
         .top-container {
             position: absolute;
-            top: 6vh; /* Чуть выше */
+            top: 6vh;
             width: 100%;
             z-index: 10;
             display: flex;
@@ -53,21 +74,17 @@
             gap: 12px;
         }
 
-        .branding { display: flex; align-items: center; gap: 10px; }
-        .logo-img { width: 42px; height: 42px; border-radius: 10px; object-fit: cover; }
-        .logo-text { font-size: 30px; font-weight: 800; letter-spacing: -0.05em; }
+        .logo-img { width: 42px; height: 42px; border-radius: 10px; object-fit: cover; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .logo-text { font-size: 30px; font-weight: 800; letter-spacing: -0.05em; color: #000; }
 
-        /* Полностью круглый переключатель (Pill Style) */
+        /* Переключатель в светлом стиле */
         .segmented-container {
             width: 250px;
-            background: rgba(120, 120, 128, 0.2);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 999px; /* Круглые углы */
-            padding: 3px;
+            background: rgba(118, 118, 128, 0.12);
+            border-radius: 999px;
+            padding: 2px;
             display: flex;
             position: relative;
-            border: 0.5px solid rgba(255,255,255,0.08);
         }
         .segment-item {
             flex: 1;
@@ -77,35 +94,34 @@
             text-align: center;
             z-index: 2;
             cursor: pointer;
-            color: rgba(255,255,255,0.4);
-            transition: color 0.3s ease;
+            color: rgba(0,0,0,0.5);
+            transition: color 0.3s;
         }
-        .segment-item.active { color: white; }
-        
+        .segment-item.active { color: #000; }
         .liquid-slider {
             position: absolute;
-            top: 3px;
-            left: 3px;
-            height: calc(100% - 6px);
+            top: 2px;
+            left: 2px;
+            height: calc(100% - 4px);
             background: var(--segment-active);
-            border-radius: 999px; /* Круглые углы */
+            border-radius: 999px;
             z-index: 1;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
             transition: all 0.35s cubic-bezier(0.4, 0, 0.1, 1);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
-        /* Модалка (Поднята выше) */
+        /* Модалка (Светлое стекло) */
         .modal-glass {
             position: relative;
             height: 75vh;
-            margin-top: 25vh; /* Подняли с 38vh */
+            margin-top: 25vh;
             background: var(--ios-glass);
-            backdrop-filter: blur(40px) saturate(180%);
-            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
             border-radius: 32px 32px 0 0;
             z-index: 5;
             overflow: hidden;
-            border-top: 1px solid rgba(255,255,255,0.12);
+            border-top: 1px solid rgba(0,0,0,0.05);
         }
 
         .content-wrapper {
@@ -115,48 +131,45 @@
             transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .view-section {
-            width: 50%;
-            padding: 32px 28px;
-            box-sizing: border-box;
-        }
+        .view-section { width: 50%; padding: 32px 28px; box-sizing: border-box; }
 
-        /* Компактные инпуты */
-        .input-group { margin-bottom: 8px; }
+        /* Инпуты (Light Apple Style) */
         .input-pill {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.04);
             border-radius: 12px;
-            padding: 9px 14px;
+            padding: 10px 14px;
             display: flex;
             align-items: center;
-            border: 0.5px solid rgba(255,255,255,0.04);
+            border: 1px solid rgba(0,0,0,0.02);
+            margin-bottom: 8px;
         }
         .icon-small { 
             width: 18px; height: 18px; margin-right: 12px; 
-            filter: brightness(0) invert(1); opacity: 0.4; 
+            filter: grayscale(1) opacity(0.6); 
         }
         .at-icon {
-            font-size: 17px; font-weight: 500; color: white;
-            opacity: 0.4; margin-right: 12px; width: 18px; text-align: center;
+            font-size: 17px; font-weight: 600; color: #000;
+            opacity: 0.3; margin-right: 12px; width: 18px; text-align: center;
         }
-        input { background: transparent; outline: none; width: 100%; font-size: 16px; color: white; }
+        input { background: transparent; outline: none; width: 100%; font-size: 16px; color: #000; }
+        input::placeholder { color: rgba(0,0,0,0.3); }
 
         /* Кнопка */
         .btn-action {
             background: var(--accent);
             border-radius: 12px;
-            padding: 13px;
+            padding: 14px;
             font-size: 16px;
             font-weight: 700;
-            color: #000;
+            color: #FFF; /* Белый текст на зеленом фоне */
             width: 100%;
-            margin-top: 18px;
+            margin-top: 15px;
             border: none;
-            transition: transform 0.1s ease;
+            box-shadow: 0 8px 20px rgba(0, 182, 137, 0.25);
         }
-        .btn-action:active { transform: scale(0.97); opacity: 0.9; }
+        .btn-action:active { transform: scale(0.98); }
 
-        .hint { font-size: 11px; color: rgba(255,255,255,0.25); padding: 4px 6px 12px; }
+        .hint { font-size: 11px; color: rgba(0,0,0,0.4); padding: 0 4px 10px; }
     </style>
 </head>
 <body>
@@ -164,6 +177,8 @@
     <div class="header-visual">
         <img src="Content/GIFs/Background.gif" alt="bg">
     </div>
+    <div class="blur-gradient"></div>
+    <div class="blur-overlay"></div>
 
     <div class="top-container">
         <div class="branding">
@@ -185,13 +200,13 @@
                 <div class="max-w-[360px] mx-auto">
                     <h2 class="text-xl font-bold mb-5">Enterprise Messenger</h2>
                     <div class="space-y-3">
-                        <div class="bg-white/5 p-4 rounded-xl border border-white/5">
-                            <h3 class="text-[#00B689] font-bold text-[10px] uppercase tracking-widest mb-1">Local Only</h3>
-                            <p class="text-[13px] text-white/60">Ваша переписка никогда не попадает на внешние сервера.</p>
+                        <div class="bg-black/[0.03] p-4 rounded-xl border border-black/[0.03]">
+                            <h3 class="text-[#00B689] font-bold text-[10px] uppercase tracking-widest mb-1">Light Design</h3>
+                            <p class="text-[13px] text-black/60">Чистый и понятный интерфейс для продуктивной работы.</p>
                         </div>
-                        <div class="bg-white/5 p-4 rounded-xl border border-white/5">
-                            <h3 class="text-[#00B689] font-bold text-[10px] uppercase tracking-widest mb-1">Stealth Mode</h3>
-                            <p class="text-[13px] text-white/60">Автоматическое удаление истории после закрытия приложения.</p>
+                        <div class="bg-black/[0.03] p-4 rounded-xl border border-black/[0.03]">
+                            <h3 class="text-[#00B689] font-bold text-[10px] uppercase tracking-widest mb-1">Encrypted</h3>
+                            <p class="text-[13px] text-black/60">Ваша безопасность — наш главный приоритет.</p>
                         </div>
                     </div>
                 </div>
@@ -201,29 +216,23 @@
                 <div class="max-w-[360px] mx-auto">
                     <h2 class="text-xl font-bold mb-5">Регистрация</h2>
                     
-                    <div class="input-group">
-                        <div class="input-pill">
-                            <img src="https://cdn-icons-png.flaticon.com/512/6997/6997204.png" class="icon-small">
-                            <input type="text" placeholder="Имя" autocomplete="off">
-                        </div>
+                    <div class="input-pill">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6997/6997204.png" class="icon-small">
+                        <input type="text" placeholder="Имя" autocomplete="off">
                     </div>
 
-                    <div class="input-group">
-                        <div class="input-pill">
-                            <span class="at-icon">@</span>
-                            <input type="text" placeholder="username" autocomplete="off">
-                        </div>
+                    <div class="input-pill">
+                        <span class="at-icon">@</span>
+                        <input type="text" placeholder="username" autocomplete="off">
                     </div>
 
-                    <div class="input-group">
-                        <div class="input-pill">
-                            <img src="https://cdn-icons-png.flaticon.com/512/15773/15773700.png" class="icon-small">
-                            <input type="password" placeholder="Пароль">
-                        </div>
+                    <div class="input-pill">
+                        <img src="https://cdn-icons-png.flaticon.com/512/15773/15773700.png" class="icon-small">
+                        <input type="password" placeholder="Пароль">
                     </div>
 
                     <button class="btn-action">Продолжить</button>
-                    <p class="text-center text-[10px] text-white/10 mt-6 tracking-[0.2em] uppercase">Private Network Access</p>
+                    <p class="text-center text-[10px] text-black/20 mt-6 tracking-[0.2em] uppercase">Private Network Access</p>
                 </div>
             </div>
 
@@ -238,13 +247,11 @@
         function slideTo(index, el) {
             items.forEach(item => item.classList.remove('active'));
             el.classList.add('active');
-            
             slider.style.left = el.offsetLeft + 'px';
             slider.style.width = el.offsetWidth + 'px';
             wrapper.style.transform = `translateX(-${index * 50}%)`;
         }
 
-        // Инициализация размеров слайдера при загрузке
         window.onload = () => {
             const initial = items[0];
             slider.style.left = initial.offsetLeft + 'px';
