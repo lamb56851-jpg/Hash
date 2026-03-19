@@ -9,13 +9,12 @@
     <style>
         :root {
             --ios-bg: #000000;
-            --ios-glass: rgba(28, 28, 30, 0.85); 
+            --ios-glass: rgba(28, 28, 30, 0.85);
             --accent: #00B689;
-            --segment-active: rgba(255, 255, 255, 0.18); 
         }
 
         body, html {
-            background-color: var(--ios-bg);
+            background: var(--ios-bg);
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Manrope", sans-serif;
             color: white;
             margin: 0;
@@ -28,16 +27,17 @@
             position: absolute;
             top: 0;
             width: 100%;
-            height: 40vh;
+            height: 45vh;
             z-index: 1;
-            filter: blur(5px);
+            filter: blur(8px);
+            transform: scale(1.05);
         }
         .header-visual img { width: 100%; height: 100%; object-fit: cover; }
         .header-visual::after {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(to bottom, transparent 10%, var(--ios-bg) 90%);
+            background: linear-gradient(to bottom, transparent 0%, var(--ios-bg) 95%);
         }
 
         .top-container {
@@ -75,7 +75,7 @@
             z-index: 2;
             cursor: pointer;
             color: rgba(255,255,255,0.4);
-            transition: color 0.3s ease;
+            transition: color 0.3s;
         }
         .segment-item.active { color: white; }
         
@@ -84,10 +84,10 @@
             top: 3px;
             left: 3px;
             height: calc(100% - 6px);
-            background: var(--segment-active);
+            background: rgba(255, 255, 255, 0.18);
             border-radius: 999px;
             z-index: 1;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.1, 1);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.1, 1);
         }
 
         .modal-glass {
@@ -107,40 +107,38 @@
             display: flex;
             width: 200%;
             height: 100%;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .view-section {
-            width: 50%;
-            padding: 32px 28px;
-            box-sizing: border-box;
-        }
+        .view-section { width: 50%; padding: 32px 28px; box-sizing: border-box; }
 
         .input-pill {
             background: rgba(255, 255, 255, 0.05);
             border-radius: 12px;
-            padding: 10px 14px;
+            padding: 9px 14px;
             display: flex;
             align-items: center;
             border: 0.5px solid rgba(255,255,255,0.04);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         .icon-small { width: 18px; height: 18px; margin-right: 12px; filter: brightness(0) invert(1); opacity: 0.4; }
-        .at-icon { font-size: 17px; font-weight: 500; color: white; opacity: 0.4; margin-right: 12px; width: 18px; text-align: center; }
+        .at-icon { font-size: 17px; color: white; opacity: 0.4; margin-right: 12px; width: 18px; text-align: center; }
         input { background: transparent; outline: none; width: 100%; font-size: 16px; color: white; }
 
         .btn-action {
             background: var(--accent);
             border-radius: 12px;
-            padding: 14px;
+            padding: 13px;
             font-size: 16px;
             font-weight: 700;
             color: #000;
             width: 100%;
-            margin-top: 15px;
+            margin-top: 18px;
             border: none;
         }
-        .btn-action:active { transform: scale(0.98); opacity: 0.9; }
+        .btn-action:active { transform: scale(0.97); opacity: 0.9; }
+
+        .hint { font-size: 11px; color: rgba(255,255,255,0.25); padding: 4px 6px 12px; }
     </style>
 </head>
 <body>
@@ -154,7 +152,6 @@
             <img src="Content/Logos/HashLogo.JPG" class="logo-img" alt="">
             <span class="logo-text">Hash</span>
         </div>
-
         <div class="segmented-container">
             <div class="liquid-slider" id="slider"></div>
             <div class="segment-item active" onclick="slideTo(0, this)">Документация</div>
@@ -183,23 +180,19 @@
 
             <div class="view-section">
                 <div class="max-w-[360px] mx-auto">
-                    <h2 class="text-xl font-bold mb-5">Вход в систему</h2>
-                    
+                    <h2 class="text-xl font-bold mb-5">Регистрация</h2>
                     <div class="input-pill">
                         <img src="https://cdn-icons-png.flaticon.com/512/6997/6997204.png" class="icon-small">
                         <input type="text" placeholder="Имя" autocomplete="off">
                     </div>
-
                     <div class="input-pill">
                         <span class="at-icon">@</span>
                         <input type="text" placeholder="username" autocomplete="off">
                     </div>
-
                     <div class="input-pill">
                         <img src="https://cdn-icons-png.flaticon.com/512/15773/15773700.png" class="icon-small">
                         <input type="password" placeholder="Пароль">
                     </div>
-
                     <button class="btn-action">Продолжить</button>
                     <p class="text-center text-[10px] text-white/10 mt-6 tracking-[0.2em] uppercase">Private Network Access</p>
                 </div>
@@ -222,9 +215,8 @@
         }
 
         window.onload = () => {
-            const initial = items[0];
-            slider.style.left = initial.offsetLeft + 'px';
-            slider.style.width = initial.offsetWidth + 'px';
+            slider.style.left = items[0].offsetLeft + 'px';
+            slider.style.width = items[0].offsetWidth + 'px';
         };
     </script>
 </body>
