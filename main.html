@@ -24,7 +24,6 @@
             padding-top: env(safe-area-inset-top); padding-bottom: 18px; z-index: 100; position: relative;
         }
         .welcome-title { padding: 16px 24px 12px; font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
-        
         .pinned-wrap { display: flex; gap: 18px; padding: 0 24px; overflow-x: auto; scrollbar-width: none; }
         .pinned-wrap::-webkit-scrollbar { display: none; }
         .p-item { display: flex; flex-direction: column; align-items: center; gap: 6px; flex-shrink: 0; }
@@ -34,39 +33,47 @@
 
         /* --- КОНТЕНТ --- */
         .main-content { height: 100vh; overflow-y: auto; padding-bottom: 150px; }
-        .s-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px 10px; }
+        .s-header { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px 8px; }
         .s-title { font-size: 19px; font-weight: 700; }
-        .edit-icon { 
-            width: 20px; height: 20px; background: var(--accent); 
-            -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9883/9883181.png') center/contain no-repeat;
+        .edit-icon { width: 20px; height: 20px; background: var(--sub); -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9883/9883181.png') center/contain no-repeat; opacity: 0.7; }
+
+        /* --- FILTER BAR (НОВЫЙ) --- */
+        .filter-container { padding: 5px 24px 15px; }
+        .filter-bar { 
+            background: rgba(255, 255, 255, 0.05); border-radius: 12px; 
+            padding: 3px; display: flex; position: relative;
         }
+        .f-btn { 
+            flex: 1; border: none; background: none; color: var(--sub); 
+            font-size: 13px; font-weight: 600; padding: 7px 0; cursor: pointer; 
+            z-index: 2; transition: color 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px;
+        }
+        .f-btn.active { color: white; }
+        .plus-icon { width: 12px; height: 12px; background: currentColor; -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/1828/1828817.png') center/contain no-repeat; }
+        .f-slider { position: absolute; background: rgba(255, 255, 255, 0.12); border-radius: 9px; height: calc(100% - 6px); top: 3px; transition: 0.25s cubic-bezier(0.2, 1, 0.3, 1); z-index: 1; }
 
         /* --- ЧАТЫ --- */
-        .chat-row { display: flex; padding: 12px 24px; gap: 14px; align-items: stretch; position: relative; }
+        .chats-list { transition: opacity 0.2s; }
+        .chat-row { display: flex; padding: 12px 24px; gap: 14px; align-items: stretch; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
         .chat-ava { width: 52px; height: 52px; border-radius: 14px; background: #1c1c1e; overflow: hidden; flex-shrink: 0; }
         .chat-ava img { width: 100%; height: 100%; object-fit: cover; }
-        
         .chat-info { flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 2px 0; }
         .chat-n-wrap { display: flex; align-items: center; gap: 6px; }
         .chat-name { font-size: 16px; font-weight: 500; }
         .v-badge { width: 17px; height: 17px; background: var(--accent); -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9918/9918743.png') center/contain no-repeat; }
-        
         .badge { font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 5px; background: rgba(0, 182, 137, 0.2); color: var(--accent); text-transform: uppercase; width: fit-content; }
-        .divider { height: 1px; background: rgba(255, 255, 255, 0.2); margin: 0 24px; }
+        .divider { height: 1px; background: rgba(255, 255, 255, 0.15); margin: 0 24px; }
 
-        /* --- МЕНЮ (TAB BAR) --- */
-        .tab-bar { 
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); 
-            width: 240px; background: rgba(28, 28, 30, 0.85); backdrop-filter: blur(20px);
-            border-radius: 28px; padding: 4px; display: flex; border: 0.5px solid rgba(255,255,255,0.1); z-index: 200;
-        }
+        /* --- TAB BAR --- */
+        .tab-bar { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 240px; background: rgba(28, 28, 30, 0.85); backdrop-filter: blur(20px); border-radius: 28px; padding: 4px; display: flex; border: 0.5px solid rgba(255,255,255,0.1); z-index: 200; }
         .tab-btn { flex: 1; padding: 8px 0; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; z-index: 5; border: none; background: none; outline: none; }
         .t-icon { width: 20px; height: 20px; background: var(--sub); -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; }
         .t-text { font-size: 10px; font-weight: 600; color: var(--sub); }
         .tab-btn.active .t-icon { background: var(--accent); }
         .tab-btn.active .t-text { color: var(--accent); }
-        
-        .slider { position: absolute; background: rgba(255,255,255,0.1); border-radius: 24px; height: calc(100% - 8px); top: 4px; transition: 0.3s cubic-bezier(0.2, 1, 0.3, 1); z-index: 1; }
+        .tab-slider { position: absolute; background: rgba(255,255,255,0.1); border-radius: 24px; height: calc(100% - 8px); top: 4px; transition: 0.3s cubic-bezier(0.2, 1, 0.3, 1); z-index: 1; }
     </style>
 </head>
 <body>
@@ -87,45 +94,97 @@
             <div class="edit-icon"></div>
         </div>
 
-        <div class="chat-row">
-            <div class="chat-ava"><img src="Content/Logos/KeysAv.PNG"></div>
-            <div class="chat-info">
-                <div class="chat-n-wrap"><span class="chat-name">Ключи</span><div class="v-badge"></div></div>
-                <div class="badge">Бот</div>
+        <div class="filter-container">
+            <div class="filter-bar">
+                <div class="f-slider" id="fSlider"></div>
+                <button class="f-btn" onclick="filter('create', this)"><div class="plus-icon"></div>Создать</button>
+                <button class="f-btn active" onclick="filter('all', this)">Все</button>
+                <button class="f-btn" onclick="filter('bots', this)">Боты</button>
             </div>
         </div>
-        <div class="divider"></div>
 
-        <div class="chat-row">
-            <div class="chat-ava"><img src="Content/Logos/TechAv.PNG"></div>
-            <div class="chat-info">
-                <span class="chat-name">ТехПоддержка</span>
-                <div class="badge">Поддержка</div>
+        <div class="chats-list" id="chatsList">
+            <div class="chat-item" data-type="bots">
+                <div class="chat-row">
+                    <div class="chat-ava"><img src="Content/Logos/KeysAv.PNG"></div>
+                    <div class="chat-info">
+                        <div class="chat-n-wrap"><span class="chat-name">Ключи</span><div class="v-badge"></div></div>
+                        <div class="badge">Бот</div>
+                    </div>
+                </div>
+                <div class="divider"></div>
+            </div>
+
+            <div class="chat-item" data-type="support">
+                <div class="chat-row">
+                    <div class="chat-ava"><img src="Content/Logos/TechAv.PNG"></div>
+                    <div class="chat-info">
+                        <span class="chat-name">ТехПоддержка</span>
+                        <div class="badge">Поддержка</div>
+                    </div>
+                </div>
             </div>
         </div>
-        </div>
+    </div>
 
     <div class="tab-bar">
-        <div class="slider" id="slider"></div>
-        <button class="tab-btn active" onclick="moveSlider(this)">
+        <div class="tab-slider" id="tabSlider"></div>
+        <button class="tab-btn active" onclick="navMove(this)">
             <div class="t-icon" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/6997/6997164.png');"></div>
             <span class="t-text">Главная</span>
         </button>
-        <button class="tab-btn" onclick="moveSlider(this)">
+        <button class="tab-btn" onclick="navMove(this)">
             <div class="t-icon" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/9959/9959489.png');"></div>
             <span class="t-text">Настройки</span>
         </button>
     </div>
 
     <script>
-        const slider = document.getElementById('slider');
-        function moveSlider(btn) {
+        const fSlider = document.getElementById('fSlider');
+        const tSlider = document.getElementById('tabSlider');
+        const list = document.getElementById('chatsList');
+
+        function filter(type, btn) {
+            document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            fSlider.style.left = btn.offsetLeft + 'px';
+            fSlider.style.width = btn.offsetWidth + 'px';
+
+            list.style.opacity = '0';
+            setTimeout(() => {
+                document.querySelectorAll('.chat-item').forEach(item => {
+                    if (type === 'all' || item.dataset.type === type) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                list.style.opacity = '1';
+                // Убираем последний разделитель у видимых элементов
+                const visible = Array.from(document.querySelectorAll('.chat-item')).filter(i => i.style.display !== 'none');
+                visible.forEach((v, idx) => {
+                    const div = v.querySelector('.divider');
+                    if(div) div.style.display = (idx === visible.length - 1) ? 'none' : 'block';
+                });
+            }, 150);
+        }
+
+        function navMove(btn) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            slider.style.left = btn.offsetLeft + 'px';
-            slider.style.width = btn.offsetWidth + 'px';
+            tSlider.style.left = btn.offsetLeft + 'px';
+            tSlider.style.width = btn.offsetWidth + 'px';
         }
-        window.onload = () => moveSlider(document.querySelector('.tab-btn.active'));
+
+        window.onload = () => {
+            const activeF = document.querySelector('.f-btn.active');
+            fSlider.style.left = activeF.offsetLeft + 'px';
+            fSlider.style.width = activeF.offsetWidth + 'px';
+            
+            const activeT = document.querySelector('.tab-btn.active');
+            tSlider.style.left = activeT.offsetLeft + 'px';
+            tSlider.style.width = activeT.offsetWidth + 'px';
+        };
     </script>
 </body>
 </html>
