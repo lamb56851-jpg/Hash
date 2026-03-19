@@ -74,7 +74,6 @@
             z-index: 2;
             cursor: pointer;
             color: rgba(255,255,255,0.4);
-            transition: color 0.2s;
         }
 
         .segment-item.active { color: white; }
@@ -116,27 +115,20 @@
             width: 50%;
             padding: 32px 28px;
             box-sizing: border-box;
+            overflow-y: auto;
         }
 
-        /* Заголовки с разделителем */
         .title-row {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
-        .v-divider {
-            width: 1px;
-            height: 20px;
-            background: rgba(255,255,255,0.15);
-        }
-        .inactive-title {
-            color: rgba(255,255,255,0.2);
-            cursor: default;
-        }
+        .v-divider { width: 1px; height: 20px; background: rgba(255,255,255,0.15); }
+        .inactive-title { color: rgba(255,255,255,0.2); }
 
         .input-pill, .btn-action {
-            height: 44px; /* Одинаковая высота */
+            height: 44px;
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -164,8 +156,12 @@
             margin-top: 18px;
             border: none;
         }
-
         .btn-action:active { opacity: 0.8; transform: scale(0.98); }
+
+        /* Стили для элементов документации из массива */
+        .doc-item { margin-bottom: 24px; }
+        .doc-title { font-size: 19px; font-weight: 700; margin-bottom: 4px; color: white; }
+        .doc-desc { font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.5); line-height: 1.4; }
     </style>
 </head>
 <body>
@@ -190,17 +186,8 @@
     <div class="modal-glass">
         <div class="content-wrapper" id="contentWrapper">
             
-            <div class="view-section">
-                <div class="max-w-[360px] mx-auto">
-                    <h2 class="text-xl font-bold mb-5">Документация</h2>
-                    <div class="space-y-3">
-                        <div class="bg-white/5 p-4 rounded-xl">
-                            <h3 class="text-[#00B689] font-bold text-[10px] uppercase tracking-widest mb-1">Privacy</h3>
-                            <p class="text-[13px] text-white/60">Ваша сеть — ваши правила. Никакого контроля извне.</p>
-                        </div>
-                    </div>
+            <div class="view-section" id="docList">
                 </div>
-            </div>
 
             <div class="view-section">
                 <div class="max-w-[360px] mx-auto">
@@ -226,6 +213,7 @@
                     </div>
 
                     <button class="btn-action">Продолжить</button>
+                    <p class="text-center text-[10px] text-white/10 mt-6 tracking-widest uppercase">Hash Alpha v1.0</p>
                 </div>
             </div>
 
@@ -233,23 +221,45 @@
     </div>
 
     <script>
+        const DOC_DATA = [
+            { title: "Всё летает", desc: "Hash работает на пределе возможностей твоего железа. Никаких тяжелых анимаций и долгой прогрузки чатов — только чистая скорость." },
+            { title: "Только свои", desc: "Это закрытое пространство для нашей компании. Здесь нет спам-ботов, левых каналов и рекламы — только живое общение." },
+            { title: "Честный Sync", desc: "Заходи с любого устройства. Переписка, файлы и важные ссылки подтянутся мгновенно. Начал писать с компа — закончил на ходу с телефона." },
+            { title: "Твои правила", desc: "Мессенджер полностью подстраивается под тебя. Настраивай уведомления, закрепляй важные диалоги и не отвлекайся на лишний шум." },
+            { title: "Ничего лишнего", desc: "Мы выкинули всё, что тормозит обычные приложения. Hash бережет заряд батареи, чтобы ты всегда был на связи." }
+        ];
+
         const slider = document.getElementById('slider');
         const wrapper = document.getElementById('contentWrapper');
         const items = document.querySelectorAll('.segment-item');
+        const docContainer = document.getElementById('docList');
+
+        function renderDocs() {
+            docContainer.innerHTML = `
+                <div class="max-w-[360px] mx-auto">
+                    <h2 class="text-xl font-bold mb-6">Документация</h2>
+                    ${DOC_DATA.map(item => `
+                        <div class="doc-item">
+                            <div class="doc-title">${item.title}</div>
+                            <div class="doc-desc">${item.desc}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
 
         function slideTo(idx, el) {
             items.forEach(i => i.classList.remove('active'));
             el.classList.add('active');
             
-            // Используем transform вместо left для плавности (не лагает)
             const x = el.offsetLeft - 2; 
             slider.style.transform = `translateX(${x}px)`;
             slider.style.width = el.offsetWidth + 'px';
-            
             wrapper.style.transform = `translateX(-${idx * 50}%)`;
         }
 
         window.onload = () => {
+            renderDocs();
             const initial = items[0];
             slider.style.width = initial.offsetWidth + 'px';
             slider.style.transform = `translateX(${initial.offsetLeft - 2}px)`;
