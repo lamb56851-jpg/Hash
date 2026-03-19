@@ -9,9 +9,9 @@
     <style>
         :root {
             --bg: #000000;
-            --modal-bg: #0A0A0A;
-            --panel-bg: #141414;
-            --input-bg: #0A0A0A;
+            --modal-bg: rgba(10, 10, 10, 0.85); /* Прозрачность 0.85 */
+            --panel-bg: rgba(255, 255, 255, 0.04); /* Тонкие панели */
+            --input-bg: rgba(0, 0, 0, 0.4); /* Инпуты еще темнее */
             --accent: #00C896;
             --accent-soft: #00B084;
             --off-white: #FAF9F2;
@@ -32,7 +32,7 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
-            transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            background: var(--bg);
         }
 
         /* Шапка */
@@ -42,7 +42,7 @@
             height: 23vh;
             position: relative;
             z-index: 5;
-            transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
         .header-section img {
@@ -59,7 +59,6 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            transition: opacity 0.3s;
         }
 
         .logo-sq {
@@ -86,40 +85,31 @@
             text-transform: uppercase;
         }
 
-        /* Модалка */
+        /* Модалка с Блюром */
         .modal-scroll-area {
             flex: 1;
             background: var(--modal-bg);
+            backdrop-filter: blur(25px); /* Блюр фона */
+            -webkit-backdrop-filter: blur(25px);
             border-radius: 32px 32px 0 0;
             margin-top: -30px;
             position: relative;
             z-index: 10;
             overflow-y: auto;
-            overflow-x: hidden;
-            box-shadow: 0 -20px 50px rgba(0,0,0,1);
-            transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
             padding: 32px 20px 80px;
-            -webkit-overflow-scrolling: touch;
         }
 
-        /* СОСТОЯНИЕ: ПОЛНЫЙ ЭКРАН */
-        .full-screen .header-section {
-            height: 0;
-            opacity: 0;
-        }
+        .full-screen .header-section { height: 0; opacity: 0; }
+        .full-screen .modal-scroll-area { border-radius: 0; margin-top: 0; padding-top: 60px; }
 
-        .full-screen .modal-scroll-area {
-            border-radius: 0;
-            margin-top: 0;
-            padding-top: 60px; /* Компенсация ушедшей шапки */
-        }
-
-        /* Элементы контента */
+        /* Контентные блоки */
         .panel {
             background: var(--panel-bg);
             border-radius: 28px;
             padding: 20px 16px;
             margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .pill-input {
@@ -148,24 +138,29 @@
             font-weight: 800;
             color: #000;
             width: 100%;
-            margin-top: 10px;
         }
 
         .info-text {
             font-size: 11px;
-            color: rgba(255, 255, 255, 0.25);
+            color: rgba(255, 255, 255, 0.3);
             line-height: 1.5;
             padding: 0 12px;
-            text-align: justify;
         }
 
-        .welcome-block {
+        .welcome-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .welcome-desc {
             font-size: 13px;
-            color: rgba(255, 255, 255, 0.35);
-            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.4);
+            line-height: 1.5;
             margin-bottom: 32px;
-            padding: 0 8px;
-            text-align: justify;
+            text-align: center;
+            padding: 0 20px;
         }
 
         .footer-tag {
@@ -177,21 +172,23 @@
             text-align: center;
         }
 
-        /* Кастомный скроллбар (тонкий) */
-        .modal-scroll-area::-webkit-scrollbar {
-            width: 4px;
+        /* Иконки */
+        .icon-small {
+            width: 16px;
+            height: 16px;
+            filter: brightness(0) invert(1);
+            opacity: 0.4;
+            margin-right: 12px;
         }
-        .modal-scroll-area::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-        }
+
+        * { -webkit-tap-highlight-color: transparent; }
     </style>
 </head>
 <body>
 
     <div class="app-container" id="app">
         <div class="header-section">
-            <img src="https://i.ibb.co/35scBynG/IMG-5882.gif" alt="bg">
+            <img src="https://i.ibb.co/fdpZnpt5/IMG-5887.gif" alt="bg">
             <div class="branding">
                 <div class="logo-sq"><span class="logo-symbol">#</span></div>
                 <span class="logo-text">Hash</span>
@@ -201,33 +198,32 @@
         <div class="modal-scroll-area" id="scrollArea">
             <div class="max-w-[340px] mx-auto">
                 
-                <h2 class="text-[22px] font-bold mb-4 text-center">Твой доступ</h2>
-                
-                <p class="welcome-block">
-                    Hash — твой личный узел. Здесь нет алгоритмов и посторонних, только свои. Мы создали это место для свободного общения. Просто выбери себе имя и заходи, мы тебя ждали.
+                <h2 class="welcome-title">Добро пожаловать</h2>
+                <p class="welcome-desc">
+                    Чтобы начать общение, зарегистрируйся или войди в свой аккаунт
                 </p>
 
                 <div class="panel">
                     <div class="pill-input">
-                        <img src="https://cdn-icons-png.flaticon.com/512/6997/6997204.png" 
-                             style="filter: brightness(0) invert(1); opacity: 0.3;" 
-                             class="w-4 h-4 mr-3" alt="i">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1077/1077063.png" class="icon-small" alt="i">
                         <input type="text" placeholder="Имя" autocomplete="off">
                     </div>
+                    <p class="info-text mb-4">
+                        Напиши никнейм, который будут видеть другие пользователи.
+                    </p>
+
                     <div class="pill-input">
-                        <span class="text-white/20 font-bold mr-3 ml-0.5 text-[15px]">@</span>
-                        <input type="text" placeholder="username" autocomplete="off">
+                        <img src="https://cdn-icons-png.flaticon.com/512/7065/7065720.png" class="icon-small" alt="tag">
+                        <input type="text" placeholder="Тег" autocomplete="off">
                     </div>
                     <p class="info-text">
-                        Придумай уникальный ник. Будет лучше, если он не связан с твоими другими профилями — это безопаснее.
+                        Придумай уникальный ник. Лучше, если он не будет связан с твоими другими профилями.
                     </p>
                 </div>
 
                 <div class="panel">
                     <div class="pill-input">
-                        <img src="https://cdn-icons-png.flaticon.com/512/15773/15773700.png" 
-                             style="filter: brightness(0) invert(1); opacity: 0.3;" 
-                             class="w-4 h-4 mr-3" alt="i">
+                        <img src="https://cdn-icons-png.flaticon.com/512/15773/15773700.png" class="icon-small" alt="p">
                         <input type="text" placeholder="Пароль" autocomplete="off">
                     </div>
                     <p class="info-text">
@@ -255,13 +251,11 @@
         scrollArea.addEventListener('scroll', () => {
             const currentScroll = scrollArea.scrollTop;
 
-            // Триггер на вход в полноэкранный режим (скролл вниз)
             if (currentScroll > 10 && !isFullScreen) {
                 app.classList.add('full-screen');
                 isFullScreen = true;
             } 
             
-            // Возврат в режим с гифкой ТОЛЬКО если пользователь докрутил до самого верха (0)
             if (currentScroll <= 0 && isFullScreen) {
                 app.classList.remove('full-screen');
                 isFullScreen = false;
