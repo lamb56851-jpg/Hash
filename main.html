@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Hash — Chats</title>
+    <title>Hash — Messenger</title>
     <link rel="icon" type="image/jpeg" href="Content/Logos/HashLogo.JPG">
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -29,84 +29,84 @@
         .screen {
             position: absolute; inset: 0; display: flex; flex-direction: column;
             transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s;
-            padding-top: env(safe-area-inset-top);
         }
         .screen-hidden-left { transform: translateX(-100%); opacity: 0; }
         .screen-hidden-right { transform: translateX(100%); opacity: 0; }
 
-        /* --- Заголовок --- */
-        .header-area { padding: 20px 20px 10px; }
-        .page-title { font-size: 34px; font-weight: 800; letter-spacing: -0.04em; }
-
-        /* --- Панель закрепа (Pinned) --- */
-        .pinned-panel {
+        /* --- Верхняя Стеклянная Модалка --- */
+        .top-modal-glass {
             background: var(--ios-glass);
             backdrop-filter: blur(40px) saturate(180%);
             -webkit-backdrop-filter: blur(40px) saturate(180%);
-            border-bottom: 0.5px solid rgba(255,255,255,0.08);
-            border-radius: 0 0 32px 32px; /* Закруглены только нижние */
-            padding: 20px;
-            z-index: 40;
+            border-bottom: 0.5px solid rgba(255,255,255,0.12);
+            border-radius: 0 0 32px 32px;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: 15px;
+            z-index: 100;
+            position: relative;
         }
-        .pinned-list { display: flex; gap: 20px; }
-        .pinned-user { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 70px; }
+        .header-area { padding: 15px 20px 5px; }
+        .page-title { font-size: 28px; font-weight: 800; letter-spacing: -0.04em; }
+
+        .pinned-section { padding: 5px 20px 0; }
+        .pinned-list { display: flex; gap: 15px; }
+        .pinned-user { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 60px; }
         .pinned-ava { 
-            width: 64px; height: 64px; border-radius: 20px; 
+            width: 56px; height: 56px; border-radius: 18px; 
             background: #1c1c1e; border: 1px solid rgba(255,255,255,0.1); 
             overflow: hidden; 
         }
         .pinned-ava img { width: 100%; height: 100%; object-fit: cover; }
-        .pinned-name { font-size: 12px; font-weight: 600; color: white; text-align: center; }
+        .pinned-name { font-size: 11px; font-weight: 600; color: white; opacity: 0.9; }
 
-        /* --- Список чатов --- */
-        .chats-container { flex: 1; overflow-y: auto; padding-bottom: 120px; }
-        .chat-row { display: flex; align-items: center; padding: 14px 20px; gap: 14px; border-bottom: 0.5px solid rgba(255,255,255,0.03); }
+        /* --- Список чатов (Помельче) --- */
+        .chats-container { flex: 1; overflow-y: auto; padding-top: 10px; padding-bottom: 100px; }
+        .chat-row { display: flex; align-items: center; padding: 10px 20px; gap: 12px; }
         .chat-row:active { background: rgba(255,255,255,0.05); }
         
-        .ava-box { width: 54px; height: 54px; border-radius: 14px; overflow: hidden; flex-shrink: 0; background: #1c1c1e; }
+        .ava-box { width: 48px; height: 48px; border-radius: 13px; overflow: hidden; flex-shrink: 0; background: #1c1c1e; }
         .ava-box img { width: 100%; height: 100%; object-fit: cover; }
         
         .chat-info { flex: 1; display: flex; flex-direction: column; }
-        .name-line { display: flex; align-items: center; gap: 5px; }
-        .name-txt { font-size: 17px; font-weight: 700; }
-        .type-txt { font-size: 13px; font-weight: 500; color: var(--inactive-color); }
+        .name-line { display: flex; align-items: center; gap: 6px; }
+        .name-txt { font-size: 16px; font-weight: 700; }
+        .type-txt { font-size: 12px; font-weight: 500; color: var(--inactive-color); }
         
         .verify-icon {
-            width: 16px; height: 16px; background: var(--accent);
+            width: 20px; height: 20px; background: var(--accent);
             -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9918/9918743.png') no-repeat center / contain;
             mask: url('https://cdn-icons-png.flaticon.com/512/9918/9918743.png') no-repeat center / contain;
         }
 
-        /* --- Таб Бар (Полная Механика) --- */
+        /* --- Меню (Уже и Компактнее) --- */
         .menu-wrap {
-            position: fixed; bottom: calc(15px + env(safe-area-inset-bottom));
-            left: 50%; transform: translateX(-50%); width: 92%; max-width: 400px; z-index: 100;
+            position: fixed; bottom: calc(20px + env(safe-area-inset-bottom));
+            left: 50%; transform: translateX(-50%); width: 260px; z-index: 150;
         }
         .ios-tab-bar {
             position: relative; background: var(--tab-bar-bg);
             backdrop-filter: blur(25px) saturate(180%); -webkit-backdrop-filter: blur(25px) saturate(180%);
-            border-radius: 38px; display: flex; padding: 4px; border: 0.5px solid rgba(255, 255, 255, 0.08);
+            border-radius: 30px; display: flex; padding: 3px; border: 0.5px solid rgba(255, 255, 255, 0.08);
         }
         .tab-item {
-            position: relative; z-index: 2; padding: 8px 0; display: flex;
+            position: relative; z-index: 2; padding: 6px 0; display: flex;
             flex-direction: column; align-items: center; flex: 1;
             background: none; border: none; outline: none; cursor: pointer;
         }
         .icon-wrap {
-            width: 24px; height: 24px; margin-bottom: 4px; background-color: var(--inactive-color);
+            width: 22px; height: 22px; margin-bottom: 3px; background-color: var(--inactive-color);
             -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center;
-            transition: background-color 0.25s;
         }
-        .tab-txt { font-size: 10px; font-weight: 600; color: var(--inactive-color); transition: color 0.25s; }
+        .tab-txt { font-size: 10px; font-weight: 600; color: var(--inactive-color); }
         .tab-item.active .icon-wrap { background-color: var(--accent); }
         .tab-item.active .tab-txt { color: var(--accent); }
 
         .liquid-slider {
-            position: absolute; top: 4px; left: 4px; height: calc(100% - 8px);
-            background: var(--pill-bg); border-radius: 34px; z-index: 1;
+            position: absolute; top: 3px; left: 3px; height: calc(100% - 6px);
+            background: var(--pill-bg); border-radius: 26px; z-index: 1;
             pointer-events: none; border: 1px solid transparent;
             will-change: transform, left, width;
-            transition: background-color 0.16s, border-color 0.16s;
+            transition: background-color 0.16s;
         }
         .liquid-slider.flying { background-color: transparent !important; border-color: var(--pill-border-moving); }
     </style>
@@ -114,15 +114,16 @@
 <body>
 
     <div id="screen-chats" class="screen">
-        <div class="header-area">
-            <h1 class="page-title">Чаты</h1>
-        </div>
-        
-        <div class="pinned-panel">
-            <div class="pinned-list">
-                <div class="pinned-user">
-                    <div class="pinned-ava"><img src="Content/Logos/KeysAv.JPG"></div>
-                    <span class="pinned-name">Ключи</span>
+        <div class="top-modal-glass">
+            <div class="header-area">
+                <h1 class="page-title">Чаты</h1>
+            </div>
+            <div class="pinned-section">
+                <div class="pinned-list">
+                    <div class="pinned-user">
+                        <div class="pinned-ava"><img src="Content/Logos/KeysAv.JPG"></div>
+                        <span class="pinned-name">Ключи</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -146,10 +147,12 @@
     </div>
 
     <div id="screen-settings" class="screen screen-hidden-right">
-        <div class="header-area">
-            <h1 class="page-title">Настройки</h1>
+        <div class="top-modal-glass">
+            <div class="header-area">
+                <h1 class="page-title">Настройки</h1>
+            </div>
         </div>
-        </div>
+    </div>
 
     <div class="menu-wrap">
         <nav class="ios-tab-bar" id="tabBar">
@@ -168,12 +171,11 @@
     </div>
 
     <script>
-        // --- ФИЗИКА МЕНЮ ---
         const PHYSICS = { pos: { k: 380, d: 38, m: 1 }, scale: { k: 420, d: 24, m: 1 } };
         const slider = document.getElementById('slider');
         const tabs = document.querySelectorAll('.tab-item');
         
-        let state = { x: 0, tx: 0, vx: 0, w: 0, tw: 0, vw: 0, sx: 1, tsx: 1, vsx: 0, sy: 1, tsy: 1, vsy: 0, isMoving: false, currentIndex: 0 };
+        let state = { x: 0, tx: 0, vx: 0, w: 0, tw: 0, vw: 0, sx: 1, tsx: 1, vsx: 0, sy: 1, tsy: 1, vsy: 0, isMoving: false };
 
         function spring(curr, target, vel, conf) {
             const force = -conf.k * (curr - target);
@@ -185,9 +187,9 @@
         function update() {
             const dist = Math.abs(state.x - state.tx);
             if (state.isMoving) {
-                if (dist > 15) {
+                if (dist > 10) {
                     slider.classList.add('flying');
-                    state.tsy = 1.25; state.tsx = 0.9;
+                    state.tsy = 1.2; state.tsx = 0.85;
                 } else {
                     slider.classList.remove('flying');
                     state.tsx = 1; state.tsy = 1;
@@ -208,17 +210,19 @@
         function switchView(view, el) {
             tabs.forEach(t => t.classList.remove('active'));
             el.classList.add('active');
-            
             state.tx = el.offsetLeft;
             state.tw = el.offsetWidth;
             state.isMoving = true;
 
+            const chats = document.getElementById('screen-chats');
+            const settings = document.getElementById('screen-settings');
+
             if (view === 'chats') {
-                document.getElementById('screen-chats').classList.remove('screen-hidden-left');
-                document.getElementById('screen-settings').classList.add('screen-hidden-right');
+                chats.classList.remove('screen-hidden-left');
+                settings.classList.add('screen-hidden-right');
             } else {
-                document.getElementById('screen-chats').classList.add('screen-hidden-left');
-                document.getElementById('screen-settings').classList.remove('screen-hidden-right');
+                chats.classList.add('screen-hidden-left');
+                settings.classList.remove('screen-hidden-right');
             }
         }
 
