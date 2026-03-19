@@ -3,18 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Hash — Secure Messenger</title>
+    <title>Hash — Workspace</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
             --ios-bg: #000000;
-            /* Модалка: 0.85 прозрачность */
-            --modal-glass: rgba(28, 28, 30, 0.85); 
-            --ios-tertiary-bg: rgba(255, 255, 255, 0.08);
+            --ios-secondary-bg: #1C1C1E; 
+            --ios-tertiary-bg: #2C2C2E;
             --accent: #00B689;
-            /* Активная плашка: темнее для контраста */
-            --segment-active: rgba(0, 0, 0, 0.4); 
+            /* Цвет активной плашки в переключателе (чуть темнее) */
+            --segment-active: #48484A; 
         }
 
         body, html {
@@ -27,12 +26,12 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Фон с гифкой */
+        /* Фон */
         .header-visual {
             position: absolute;
             top: 0;
             width: 100%;
-            height: 45vh;
+            height: 40vh;
             z-index: 1;
         }
         .header-visual img { width: 100%; height: 100%; object-fit: cover; }
@@ -40,125 +39,114 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(to bottom, transparent 0%, var(--ios-bg) 100%);
+            background: linear-gradient(to bottom, transparent 20%, var(--ios-bg) 100%);
         }
 
-        /* Верхний блок: Брендинг + Табы */
+        /* Верхний блок */
         .top-container {
             position: absolute;
-            top: 7vh;
+            top: 8vh;
             width: 100%;
-            z-index: 20;
+            z-index: 10;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
+            gap: 16px;
         }
 
-        .branding { display: flex; align-items: center; gap: 12px; }
-        .logo-img { width: 46px; height: 46px; border-radius: 11px; object-fit: cover; }
+        .branding { display: flex; align-items: center; gap: 10px; }
+        .logo-img {
+            width: 48px; /* Мельче */
+            height: 48px;
+            border-radius: 11px;
+            object-fit: cover;
+        }
         .logo-text { font-size: 34px; font-weight: 800; letter-spacing: -0.05em; }
 
-        /* Переключатель с Блюром объектов на фоне */
+        /* Переключатель */
         .segmented-container {
-            width: 240px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-radius: 12px;
+            width: 230px;
+            background: rgba(120, 120, 128, 0.2);
+            border-radius: 10px;
             padding: 2px;
             display: flex;
             position: relative;
-            border: 0.5px solid rgba(255, 255, 255, 0.1);
         }
         .segment-item {
             flex: 1;
-            padding: 8px 0;
+            padding: 7px 0;
             font-size: 13px;
             font-weight: 600;
             text-align: center;
             z-index: 2;
             cursor: pointer;
-            color: rgba(255,255,255,0.5);
-            transition: color 0.3s ease;
+            color: rgba(255,255,255,0.6);
+            transition: color 0.2s;
         }
         .segment-item.active { color: white; }
-        
         .liquid-slider {
             position: absolute;
             top: 2px;
             left: 2px;
             height: calc(100% - 4px);
             background: var(--segment-active);
-            border-radius: 10px;
+            border-radius: 8px;
             z-index: 1;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Главная модалка: Прозрачность + Блюр */
+        /* Слайдер контента */
         .modal-glass {
             position: relative;
-            height: 62vh;
-            margin-top: 38vh;
-            background: var(--modal-glass);
-            backdrop-filter: blur(40px) saturate(180%);
-            -webkit-backdrop-filter: blur(40px) saturate(180%);
-            border-radius: 35px 35px 0 0;
-            z-index: 10;
+            height: 65vh;
+            margin-top: 35vh;
+            background: var(--ios-secondary-bg);
+            border-radius: 30px 30px 0 0;
+            z-index: 5;
             overflow: hidden;
-            border-top: 1px solid rgba(255,255,255,0.12);
+            border-top: 1px solid rgba(255,255,255,0.05);
         }
 
         .content-wrapper {
             display: flex;
-            width: 200%;
+            width: 200%; /* Две секции рядом */
             height: 100%;
-            transition: transform 0.5s cubic-bezier(0.33, 1, 0.68, 1);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .view-section {
             width: 50%;
-            padding: 35px 28px;
+            padding: 30px 24px;
             box-sizing: border-box;
         }
 
         /* Инпуты */
-        .input-group { margin-bottom: 16px; }
+        .input-group { margin-bottom: 14px; }
         .input-pill {
             background: var(--ios-tertiary-bg);
-            border-radius: 14px;
-            padding: 12px 16px;
+            border-radius: 12px;
+            padding: 10px 14px;
             display: flex;
             align-items: center;
-            border: 1px solid rgba(255,255,255,0.05);
         }
-        .icon-small { width: 18px; height: 18px; margin-right: 12px; filter: invert(1); opacity: 0.7; }
+        .icon-small { width: 18px; height: 18px; margin-right: 12px; filter: invert(1); opacity: 0.5; }
         input { background: transparent; outline: none; width: 100%; font-size: 16px; color: white; }
-        input::placeholder { color: rgba(255,255,255,0.3); }
+        .hint { font-size: 12px; color: #8E8E93; padding: 4px 4px 0; }
 
-        /* Кнопка iOS Style */
+        /* Кнопка в стиле iOS */
         .btn-action {
             background: var(--accent);
-            border-radius: 16px;
-            padding: 15px;
-            font-size: 17px;
+            border-radius: 14px; /* Не круглая, а squircle */
+            padding: 14px; /* Меньше ростом */
+            font-size: 16px;
             font-weight: 700;
             color: #000;
             width: 100%;
             margin-top: 10px;
             border: none;
-            transition: transform 0.1s ease;
+            cursor: pointer;
         }
-        .btn-action:active { transform: scale(0.97); opacity: 0.9; }
-
-        .doc-card {
-            background: rgba(255,255,255,0.04);
-            border-radius: 20px;
-            padding: 16px;
-            margin-bottom: 12px;
-            border: 0.5px solid rgba(255,255,255,0.05);
-        }
+        .btn-action:active { background: #009d76; }
     </style>
 </head>
 <body>
@@ -173,7 +161,7 @@
             <span class="logo-text">Hash</span>
         </div>
 
-        <div class="segmented-container" id="tabBar">
+        <div class="segmented-container">
             <div class="liquid-slider" id="slider"></div>
             <div class="segment-item active" onclick="slideTo(0, this)">Документация</div>
             <div class="segment-item" onclick="slideTo(1, this)">Логин</div>
@@ -185,32 +173,34 @@
             
             <div class="view-section">
                 <div class="max-w-[360px] mx-auto">
-                    <h2 class="text-2xl font-bold mb-5">Принципы Hash</h2>
-                    <div class="doc-card">
-                        <div class="text-[#00B689] font-extrabold text-[11px] uppercase tracking-wider mb-1">Безопасность</div>
-                        <p class="text-[14px] text-white/70 leading-relaxed">Весь трафик внутри компании зашифрован. Мы не используем сторонние облака.</p>
-                    </div>
-                    <div class="doc-card">
-                        <div class="text-[#00B689] font-extrabold text-[11px] uppercase tracking-wider mb-1">Свобода</div>
-                        <p class="text-[14px] text-white/70 leading-relaxed">Никакой привязки к SIM-картам. Общайтесь анонимно и профессионально.</p>
-                    </div>
+                    <h2 class="text-2xl font-bold mb-4">Безопасность Hash</h2>
+                    <ul class="space-y-4">
+                        <li class="bg-white/5 p-4 rounded-2xl">
+                            <div class="text-[#00B689] font-bold text-xs uppercase mb-1">Zero Knowledge</div>
+                            <div class="text-sm text-white/60">Мы не храним ваши ключи шифрования. Доступ есть только у вас.</div>
+                        </li>
+                        <li class="bg-white/5 p-4 rounded-2xl">
+                            <div class="text-[#00B689] font-bold text-xs uppercase mb-1">No Metadata</div>
+                            <div class="text-sm text-white/60">Ваши цифровые следы стираются сразу после завершения сессии.</div>
+                        </li>
+                    </ul>
                 </div>
             </div>
 
             <div class="view-section">
                 <div class="max-w-[360px] mx-auto">
-                    <h2 class="text-2xl font-bold mb-5">Регистрация</h2>
+                    <h2 class="text-2xl font-bold mb-4">Вход</h2>
                     
                     <div class="input-group">
                         <div class="input-pill">
                             <img src="https://cdn-icons-png.flaticon.com/512/6997/6997204.png" class="icon-small">
-                            <input type="text" placeholder="Ваше имя" spellcheck="false">
+                            <input type="text" placeholder="Имя" spellcheck="false">
                         </div>
                     </div>
 
                     <div class="input-group">
                         <div class="input-pill">
-                            <span class="text-white/40 mr-3 font-bold">@</span>
+                            <span class="text-white/30 mr-2 font-medium">@</span>
                             <input type="text" placeholder="username" spellcheck="false">
                         </div>
                     </div>
@@ -223,7 +213,6 @@
                     </div>
 
                     <button class="btn-action">Продолжить</button>
-                    <p class="text-center text-white/20 text-[12px] mt-6 font-medium tracking-widest">ALPHA BUILD V1.0</p>
                 </div>
             </div>
 
@@ -236,21 +225,23 @@
         const items = document.querySelectorAll('.segment-item');
 
         function slideTo(index, el) {
+            // Переключатель
             items.forEach(item => item.classList.remove('active'));
             el.classList.add('active');
             
             slider.style.left = el.offsetLeft + 'px';
             slider.style.width = el.offsetWidth + 'px';
 
+            // Листание контента (0% или -50%)
             wrapper.style.transform = `translateX(-${index * 50}%)`;
         }
 
-        // Корректная инициализация размеров при загрузке
-        window.addEventListener('load', () => {
+        // Установка начальной позиции слайдера
+        window.onload = () => {
             const initial = items[0];
             slider.style.left = initial.offsetLeft + 'px';
             slider.style.width = initial.offsetWidth + 'px';
-        });
+        };
     </script>
 </body>
 </html>
