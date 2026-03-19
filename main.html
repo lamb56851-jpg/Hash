@@ -14,8 +14,7 @@
             --accent: #00B689;
             --tab-bar-bg: rgba(28, 28, 30, 0.92);
             --inactive-color: #8e8e93;
-            --pill-bg: rgba(255, 255, 255, 0.12);
-            --pill-border-moving: rgba(255, 255, 255, 0.25);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.12); /* Тот самый контур */
         }
 
         body, html {
@@ -25,7 +24,7 @@
             overflow: hidden; position: fixed; -webkit-font-smoothing: antialiased;
         }
 
-        /* --- Навигация экранов --- */
+        /* --- Экраны --- */
         .screen {
             position: absolute; inset: 0; display: flex; flex-direction: column;
             transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s;
@@ -33,23 +32,22 @@
         .screen-hidden-left { transform: translateX(-100%); opacity: 0; }
         .screen-hidden-right { transform: translateX(100%); opacity: 0; }
 
-        /* --- Верхняя Стеклянная Модалка --- */
+        /* --- Стеклянная модалка (Как в Регистрации) --- */
         .top-modal-glass {
             background: var(--ios-glass);
             backdrop-filter: blur(40px) saturate(180%);
             -webkit-backdrop-filter: blur(40px) saturate(180%);
-            border-bottom: 0.5px solid rgba(255,255,255,0.12);
+            border-bottom: var(--glass-border); /* Контур */
             border-radius: 0 0 32px 32px;
             padding-top: env(safe-area-inset-top);
-            padding-bottom: 15px;
+            padding-bottom: 20px;
             z-index: 100;
-            position: relative;
         }
-        .header-area { padding: 15px 20px 5px; }
+        
+        .header-area { padding: 15px 24px 5px; }
         .page-title { font-size: 28px; font-weight: 800; letter-spacing: -0.04em; }
 
-        .pinned-section { padding: 5px 20px 0; }
-        .pinned-list { display: flex; gap: 15px; }
+        .pinned-section { padding: 5px 24px 0; }
         .pinned-user { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 60px; }
         .pinned-ava { 
             width: 56px; height: 56px; border-radius: 18px; 
@@ -57,17 +55,28 @@
             overflow: hidden; 
         }
         .pinned-ava img { width: 100%; height: 100%; object-fit: cover; }
-        .pinned-name { font-size: 11px; font-weight: 600; color: white; opacity: 0.9; }
+        .pinned-name { font-size: 11px; font-weight: 600; opacity: 0.9; }
 
-        /* --- Список чатов (Помельче) --- */
-        .chats-container { flex: 1; overflow-y: auto; padding-top: 10px; padding-bottom: 100px; }
-        .chat-row { display: flex; align-items: center; padding: 10px 20px; gap: 12px; }
+        /* --- Список чатов с разделителями --- */
+        .chats-container { flex: 1; overflow-y: auto; padding-top: 10px; padding-bottom: 120px; }
+        
+        .chat-row { 
+            display: flex; align-items: center; padding: 12px 24px; gap: 14px; 
+            position: relative;
+        }
+        /* Горизонтальная полоска разделения */
+        .chat-row:not(:last-child)::after {
+            content: '';
+            position: absolute; bottom: 0; right: 0;
+            width: calc(100% - 86px); /* Отступ чтобы не резало аватару */
+            height: 0.5px;
+            background: rgba(255, 255, 255, 0.08);
+        }
         .chat-row:active { background: rgba(255,255,255,0.05); }
         
         .ava-box { width: 48px; height: 48px; border-radius: 13px; overflow: hidden; flex-shrink: 0; background: #1c1c1e; }
         .ava-box img { width: 100%; height: 100%; object-fit: cover; }
         
-        .chat-info { flex: 1; display: flex; flex-direction: column; }
         .name-line { display: flex; align-items: center; gap: 6px; }
         .name-txt { font-size: 16px; font-weight: 700; }
         .type-txt { font-size: 12px; font-weight: 500; color: var(--inactive-color); }
@@ -78,7 +87,15 @@
             mask: url('https://cdn-icons-png.flaticon.com/512/9918/9918743.png') no-repeat center / contain;
         }
 
-        /* --- Меню (Уже и Компактнее) --- */
+        /* --- Настройки (Без плашки) --- */
+        .settings-header {
+            padding-top: env(safe-area-inset-top);
+            padding-left: 24px;
+            padding-top: 35px;
+            margin-bottom: 20px;
+        }
+
+        /* --- Меню (Компактное) --- */
         .menu-wrap {
             position: fixed; bottom: calc(20px + env(safe-area-inset-bottom));
             left: 50%; transform: translateX(-50%); width: 260px; z-index: 150;
@@ -91,7 +108,7 @@
         .tab-item {
             position: relative; z-index: 2; padding: 6px 0; display: flex;
             flex-direction: column; align-items: center; flex: 1;
-            background: none; border: none; outline: none; cursor: pointer;
+            background: none; border: none; cursor: pointer;
         }
         .icon-wrap {
             width: 22px; height: 22px; margin-bottom: 3px; background-color: var(--inactive-color);
@@ -103,12 +120,9 @@
 
         .liquid-slider {
             position: absolute; top: 3px; left: 3px; height: calc(100% - 6px);
-            background: var(--pill-bg); border-radius: 26px; z-index: 1;
-            pointer-events: none; border: 1px solid transparent;
-            will-change: transform, left, width;
-            transition: background-color 0.16s;
+            background: rgba(255, 255, 255, 0.12); border-radius: 26px; z-index: 1;
+            pointer-events: none; will-change: transform, left, width;
         }
-        .liquid-slider.flying { background-color: transparent !important; border-color: var(--pill-border-moving); }
     </style>
 </head>
 <body>
@@ -119,11 +133,9 @@
                 <h1 class="page-title">Чаты</h1>
             </div>
             <div class="pinned-section">
-                <div class="pinned-list">
-                    <div class="pinned-user">
-                        <div class="pinned-ava"><img src="Content/Logos/KeysAv.JPG"></div>
-                        <span class="pinned-name">Ключи</span>
-                    </div>
+                <div class="pinned-user">
+                    <div class="pinned-ava"><img src="Content/Logos/KeysAv.JPG"></div>
+                    <span class="pinned-name">Ключи</span>
                 </div>
             </div>
         </div>
@@ -147,72 +159,49 @@
     </div>
 
     <div id="screen-settings" class="screen screen-hidden-right">
-        <div class="top-modal-glass">
-            <div class="header-area">
-                <h1 class="page-title">Настройки</h1>
-            </div>
+        <div class="settings-header">
+            <h1 class="page-title">Настройки</h1>
         </div>
-    </div>
+        </div>
 
     <div class="menu-wrap">
-        <nav class="ios-tab-bar" id="tabBar">
+        <nav class="ios-tab-bar">
             <div class="liquid-slider" id="slider"></div>
-            
-            <button class="tab-item active" data-index="0" onclick="switchView('chats', this)">
-                <div class="icon-wrap" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/6997/6997415.png'); mask-image: url('https://cdn-icons-png.flaticon.com/512/6997/6997415.png');"></div>
+            <button class="tab-item active" onclick="switchView('chats', this)">
+                <div class="icon-wrap" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/6997/6997415.png');"></div>
                 <span class="tab-txt">Чаты</span>
             </button>
-
-            <button class="tab-item" data-index="1" onclick="switchView('settings', this)">
-                <div class="icon-wrap" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/9959/9959489.png'); mask-image: url('https://cdn-icons-png.flaticon.com/512/9959/9959489.png');"></div>
+            <button class="tab-item" onclick="switchView('settings', this)">
+                <div class="icon-wrap" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/9959/9959489.png');"></div>
                 <span class="tab-txt">Настройки</span>
             </button>
         </nav>
     </div>
 
     <script>
-        const PHYSICS = { pos: { k: 380, d: 38, m: 1 }, scale: { k: 420, d: 24, m: 1 } };
         const slider = document.getElementById('slider');
-        const tabs = document.querySelectorAll('.tab-item');
-        
-        let state = { x: 0, tx: 0, vx: 0, w: 0, tw: 0, vw: 0, sx: 1, tsx: 1, vsx: 0, sy: 1, tsy: 1, vsy: 0, isMoving: false };
+        let sState = { x: 0, tx: 0, vx: 0, w: 0, tw: 0, vw: 0 };
 
-        function spring(curr, target, vel, conf) {
-            const force = -conf.k * (curr - target);
-            const damp = -conf.d * vel;
+        function spring(curr, target, vel) {
+            const force = -380 * (curr - target);
+            const damp = -38 * vel;
             vel += (force + damp) * 0.016; curr += vel * 0.016;
             return [curr, vel];
         }
 
         function update() {
-            const dist = Math.abs(state.x - state.tx);
-            if (state.isMoving) {
-                if (dist > 10) {
-                    slider.classList.add('flying');
-                    state.tsy = 1.2; state.tsx = 0.85;
-                } else {
-                    slider.classList.remove('flying');
-                    state.tsx = 1; state.tsy = 1;
-                    if (Math.abs(state.vx) < 0.2) state.isMoving = false;
-                }
-            }
-            [state.x, state.vx] = spring(state.x, state.tx, state.vx, PHYSICS.pos);
-            [state.w, state.vw] = spring(state.w, state.tw, state.vw, PHYSICS.pos);
-            [state.sx, state.vsx] = spring(state.sx, state.tsx, state.vsx, PHYSICS.scale);
-            [state.sy, state.vsy] = spring(state.sy, state.tsy, state.vsy, PHYSICS.scale);
-
-            slider.style.left = `${state.x}px`;
-            slider.style.width = `${state.w}px`;
-            slider.style.transform = `scale(${state.sx}, ${state.sy})`;
+            [sState.x, sState.vx] = spring(sState.x, sState.tx, sState.vx);
+            [sState.w, sState.vw] = spring(sState.w, sState.tw, sState.vw);
+            slider.style.left = sState.x + 'px';
+            slider.style.width = sState.w + 'px';
             requestAnimationFrame(update);
         }
 
         function switchView(view, el) {
-            tabs.forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
             el.classList.add('active');
-            state.tx = el.offsetLeft;
-            state.tw = el.offsetWidth;
-            state.isMoving = true;
+            sState.tx = el.offsetLeft;
+            sState.tw = el.offsetWidth;
 
             const chats = document.getElementById('screen-chats');
             const settings = document.getElementById('screen-settings');
@@ -227,9 +216,9 @@
         }
 
         window.onload = () => {
-            const init = document.querySelector('.tab-item.active');
-            state.x = init.offsetLeft; state.tx = init.offsetLeft;
-            state.w = init.offsetWidth; state.tw = init.offsetWidth;
+            const active = document.querySelector('.tab-item.active');
+            sState.x = active.offsetLeft; sState.tx = active.offsetLeft;
+            sState.w = active.offsetWidth; sState.tw = active.offsetWidth;
             update();
         };
     </script>
