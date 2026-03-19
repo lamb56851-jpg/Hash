@@ -30,9 +30,7 @@
             height: 40vh;
             z-index: 1;
         }
-
         .header-visual img { width: 100%; height: 100%; object-fit: cover; }
-
         .header-visual::after {
             content: '';
             position: absolute;
@@ -42,7 +40,7 @@
 
         .top-container {
             position: absolute;
-            top: 5vh;
+            top: 6vh;
             width: 100%;
             z-index: 10;
             display: flex;
@@ -55,9 +53,8 @@
         .logo-img { width: 52px; height: 52px; border-radius: 12px; object-fit: cover; }
         .logo-text { font-size: 38px; font-weight: 800; letter-spacing: -0.06em; line-height: 1; }
 
-        /* Оптимизированный бар без лагов */
         .segmented-container {
-            width: 310px;
+            width: 240px;
             background: rgba(120, 120, 128, 0.22);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
@@ -70,40 +67,28 @@
 
         .segment-item {
             flex: 1;
-            padding: 7px 0;
-            font-size: 12px;
+            padding: 6px 0;
+            font-size: 13px;
             font-weight: 600;
             text-align: center;
             z-index: 2;
             cursor: pointer;
             color: rgba(255,255,255,0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: color 0.3s;
+            transition: color 0.2s;
         }
 
         .segment-item.active { color: white; }
-
-        .divider {
-            width: 1px;
-            height: 12px;
-            background: rgba(255, 255, 255, 0.15);
-            margin: 0 4px;
-        }
-
+        
         .liquid-slider {
             position: absolute;
             top: 2px;
             left: 2px;
             height: calc(100% - 4px);
-            /* Ширина теперь вычисляется динамически для 3-х элементов с учетом разделителя */
-            width: calc(33.3% - 4px); 
-            background: rgba(255, 255, 255, 0.18);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 999px;
             z-index: 1;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            will-change: transform;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform, width;
         }
 
         .modal-glass {
@@ -121,43 +106,52 @@
 
         .content-wrapper {
             display: flex;
-            width: 300%; /* Три секции */
+            width: 200%;
             height: 100%;
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             will-change: transform;
         }
 
         .view-section {
-            width: 33.33%;
+            width: 50%;
             padding: 32px 28px;
             box-sizing: border-box;
         }
 
+        /* Заголовки с разделителем */
+        .title-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .v-divider {
+            width: 1px;
+            height: 20px;
+            background: rgba(255,255,255,0.15);
+        }
+        .inactive-title {
+            color: rgba(255,255,255,0.2);
+            cursor: default;
+        }
+
         .input-pill, .btn-action {
-            height: 44px; /* Единая высота для всего */
+            height: 44px; /* Одинаковая высота */
             border-radius: 12px;
             display: flex;
             align-items: center;
             box-sizing: border-box;
         }
 
-        .input-group { margin-bottom: 8px; }
         .input-pill {
             background: rgba(255, 255, 255, 0.05);
             padding: 0 14px;
             border: 0.5px solid rgba(255,255,255,0.04);
+            margin-bottom: 10px;
         }
 
-        .icon-small { 
-            width: 18px; height: 18px; margin-right: 12px; 
-            filter: brightness(0) invert(1); opacity: 0.4; 
-        }
-
-        .at-icon {
-            font-size: 17px; font-weight: 500; color: white;
-            opacity: 0.4; margin-right: 12px; width: 18px; text-align: center;
-        }
-
+        .icon-small { width: 18px; height: 18px; margin-right: 12px; filter: brightness(0) invert(1); opacity: 0.4; }
+        .at-icon { font-size: 17px; font-weight: 500; color: white; opacity: 0.4; margin-right: 12px; width: 18px; text-align: center; }
         input { background: transparent; outline: none; width: 100%; font-size: 16px; color: white; }
 
         .btn-action {
@@ -167,9 +161,8 @@
             font-weight: 700;
             color: #000;
             width: 100%;
-            margin-top: 12px;
+            margin-top: 18px;
             border: none;
-            cursor: pointer;
         }
 
         .btn-action:active { opacity: 0.8; transform: scale(0.98); }
@@ -187,12 +180,10 @@
             <span class="logo-text">Hash</span>
         </div>
 
-        <div class="segmented-container">
+        <div class="segmented-container" id="tabBar">
             <div class="liquid-slider" id="slider"></div>
             <div class="segment-item active" onclick="slideTo(0, this)">Документация</div>
             <div class="segment-item" onclick="slideTo(1, this)">Регистрация</div>
-            <div class="divider"></div>
-            <div class="segment-item" onclick="slideTo(2, this)">Вход</div>
         </div>
     </div>
 
@@ -203,9 +194,9 @@
                 <div class="max-w-[360px] mx-auto">
                     <h2 class="text-xl font-bold mb-5">Документация</h2>
                     <div class="space-y-3">
-                        <div class="bg-white/5 p-4 rounded-xl border border-white/5">
-                            <h3 class="text-[#00B689] font-bold text-[10px] uppercase tracking-widest mb-1">Безопасность</h3>
-                            <p class="text-[13px] text-white/60">Все ключи хранятся в защищенном анклаве вашего устройства.</p>
+                        <div class="bg-white/5 p-4 rounded-xl">
+                            <h3 class="text-[#00B689] font-bold text-[10px] uppercase tracking-widest mb-1">Privacy</h3>
+                            <p class="text-[13px] text-white/60">Ваша сеть — ваши правила. Никакого контроля извне.</p>
                         </div>
                     </div>
                 </div>
@@ -213,37 +204,28 @@
 
             <div class="view-section">
                 <div class="max-w-[360px] mx-auto">
-                    <h2 class="text-xl font-bold mb-5">Регистрация</h2>
+                    <div class="title-row">
+                        <h2 class="text-xl font-bold">Регистрация</h2>
+                        <div class="v-divider"></div>
+                        <h2 class="text-xl font-bold inactive-title">Вход</h2>
+                    </div>
                     
-                    <div class="input-group">
-                        <div class="input-pill">
-                            <img src="https://cdn-icons-png.flaticon.com/512/6997/6997204.png" class="icon-small">
-                            <input type="text" placeholder="Имя" spellcheck="false">
-                        </div>
+                    <div class="input-pill">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6997/6997204.png" class="icon-small">
+                        <input type="text" placeholder="Имя" spellcheck="false">
                     </div>
 
-                    <div class="input-group">
-                        <div class="input-pill">
-                            <span class="at-icon">@</span>
-                            <input type="text" placeholder="username" spellcheck="false">
-                        </div>
+                    <div class="input-pill">
+                        <span class="at-icon">@</span>
+                        <input type="text" placeholder="username" spellcheck="false">
                     </div>
 
-                    <div class="input-group">
-                        <div class="input-pill">
-                            <img src="https://cdn-icons-png.flaticon.com/512/15773/15773700.png" class="icon-small">
-                            <input type="password" placeholder="Пароль">
-                        </div>
+                    <div class="input-pill">
+                        <img src="https://cdn-icons-png.flaticon.com/512/15773/15773700.png" class="icon-small">
+                        <input type="password" placeholder="Пароль">
                     </div>
 
                     <button class="btn-action">Продолжить</button>
-                </div>
-            </div>
-
-            <div class="view-section">
-                <div class="max-w-[360px] mx-auto text-center pt-10">
-                    <h2 class="text-xl font-bold mb-2">Вход</h2>
-                    <p class="text-white/30 text-sm">Этот раздел находится в разработке.</p>
                 </div>
             </div>
 
@@ -259,14 +241,19 @@
             items.forEach(i => i.classList.remove('active'));
             el.classList.add('active');
             
-            // Плавное перемещение слайдера через transform (без лагов)
-            // Учитываем ширину одного сегмента (примерно 33.3%)
-            const position = idx * 100;
-            slider.style.transform = `translateX(${position}%)`;
+            // Используем transform вместо left для плавности (не лагает)
+            const x = el.offsetLeft - 2; 
+            slider.style.transform = `translateX(${x}px)`;
+            slider.style.width = el.offsetWidth + 'px';
             
-            // Перелистывание контента
-            wrapper.style.transform = `translateX(-${idx * 33.333}%)`;
+            wrapper.style.transform = `translateX(-${idx * 50}%)`;
         }
+
+        window.onload = () => {
+            const initial = items[0];
+            slider.style.width = initial.offsetWidth + 'px';
+            slider.style.transform = `translateX(${initial.offsetLeft - 2}px)`;
+        };
     </script>
 </body>
 </html>
