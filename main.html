@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Hash — Закреп</title>
+    <title>Hash — Messenger</title>
     <link rel="icon" type="image/png" href="Content/Logos/HashLogo.PNG">
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -24,6 +24,7 @@
             overflow: hidden; position: fixed; -webkit-font-smoothing: antialiased;
         }
 
+        /* --- Навигация экранов --- */
         .screen {
             position: absolute; inset: 0; display: flex; flex-direction: column;
             transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s;
@@ -31,7 +32,7 @@
         .screen-hidden-left { transform: translateX(-100%); opacity: 0; }
         .screen-hidden-right { transform: translateX(100%); opacity: 0; }
 
-        /* --- Стеклянная модалка --- */
+        /* --- Верхняя Стеклянная Модалка (Единая) --- */
         .top-modal-glass {
             background: var(--ios-glass);
             backdrop-filter: blur(40px) saturate(180%);
@@ -43,8 +44,9 @@
             z-index: 100;
         }
         
-        .header-area { padding: 15px 24px 5px; }
-        .page-title { font-size: 28px; font-weight: 800; letter-spacing: -0.04em; }
+        /* Заголовок (Как в Документации) */
+        .header-area { padding: 20px 24px 10px; }
+        .page-title { font-size: 20px; font-weight: 700; } /* Убрали жирность, уменьшили размер */
 
         .pinned-section { padding: 5px 24px 0; }
         .pinned-user { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 60px; }
@@ -56,28 +58,38 @@
         .pinned-ava img { width: 100%; height: 100%; object-fit: cover; }
         .pinned-name { font-size: 11px; font-weight: 600; opacity: 0.9; }
 
-        /* --- Список чатов --- */
+        /* --- Список чатов (Помельче) --- */
         .chats-container { flex: 1; overflow-y: auto; padding-top: 10px; padding-bottom: 120px; }
-        .chat-row { display: flex; align-items: center; padding: 12px 24px; gap: 14px; position: relative; }
+        
+        .chat-row { 
+            display: flex; align-items: center; padding: 12px 24px; gap: 14px; 
+            position: relative;
+        }
+        /* Разделительная полоска (Ярче) */
         .chat-row:not(:last-child)::after {
-            content: ''; position: absolute; bottom: 0; right: 0;
-            width: calc(100% - 86px); height: 0.5px; background: rgba(255, 255, 255, 0.08);
+            content: '';
+            position: absolute; bottom: 0; right: 0;
+            width: calc(100% - 86px); /* Отступ чтобы не резало аватару */
+            height: 0.5px;
+            background: rgba(255, 255, 255, 0.15); /* Ярче */
         }
         .chat-row:active { background: rgba(255,255,255,0.05); }
         
         .ava-box { width: 48px; height: 48px; border-radius: 13px; overflow: hidden; flex-shrink: 0; background: #1c1c1e; }
         .ava-box img { width: 100%; height: 100%; object-fit: cover; }
         
-        .name-line { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-        .name-txt { font-size: 16px; font-weight: 500; }
+        .chat-info { flex: 1; display: flex; flex-direction: column; gap: 4px; } /* Gap для vertical layout */
+        .name-line { display: flex; align-items: center; gap: 6px; }
+        .name-txt { font-size: 16px; font-weight: 500; color: white; }
         
-        /* --- БЕЙДЖИ --- */
+        /* БЕЙДЖИ (Титулы) */
         .role-badge {
             font-size: 9px; font-weight: 800;
-            padding: 2px 6px; border-radius: 5px;
-            text-transform: uppercase; letter-spacing: 0.03em;
+            padding: 3px 6px; border-radius: 5px;
+            text-transform: uppercase; letter-spacing: 0.05em;
             background-color: rgba(0, 182, 137, 0.25); /* Прозрачность 0.25 */
             color: var(--accent);
+            display: inline-block;
             line-height: 1;
         }
         
@@ -91,11 +103,11 @@
         .settings-header {
             padding-top: env(safe-area-inset-top);
             padding-left: 24px;
-            padding-top: 15px; /* Совпадает с header-area */
-            margin-top: 15px; /* Совпадает с header-area */
+            padding-top: 20px; /* Совпадает с header-area */
+            margin-bottom: 20px;
         }
 
-        /* --- Меню --- */
+        /* --- Меню (Компактное) --- */
         .menu-wrap {
             position: fixed; bottom: calc(20px + env(safe-area-inset-bottom));
             left: 50%; transform: translateX(-50%); width: 260px; z-index: 150;
@@ -108,7 +120,7 @@
         .tab-item {
             position: relative; z-index: 2; padding: 6px 0; display: flex;
             flex-direction: column; align-items: center; flex: 1;
-            background: none; border: none; cursor: pointer;
+            background: none; border: none; outline: none; cursor: pointer;
         }
         .icon-wrap {
             width: 22px; height: 22px; margin-bottom: 3px; background-color: var(--inactive-color);
@@ -144,21 +156,14 @@
             <div class="chat-row">
                 <div class="ava-box"><img src="Content/Logos/KeysAv.PNG"></div>
                 <div class="chat-info">
-                    <div class="name-line">
-                        <span class="name-txt">Ключи</span>
-                        <div class="verify-icon"></div>
-                        <span class="role-badge">Бот</span>
-                    </div>
-                </div>
+                    <div class="name-line"><span class="name-txt">Ключи</span><div class="verify-icon"></div></div>
+                    <div><span class="role-badge">Бот</span></div> </div>
             </div>
             <div class="chat-row">
                 <div class="ava-box"><img src="Content/Logos/TechAv.PNG"></div>
                 <div class="chat-info">
-                    <div class="name-line">
-                        <span class="name-txt">ТехПоддержка</span>
-                        <span class="role-badge">Поддержка</span>
-                    </div>
-                </div>
+                    <div class="name-line"><span class="name-txt">ТехПоддержка</span></div>
+                    <div><span class="role-badge">Поддержка</span></div> </div>
             </div>
         </div>
     </div>
@@ -167,15 +172,17 @@
         <div class="settings-header">
             <h1 class="page-title">Настройки</h1>
         </div>
-    </div>
+        </div>
 
     <div class="menu-wrap">
         <nav class="ios-tab-bar">
             <div class="liquid-slider" id="slider"></div>
+            
             <button class="tab-item active" onclick="switchView('chats', this)">
                 <div class="icon-wrap" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/6997/6997164.png');"></div>
                 <span class="tab-txt">Главная</span>
             </button>
+            
             <button class="tab-item" onclick="switchView('settings', this)">
                 <div class="icon-wrap" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/9959/9959489.png');"></div>
                 <span class="tab-txt">Настройки</span>
