@@ -9,12 +9,12 @@
     <style>
         :root {
             --ios-bg: #000000;
-            --ios-glass: rgba(28, 28, 30, 0.85);
+            --ios-glass: rgba(28, 28, 30, 0.85); 
             --accent: #00B689;
         }
 
         body, html {
-            background: var(--ios-bg);
+            background-color: var(--ios-bg);
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Manrope", sans-serif;
             color: white;
             margin: 0;
@@ -27,12 +27,14 @@
             position: absolute;
             top: 0;
             width: 100%;
-            height: 45vh;
+            height: 40vh;
             z-index: 1;
-            filter: blur(8px);
+            filter: blur(3px);
             transform: scale(1.05);
         }
+
         .header-visual img { width: 100%; height: 100%; object-fit: cover; }
+
         .header-visual::after {
             content: '';
             position: absolute;
@@ -61,11 +63,12 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-radius: 999px;
-            padding: 3px;
+            padding: 2px;
             display: flex;
             position: relative;
             border: 0.5px solid rgba(255,255,255,0.08);
         }
+
         .segment-item {
             flex: 1;
             padding: 6px 0;
@@ -75,19 +78,19 @@
             z-index: 2;
             cursor: pointer;
             color: rgba(255,255,255,0.4);
-            transition: color 0.3s;
         }
-        .segment-item.active { color: white; }
+
+        .segment-item.active { color: white; transition: color 0.3s; }
         
         .liquid-slider {
             position: absolute;
-            top: 3px;
-            left: 3px;
-            height: calc(100% - 6px);
+            top: 2px;
+            left: 2px;
+            height: calc(100% - 4px);
             background: rgba(255, 255, 255, 0.18);
             border-radius: 999px;
             z-index: 1;
-            transition: all 0.35s cubic-bezier(0.4, 0, 0.1, 1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.1, 1);
         }
 
         .modal-glass {
@@ -107,11 +110,16 @@
             display: flex;
             width: 200%;
             height: 100%;
-            transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .view-section { width: 50%; padding: 32px 28px; box-sizing: border-box; }
+        .view-section {
+            width: 50%;
+            padding: 32px 28px;
+            box-sizing: border-box;
+        }
 
+        .input-group { margin-bottom: 8px; }
         .input-pill {
             background: rgba(255, 255, 255, 0.05);
             border-radius: 12px;
@@ -119,10 +127,18 @@
             display: flex;
             align-items: center;
             border: 0.5px solid rgba(255,255,255,0.04);
-            margin-bottom: 8px;
         }
-        .icon-small { width: 18px; height: 18px; margin-right: 12px; filter: brightness(0) invert(1); opacity: 0.4; }
-        .at-icon { font-size: 17px; color: white; opacity: 0.4; margin-right: 12px; width: 18px; text-align: center; }
+
+        .icon-small { 
+            width: 18px; height: 18px; margin-right: 12px; 
+            filter: brightness(0) invert(1); opacity: 0.4; 
+        }
+
+        .at-icon {
+            font-size: 17px; font-weight: 500; color: white;
+            opacity: 0.4; margin-right: 12px; width: 18px; text-align: center;
+        }
+
         input { background: transparent; outline: none; width: 100%; font-size: 16px; color: white; }
 
         .btn-action {
@@ -136,22 +152,24 @@
             margin-top: 18px;
             border: none;
         }
-        .btn-action:active { transform: scale(0.97); opacity: 0.9; }
 
-        .hint { font-size: 11px; color: rgba(255,255,255,0.25); padding: 4px 6px 12px; }
+        .btn-action:active { opacity: 0.8; transform: scale(0.98); }
+
+        .hint { font-size: 11px; color: rgba(255,255,255,0.2); padding: 4px 6px 12px; }
     </style>
 </head>
 <body>
 
     <div class="header-visual">
-        <img src="Content/GIFs/Background.gif" alt="">
+        <img src="Content/GIFs/Background.gif" alt="bg">
     </div>
 
     <div class="top-container">
         <div class="branding">
-            <img src="Content/Logos/HashLogo.JPG" class="logo-img" alt="">
+            <img src="Content/Logos/HashLogo.JPG" class="logo-img">
             <span class="logo-text">Hash</span>
         </div>
+
         <div class="segmented-container">
             <div class="liquid-slider" id="slider"></div>
             <div class="segment-item active" onclick="slideTo(0, this)">Документация</div>
@@ -172,7 +190,7 @@
                         </div>
                         <div class="bg-white/5 p-4 rounded-xl border border-white/5">
                             <h3 class="text-[#00B689] font-bold text-[10px] uppercase tracking-widest mb-1">Stealth Mode</h3>
-                            <p class="text-[13px] text-white/60">Автоматическое удаление истории после закрытия приложения.</p>
+                            <p class="text-[13px] text-white/60">Автоматическое удаление истории после закрытия сессии.</p>
                         </div>
                     </div>
                 </div>
@@ -181,20 +199,30 @@
             <div class="view-section">
                 <div class="max-w-[360px] mx-auto">
                     <h2 class="text-xl font-bold mb-5">Регистрация</h2>
-                    <div class="input-pill">
-                        <img src="https://cdn-icons-png.flaticon.com/512/6997/6997204.png" class="icon-small">
-                        <input type="text" placeholder="Имя" autocomplete="off">
+                    
+                    <div class="input-group">
+                        <div class="input-pill">
+                            <img src="https://cdn-icons-png.flaticon.com/512/6997/6997204.png" class="icon-small">
+                            <input type="text" placeholder="Имя" spellcheck="false">
+                        </div>
                     </div>
-                    <div class="input-pill">
-                        <span class="at-icon">@</span>
-                        <input type="text" placeholder="username" autocomplete="off">
+
+                    <div class="input-group">
+                        <div class="input-pill">
+                            <span class="at-icon">@</span>
+                            <input type="text" placeholder="username" spellcheck="false">
+                        </div>
                     </div>
-                    <div class="input-pill">
-                        <img src="https://cdn-icons-png.flaticon.com/512/15773/15773700.png" class="icon-small">
-                        <input type="password" placeholder="Пароль">
+
+                    <div class="input-group">
+                        <div class="input-pill">
+                            <img src="https://cdn-icons-png.flaticon.com/512/15773/15773700.png" class="icon-small">
+                            <input type="password" placeholder="Пароль">
+                        </div>
                     </div>
+
                     <button class="btn-action">Продолжить</button>
-                    <p class="text-center text-[10px] text-white/10 mt-6 tracking-[0.2em] uppercase">Private Network Access</p>
+                    <p class="text-center text-[10px] text-white/10 mt-6 tracking-widest uppercase">Hash Alpha v1.0</p>
                 </div>
             </div>
 
@@ -206,12 +234,12 @@
         const wrapper = document.getElementById('contentWrapper');
         const items = document.querySelectorAll('.segment-item');
 
-        function slideTo(index, el) {
-            items.forEach(item => item.classList.remove('active'));
+        function slideTo(idx, el) {
+            items.forEach(i => i.classList.remove('active'));
             el.classList.add('active');
             slider.style.left = el.offsetLeft + 'px';
             slider.style.width = el.offsetWidth + 'px';
-            wrapper.style.transform = `translateX(-${index * 50}%)`;
+            wrapper.style.transform = `translateX(-${idx * 50}%)`;
         }
 
         window.onload = () => {
