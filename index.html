@@ -9,182 +9,176 @@
     <style>
         :root {
             --bg: #000000;
-            --modal-bg: rgba(10, 10, 10, 0.75); /* Прозрачность 0.75 */
-            --panel-bg: rgba(255, 255, 255, 0.03); 
-            --input-bg: #000000; /* Глухой черный фон для строк */
+            --modal-bg: rgba(12, 12, 12, 0.75); 
+            --input-bg: #080808; /* Глухой матовый фон */
             --accent: #00C896;
             --off-white: #FAF9F2;
         }
 
         body, html {
             background-color: var(--bg);
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", "Manrope", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif;
             color: white;
             margin: 0;
             height: 100vh;
-            overflow: hidden; 
-            user-select: none;
-            -webkit-user-select: none;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .app-container {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            position: relative;
-        }
-
-        /* Фон с гифкой */
-        .header-bg {
+        /* Фоновая гифка */
+        .header-visual {
             position: absolute;
             top: 0;
             width: 100%;
-            height: 40vh;
+            height: 45vh;
             z-index: 1;
         }
 
-        .header-bg img {
+        .header-visual img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
+        /* Брендинг */
         .branding {
             position: absolute;
-            top: 15vh;
+            top: 18vh;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             z-index: 2;
         }
 
         .logo-sq {
-            width: 48px;
-            height: 48px;
+            width: 52px;
+            height: 52px;
             background: var(--accent);
             border-radius: 14px;
             display: flex;
             justify-content: center;
             align-items: center;
+            box-shadow: 0 10px 30px rgba(0, 200, 150, 0.2);
         }
 
         .logo-symbol {
             font-family: 'Varela Round', sans-serif;
-            font-size: 28px;
+            font-size: 30px;
             color: var(--off-white);
             font-weight: bold;
         }
 
         .logo-text {
-            font-size: 36px;
+            font-size: 38px;
             font-weight: 800;
-            letter-spacing: -0.05em;
+            letter-spacing: -0.04em;
             text-transform: uppercase;
         }
 
-        /* Модалка */
-        .modal-view {
+        /* Стеклянная модалка */
+        .modal-glass {
             position: relative;
             flex: 1;
-            margin-top: 30vh;
+            margin-top: 35vh;
             background: var(--modal-bg);
-            backdrop-filter: blur(35px); /* Усиленный блюр для 0.75 прозрачности */
-            -webkit-backdrop-filter: blur(35px);
-            border-radius: 38px 38px 0 0;
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border-radius: 40px 40px 0 0;
             z-index: 10;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 -10px 50px rgba(0,0,0,0.6);
+            box-shadow: 0 -15px 50px rgba(0,0,0,0.8);
         }
 
-        .modal-header {
-            padding: 32px 24px 16px;
-            text-align: center;
-            flex-shrink: 0;
-        }
-
-        .modal-content {
+        .scroll-content {
             flex: 1;
             overflow-y: auto;
-            padding: 0 24px 60px;
+            padding: 40px 28px 60px;
             -webkit-overflow-scrolling: touch;
         }
 
-        .panel {
-            background: var(--panel-bg);
-            border-radius: 30px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+        /* Заголовки */
+        h2 {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            text-align: center;
+            margin-bottom: 8px;
         }
 
-        /* Островки ввода (не прозрачные) */
-        .pill-input {
+        .welcome-sub {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.4);
+            text-align: center;
+            line-height: 1.4;
+            margin-bottom: 40px;
+        }
+
+        /* Инпуты (Матовые плашки) */
+        .input-pill {
             background: var(--input-bg);
-            border-radius: 9999px;
-            padding: 14px 20px; /* Немного увеличили высоту для крупных иконок */
+            border-radius: 20px; /* Более строгий радиус */
+            padding: 16px 20px;
             display: flex;
             align-items: center;
             margin-bottom: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .icon-large {
+            width: 24px; /* Крупнее, как просил */
+            height: 24px;
+            margin-right: 16px;
+            filter: brightness(0) invert(1);
+            opacity: 0.6;
         }
 
         input {
             background: transparent;
             outline: none;
             width: 100%;
-            font-size: 15px;
+            font-size: 16px;
             color: white;
-            user-select: text;
         }
 
-        /* Иконки чуть крупнее */
-        .icon-main {
-            width: 20px; 
-            height: 20px;
-            margin-right: 14px;
-            filter: brightness(0) invert(1);
-            opacity: 0.5;
+        /* Тексты описаний */
+        .hint {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.25);
+            line-height: 1.5;
+            padding: 0 4px 28px;
         }
 
-        .btn-main {
+        .btn-action {
             background: var(--accent);
-            border-radius: 9999px;
-            padding: 16px;
-            font-size: 15px;
+            border-radius: 20px;
+            padding: 18px;
+            font-size: 16px;
             font-weight: 800;
             color: #000;
             width: 100%;
             margin-top: 10px;
+            transition: opacity 0.2s;
         }
 
-        .info-text {
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.35);
-            line-height: 1.5;
-            padding: 0 12px;
-        }
+        .btn-action:active { opacity: 0.8; }
 
-        .welcome-desc {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.45);
-            line-height: 1.5;
-            margin-top: 8px;
-        }
-
-        .footer-tag {
-            font-size: 10px;
-            font-weight: 900;
-            letter-spacing: 0.3em;
-            color: rgba(255, 255, 255, 0.15);
-            margin-top: 40px;
+        .footer-info {
             text-align: center;
+            margin-top: 40px;
         }
 
-        .modal-content::-webkit-scrollbar { width: 0; }
+        .alpha-tag {
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 0.4em;
+            color: rgba(255, 255, 255, 0.1);
+            text-transform: uppercase;
+        }
+
+        .scroll-content::-webkit-scrollbar { width: 0; }
         * { -webkit-tap-highlight-color: transparent; }
     </style>
 </head>
@@ -192,8 +186,8 @@
 
     <div class="app-container">
         
-        <div class="header-bg">
-            <img src="https://i.ibb.co/fdpZnpt5/IMG-5887.gif" alt="bg">
+        <div class="header-visual">
+            <img src="https://i.ibb.co/fdpZnpt5/IMG-5887.gif" alt="background">
         </div>
 
         <div class="branding">
@@ -201,52 +195,45 @@
             <span class="logo-text">Hash</span>
         </div>
 
-        <div class="modal-view">
-            
-            <div class="modal-header">
-                <h2 class="text-[26px] font-extrabold tracking-tight">Добро пожаловать</h2>
-                <p class="welcome-desc">
-                    Чтобы начать общение, зарегистрируйся или войди в свой аккаунт
-                </p>
-            </div>
+        <div class="modal-glass">
+            <div class="scroll-content">
+                <div class="max-w-[360px] mx-auto">
 
-            <div class="modal-content">
-                <div class="max-w-[340px] mx-auto">
+                    <h2>Добро пожаловать</h2>
+                    <p class="welcome-sub">
+                        Чтобы начать общение, зарегистрируйся или войди в свой аккаунт
+                    </p>
 
-                    <div class="panel">
-                        <div class="pill-input">
-                            <img src="https://cdn-icons-png.flaticon.com/512/6997/6997204.png" class="icon-main" alt="i">
-                            <input type="text" placeholder="Имя" autocomplete="off">
-                        </div>
-                        <p class="info-text mb-4">
-                            Напиши никнейм, который будут видеть другие пользователи
-                        </p>
-                        
-                        <div class="pill-input">
-                            <img src="https://cdn-icons-png.flaticon.com/512/7065/7065720.png" class="icon-main" alt="tag">
-                            <input type="text" placeholder="Тег" autocomplete="off">
-                        </div>
-                        <p class="info-text">
-                            Придумай уникальный ник. Лучше, если он не будет связан с твоими другими профилями
-                        </p>
+                    <div class="input-pill">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6997/6997204.png" class="icon-large" alt="u">
+                        <input type="text" placeholder="Имя" autocomplete="off">
                     </div>
+                    <p class="hint">
+                        Напиши никнейм, который будут видеть другие пользователи
+                    </p>
 
-                    <div class="panel">
-                        <div class="pill-input">
-                            <img src="https://cdn-icons-png.flaticon.com/512/15773/15773700.png" class="icon-main" alt="i">
-                            <input type="text" placeholder="Пароль" autocomplete="off">
-                        </div>
-                        <p class="info-text">
-                            Пароль не скрыт при вводе. Пожалуйста, убедись, что рядом нет посторонних глаз
-                        </p>
+                    <div class="input-pill">
+                        <img src="https://cdn-icons-png.flaticon.com/512/7065/7065720.png" class="icon-large" alt="t">
+                        <input type="text" placeholder="Тег" autocomplete="off">
                     </div>
+                    <p class="hint">
+                        Придумай уникальный ник. Лучше, если он не будет связан с твоими другими профилями
+                    </p>
 
-                    <div class="flex flex-col items-center gap-6">
-                        <button class="btn-main">Продолжить</button>
-                        <p class="text-[14px] text-white/40">
+                    <div class="input-pill">
+                        <img src="https://cdn-icons-png.flaticon.com/512/15773/15773700.png" class="icon-large" alt="p">
+                        <input type="text" placeholder="Пароль" autocomplete="off">
+                    </div>
+                    <p class="hint">
+                        Пароль не скрыт при вводе. Пожалуйста, убедись, что рядом нет посторонних глаз
+                    </p>
+
+                    <div class="footer-info">
+                        <button class="btn-action">Продолжить</button>
+                        <p class="mt-6 text-[14px] text-white/30">
                             Уже в системе? <span class="text-[#00C896] font-extrabold cursor-pointer">Войти</span>
                         </p>
-                        <div class="footer-tag">ALPHA v0.1</div>
+                        <div class="alpha-tag mt-12">ALPHA v0.1</div>
                     </div>
 
                 </div>
