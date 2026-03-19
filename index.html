@@ -12,7 +12,7 @@
             --ios-glass: rgba(28, 28, 30, 0.85); 
             --ios-tertiary: rgba(255, 255, 255, 0.08);
             --accent: #00B689;
-            --segment-active: rgba(255, 255, 255, 0.15); 
+            --segment-active: rgba(255, 255, 255, 0.18); 
         }
 
         body, html {
@@ -30,7 +30,7 @@
             position: absolute;
             top: 0;
             width: 100%;
-            height: 45vh;
+            height: 40vh;
             z-index: 1;
         }
         .header-visual img { width: 100%; height: 100%; object-fit: cover; }
@@ -38,47 +38,47 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(to bottom, transparent 30%, var(--ios-bg) 100%);
+            background: linear-gradient(to bottom, transparent 10%, var(--ios-bg) 90%);
         }
 
         /* Верхний контент */
         .top-container {
             position: absolute;
-            top: 7vh;
+            top: 6vh; /* Чуть выше */
             width: 100%;
             z-index: 10;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
         }
 
         .branding { display: flex; align-items: center; gap: 10px; }
-        .logo-img { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; }
-        .logo-text { font-size: 32px; font-weight: 800; letter-spacing: -0.05em; }
+        .logo-img { width: 42px; height: 42px; border-radius: 10px; object-fit: cover; }
+        .logo-text { font-size: 30px; font-weight: 800; letter-spacing: -0.05em; }
 
-        /* Стеклянный переключатель */
+        /* Полностью круглый переключатель (Pill Style) */
         .segmented-container {
-            width: 240px;
+            width: 250px;
             background: rgba(120, 120, 128, 0.2);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-radius: 12px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 999px; /* Круглые углы */
             padding: 3px;
             display: flex;
             position: relative;
-            border: 0.5px solid rgba(255,255,255,0.1);
+            border: 0.5px solid rgba(255,255,255,0.08);
         }
         .segment-item {
             flex: 1;
-            padding: 5px 0;
+            padding: 6px 0;
             font-size: 13px;
             font-weight: 600;
             text-align: center;
             z-index: 2;
             cursor: pointer;
-            color: rgba(255,255,255,0.5);
-            transition: color 0.2s;
+            color: rgba(255,255,255,0.4);
+            transition: color 0.3s ease;
         }
         .segment-item.active { color: white; }
         
@@ -88,86 +88,75 @@
             left: 3px;
             height: calc(100% - 6px);
             background: var(--segment-active);
-            backdrop-filter: blur(10px);
-            border-radius: 9px;
+            border-radius: 999px; /* Круглые углы */
             z-index: 1;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 0.5px solid rgba(255,255,255,0.1);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.1, 1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
-        /* Стеклянная модалка */
+        /* Модалка (Поднята выше) */
         .modal-glass {
             position: relative;
-            height: 62vh;
-            margin-top: 38vh;
+            height: 75vh;
+            margin-top: 25vh; /* Подняли с 38vh */
             background: var(--ios-glass);
-            backdrop-filter: blur(30px) saturate(160%);
-            -webkit-backdrop-filter: blur(30px) saturate(160%);
-            border-radius: 24px 24px 0 0;
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border-radius: 32px 32px 0 0;
             z-index: 5;
             overflow: hidden;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            border-top: 1px solid rgba(255,255,255,0.12);
         }
 
         .content-wrapper {
             display: flex;
             width: 200%;
             height: 100%;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .view-section {
             width: 50%;
-            padding: 24px 28px;
+            padding: 32px 28px;
             box-sizing: border-box;
         }
 
         /* Компактные инпуты */
-        .input-group { margin-bottom: 10px; }
+        .input-group { margin-bottom: 8px; }
         .input-pill {
-            background: rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 12px;
-            padding: 8px 14px;
+            padding: 9px 14px;
             display: flex;
             align-items: center;
-            border: 0.5px solid rgba(255,255,255,0.05);
+            border: 0.5px solid rgba(255,255,255,0.04);
         }
         .icon-small { 
-            width: 18px; 
-            height: 18px; 
-            margin-right: 12px; 
-            filter: brightness(0) invert(1); 
-            opacity: 0.5; 
+            width: 18px; height: 18px; margin-right: 12px; 
+            filter: brightness(0) invert(1); opacity: 0.4; 
         }
         .at-icon {
-            font-size: 18px;
-            font-weight: 500;
-            color: white;
-            opacity: 0.5;
-            margin-right: 12px;
-            width: 18px;
-            text-align: center;
+            font-size: 17px; font-weight: 500; color: white;
+            opacity: 0.4; margin-right: 12px; width: 18px; text-align: center;
         }
         input { background: transparent; outline: none; width: 100%; font-size: 16px; color: white; }
-        input::placeholder { color: rgba(255,255,255,0.3); }
 
-        .hint { font-size: 11px; color: rgba(255,255,255,0.3); padding: 4px 6px 0; }
-
-        /* Кнопка iOS Style */
+        /* Кнопка */
         .btn-action {
             background: var(--accent);
             border-radius: 12px;
-            padding: 12px;
+            padding: 13px;
             font-size: 16px;
             font-weight: 700;
             color: #000;
             width: 100%;
-            margin-top: 15px;
+            margin-top: 18px;
             border: none;
-            cursor: pointer;
-            transition: opacity 0.2s;
+            transition: transform 0.1s ease;
         }
-        .btn-action:active { opacity: 0.8; }
+        .btn-action:active { transform: scale(0.97); opacity: 0.9; }
+
+        .hint { font-size: 11px; color: rgba(255,255,255,0.25); padding: 4px 6px 12px; }
     </style>
 </head>
 <body>
@@ -194,15 +183,15 @@
             
             <div class="view-section">
                 <div class="max-w-[360px] mx-auto">
-                    <h2 class="text-xl font-bold mb-4">О приложении</h2>
+                    <h2 class="text-xl font-bold mb-5">Enterprise Messenger</h2>
                     <div class="space-y-3">
-                        <div class="bg-white/5 p-3 rounded-xl border border-white/5">
-                            <h3 class="text-[#00B689] font-bold text-[11px] uppercase tracking-wider mb-1">Privately</h3>
-                            <p class="text-sm text-white/70">Ваши данные не покидают пределы компании.</p>
+                        <div class="bg-white/5 p-4 rounded-xl border border-white/5">
+                            <h3 class="text-[#00B689] font-bold text-[10px] uppercase tracking-widest mb-1">Local Only</h3>
+                            <p class="text-[13px] text-white/60">Ваша переписка никогда не попадает на внешние сервера.</p>
                         </div>
-                        <div class="bg-white/5 p-3 rounded-xl border border-white/5">
-                            <h3 class="text-[#00B689] font-bold text-[11px] uppercase tracking-wider mb-1">Securely</h3>
-                            <p class="text-sm text-white/70">Сквозное шифрование каждого сообщения.</p>
+                        <div class="bg-white/5 p-4 rounded-xl border border-white/5">
+                            <h3 class="text-[#00B689] font-bold text-[10px] uppercase tracking-widest mb-1">Stealth Mode</h3>
+                            <p class="text-[13px] text-white/60">Автоматическое удаление истории после закрытия приложения.</p>
                         </div>
                     </div>
                 </div>
@@ -210,19 +199,19 @@
 
             <div class="view-section">
                 <div class="max-w-[360px] mx-auto">
-                    <h2 class="text-xl font-bold mb-4">Вход в Hash</h2>
+                    <h2 class="text-xl font-bold mb-5">Регистрация</h2>
                     
                     <div class="input-group">
                         <div class="input-pill">
                             <img src="https://cdn-icons-png.flaticon.com/512/6997/6997204.png" class="icon-small">
-                            <input type="text" placeholder="Имя" spellcheck="false">
+                            <input type="text" placeholder="Имя" autocomplete="off">
                         </div>
                     </div>
 
                     <div class="input-group">
                         <div class="input-pill">
                             <span class="at-icon">@</span>
-                            <input type="text" placeholder="username" spellcheck="false">
+                            <input type="text" placeholder="username" autocomplete="off">
                         </div>
                     </div>
 
@@ -234,7 +223,7 @@
                     </div>
 
                     <button class="btn-action">Продолжить</button>
-                    <p class="text-center text-[11px] text-white/20 mt-4 uppercase tracking-tighter">Hash Enterprise v1.0</p>
+                    <p class="text-center text-[10px] text-white/10 mt-6 tracking-[0.2em] uppercase">Private Network Access</p>
                 </div>
             </div>
 
@@ -255,6 +244,7 @@
             wrapper.style.transform = `translateX(-${index * 50}%)`;
         }
 
+        // Инициализация размеров слайдера при загрузке
         window.onload = () => {
             const initial = items[0];
             slider.style.left = initial.offsetLeft + 'px';
