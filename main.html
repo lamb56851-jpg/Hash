@@ -37,26 +37,32 @@
         .s-title { font-size: 19px; font-weight: 700; }
         .edit-icon { width: 20px; height: 20px; background: var(--sub); -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9883/9883181.png') center/contain no-repeat; opacity: 0.7; }
 
-        /* --- FILTER BAR (НОВЫЙ) --- */
+        /* --- FILTER BAR (УПОРЯДОЧЕННЫЙ) --- */
         .filter-container { padding: 5px 24px 15px; }
-        .filter-bar { 
-            background: rgba(255, 255, 255, 0.05); border-radius: 12px; 
-            padding: 3px; display: flex; position: relative;
-        }
+        .filter-bar { background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 3px; display: flex; position: relative; }
         .f-btn { 
             flex: 1; border: none; background: none; color: var(--sub); 
             font-size: 13px; font-weight: 600; padding: 7px 0; cursor: pointer; 
-            z-index: 2; transition: color 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px;
+            z-index: 2; transition: color 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px;
         }
         .f-btn.active { color: white; }
-        .plus-icon { width: 12px; height: 12px; background: currentColor; -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/1828/1828817.png') center/contain no-repeat; }
-        .f-slider { position: absolute; background: rgba(255, 255, 255, 0.12); border-radius: 9px; height: calc(100% - 6px); top: 3px; transition: 0.25s cubic-bezier(0.2, 1, 0.3, 1); z-index: 1; }
+        .plus-icon { 
+            width: 13px; height: 13px; background: currentColor; 
+            -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/1828/1828925.png') center/contain no-repeat; 
+        }
+        .f-slider { position: absolute; background: rgba(255, 255, 255, 0.12); border-radius: 9px; height: calc(100% - 6px); top: 3px; transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1); z-index: 1; }
 
-        /* --- ЧАТЫ --- */
-        .chats-list { transition: opacity 0.2s; }
-        .chat-row { display: flex; padding: 12px 24px; gap: 14px; align-items: stretch; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        /* --- СПИСОК С УМНОЙ СОРТИРОВКОЙ --- */
+        .chats-list { display: flex; flex-direction: column; }
         
+        .chat-item { 
+            overflow: hidden; 
+            transition: opacity 0.3s ease, max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s ease;
+            max-height: 100px; opacity: 1;
+        }
+        .chat-item.hidden { max-height: 0; opacity: 0; pointer-events: none; transform: scale(0.98); }
+
+        .chat-row { display: flex; padding: 12px 24px; gap: 14px; align-items: stretch; }
         .chat-ava { width: 52px; height: 52px; border-radius: 14px; background: #1c1c1e; overflow: hidden; flex-shrink: 0; }
         .chat-ava img { width: 100%; height: 100%; object-fit: cover; }
         .chat-info { flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 2px 0; }
@@ -64,7 +70,9 @@
         .chat-name { font-size: 16px; font-weight: 500; }
         .v-badge { width: 17px; height: 17px; background: var(--accent); -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9918/9918743.png') center/contain no-repeat; }
         .badge { font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 5px; background: rgba(0, 182, 137, 0.2); color: var(--accent); text-transform: uppercase; width: fit-content; }
-        .divider { height: 1px; background: rgba(255, 255, 255, 0.15); margin: 0 24px; }
+        
+        .divider { height: 1px; background: rgba(255, 255, 255, 0.15); margin: 0 24px; transition: opacity 0.2s; }
+        .chat-item.hidden + .divider { opacity: 0; }
 
         /* --- TAB BAR --- */
         .tab-bar { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 240px; background: rgba(28, 28, 30, 0.85); backdrop-filter: blur(20px); border-radius: 28px; padding: 4px; display: flex; border: 0.5px solid rgba(255,255,255,0.1); z-index: 200; }
@@ -97,9 +105,9 @@
         <div class="filter-container">
             <div class="filter-bar">
                 <div class="f-slider" id="fSlider"></div>
-                <button class="f-btn" onclick="filter('create', this)"><div class="plus-icon"></div>Создать</button>
                 <button class="f-btn active" onclick="filter('all', this)">Все</button>
                 <button class="f-btn" onclick="filter('bots', this)">Боты</button>
+                <button class="f-btn" onclick="filter('create', this)"><div class="plus-icon"></div>Создать</button>
             </div>
         </div>
 
@@ -142,7 +150,6 @@
     <script>
         const fSlider = document.getElementById('fSlider');
         const tSlider = document.getElementById('tabSlider');
-        const list = document.getElementById('chatsList');
 
         function filter(type, btn) {
             document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('active'));
@@ -150,23 +157,26 @@
             fSlider.style.left = btn.offsetLeft + 'px';
             fSlider.style.width = btn.offsetWidth + 'px';
 
-            list.style.opacity = '0';
-            setTimeout(() => {
-                document.querySelectorAll('.chat-item').forEach(item => {
-                    if (type === 'all' || item.dataset.type === type) {
-                        item.style.display = 'block';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-                list.style.opacity = '1';
-                // Убираем последний разделитель у видимых элементов
-                const visible = Array.from(document.querySelectorAll('.chat-item')).filter(i => i.style.display !== 'none');
-                visible.forEach((v, idx) => {
-                    const div = v.querySelector('.divider');
-                    if(div) div.style.display = (idx === visible.length - 1) ? 'none' : 'block';
-                });
-            }, 150);
+            const items = document.querySelectorAll('.chat-item');
+            
+            items.forEach((item) => {
+                if (type === 'all' || item.dataset.type === type) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+
+            // Корректировка разделителей для плавности
+            const visibleItems = Array.from(items).filter(i => !i.classList.contains('hidden'));
+            items.forEach(i => {
+                const d = i.querySelector('.divider');
+                if(d) d.style.opacity = '1';
+            });
+            if(visibleItems.length > 0) {
+                const lastDiv = visibleItems[visibleItems.length - 1].querySelector('.divider');
+                if(lastDiv) lastDiv.style.opacity = '0';
+            }
         }
 
         function navMove(btn) {
@@ -184,6 +194,9 @@
             const activeT = document.querySelector('.tab-btn.active');
             tSlider.style.left = activeT.offsetLeft + 'px';
             tSlider.style.width = activeT.offsetWidth + 'px';
+            
+            // Изначально скрываем последний разделитель
+            filter('all', activeF);
         };
     </script>
 </body>
