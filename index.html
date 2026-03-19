@@ -9,7 +9,7 @@
     <style>
         :root {
             --ios-bg: #000000;
-            --ios-glass: rgba(28, 28, 30, 0.85); 
+            --ios-glass: rgba(28, 28, 30, 0.85);
             --accent: #00B689;
         }
 
@@ -27,28 +27,21 @@
             position: absolute;
             top: 0;
             width: 100%;
-            height: 40vh;
+            height: 45vh;
             z-index: 1;
         }
+
         .header-visual img { width: 100%; height: 100%; object-fit: cover; }
-        
-        .blur-overlay {
+
+        .header-visual::after {
+            content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(to bottom, transparent 0%, var(--ios-bg) 95%);
-            z-index: 2;
-        }
-        .blur-gradient {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 150px;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            mask-image: linear-gradient(to bottom, transparent, black);
-            -webkit-mask-image: linear-gradient(to bottom, transparent, black);
-            z-index: 2;
+            background: linear-gradient(to bottom, 
+                transparent 0%, 
+                rgba(0,0,0,0.2) 50%, 
+                rgba(0,0,0,0.8) 85%, 
+                var(--ios-bg) 100%);
         }
 
         .top-container {
@@ -77,6 +70,7 @@
             position: relative;
             border: 0.5px solid rgba(255,255,255,0.08);
         }
+
         .segment-item {
             flex: 1;
             padding: 6px 0;
@@ -88,8 +82,9 @@
             color: rgba(255,255,255,0.4);
             transition: color 0.3s;
         }
+
         .segment-item.active { color: white; }
-        
+
         .slider {
             position: absolute;
             top: 3px;
@@ -98,7 +93,7 @@
             background: rgba(255, 255, 255, 0.18);
             border-radius: 999px;
             z-index: 1;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .modal-glass {
@@ -121,11 +116,7 @@
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .view-section {
-            width: 50%;
-            padding: 32px 28px;
-            box-sizing: border-box;
-        }
+        .view-section { width: 50%; padding: 32px 28px; box-sizing: border-box; }
 
         .input-pill {
             background: rgba(255, 255, 255, 0.05);
@@ -134,10 +125,12 @@
             display: flex;
             align-items: center;
             border: 0.5px solid rgba(255,255,255,0.04);
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
+
         .icon-small { width: 18px; height: 18px; margin-right: 12px; filter: brightness(0) invert(1); opacity: 0.4; }
-        .at-icon { font-size: 17px; color: white; opacity: 0.4; margin-right: 12px; width: 18px; text-align: center; }
+        .at-symbol { font-size: 17px; color: white; opacity: 0.4; margin-right: 12px; width: 18px; text-align: center; }
+        
         input { background: transparent; outline: none; width: 100%; font-size: 16px; color: white; }
 
         .btn-action {
@@ -148,26 +141,24 @@
             font-weight: 700;
             color: #000;
             width: 100%;
-            margin-top: 10px;
+            margin-top: 15px;
             border: none;
         }
+
         .btn-action:active { opacity: 0.8; transform: scale(0.98); }
     </style>
 </head>
 <body>
 
     <div class="header-visual">
-        <img src="Content/GIFs/Background.gif" alt="bg">
-        <div class="blur-overlay"></div>
-        <div class="blur-gradient"></div>
+        <img src="Content/GIFs/Background.gif" alt="">
     </div>
 
     <div class="top-container">
         <div class="branding">
-            <img src="Content/Logos/HashLogo.JPG" class="logo-img" alt="Hash">
+            <img src="Content/Logos/HashLogo.JPG" class="logo-img" alt="">
             <span class="logo-text">Hash</span>
         </div>
-
         <div class="segmented-container">
             <div class="slider" id="slider"></div>
             <div class="segment-item active" onclick="slideTo(0, this)">Документация</div>
@@ -176,17 +167,20 @@
     </div>
 
     <div class="modal-glass">
-        <div class="content-wrapper" id="contentWrapper">
+        <div class="content-wrapper" id="wrapper">
+            
             <div class="view-section">
-                <div class="max-w-[360px] mx-auto space-y-3">
-                    <h2 class="text-xl font-bold mb-4">Enterprise Messenger</h2>
-                    <div class="bg-white/5 p-4 rounded-xl border border-white/5">
-                        <h3 class="text-[#00B689] font-bold text-[10px] uppercase tracking-widest mb-1">Local Only</h3>
-                        <p class="text-[13px] text-white/60">Ваша переписка никогда не покидает пределы компании.</p>
-                    </div>
-                    <div class="bg-white/5 p-4 rounded-xl border border-white/5">
-                        <h3 class="text-[#00B689] font-bold text-[10px] uppercase tracking-widest mb-1">Stealth Mode</h3>
-                        <p class="text-[13px] text-white/60">Автоматическое удаление истории после закрытия сессии.</p>
+                <div class="max-w-[360px] mx-auto">
+                    <h2 class="text-xl font-bold mb-5">Enterprise Messenger</h2>
+                    <div class="space-y-3">
+                        <div class="bg-white/5 p-4 rounded-xl border border-white/5">
+                            <h3 class="text-[#00B689] font-bold text-[10px] uppercase mb-1">Local Only</h3>
+                            <p class="text-[13px] text-white/60">Ваша переписка никогда не покидает пределы компании.</p>
+                        </div>
+                        <div class="bg-white/5 p-4 rounded-xl border border-white/5">
+                            <h3 class="text-[#00B689] font-bold text-[10px] uppercase mb-1">Stealth Mode</h3>
+                            <p class="text-[13px] text-white/60">Автоматическое удаление истории после сессии.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -199,7 +193,7 @@
                         <input type="text" placeholder="Имя" autocomplete="off">
                     </div>
                     <div class="input-pill">
-                        <span class="at-icon">@</span>
+                        <span class="at-symbol">@</span>
                         <input type="text" placeholder="username" autocomplete="off">
                     </div>
                     <div class="input-pill">
@@ -209,12 +203,13 @@
                     <button class="btn-action">Продолжить</button>
                 </div>
             </div>
+
         </div>
     </div>
 
     <script>
         const slider = document.getElementById('slider');
-        const wrapper = document.getElementById('contentWrapper');
+        const wrapper = document.getElementById('wrapper');
         const items = document.querySelectorAll('.segment-item');
 
         function slideTo(idx, el) {
