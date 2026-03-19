@@ -29,9 +29,6 @@
             width: 100%;
             height: 40vh;
             z-index: 1;
-            /* Микроскопический блюр */
-            filter: blur(1px); 
-            transform: scale(1.02);
         }
 
         .header-visual img { width: 100%; height: 100%; object-fit: cover; }
@@ -51,29 +48,16 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px; /* Крупный отступ между брендом и табами */
+            gap: 16px;
         }
 
-        /* Укрупненный брендинг (Решение проблемы) */
-        .branding { display: flex; align-items: center; gap: 14px; }
-        
-        .logo-img { 
-            width: 62px; /* Укрупнили */
-            height: 62px; 
-            border-radius: 14px; 
-            object-fit: cover; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-        }
-        
-        .logo-text { 
-            font-size: 46px; /* Укрупнили */
-            font-weight: 800; 
-            letter-spacing: -0.06em;
-            line-height: 1;
-        }
+        .branding { display: flex; align-items: center; gap: 12px; }
+        .logo-img { width: 52px; height: 52px; border-radius: 12px; object-fit: cover; }
+        .logo-text { font-size: 38px; font-weight: 800; letter-spacing: -0.06em; line-height: 1; }
 
+        /* Оптимизированный бар без лагов */
         .segmented-container {
-            width: 260px;
+            width: 310px;
             background: rgba(120, 120, 128, 0.22);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
@@ -86,26 +70,40 @@
 
         .segment-item {
             flex: 1;
-            padding: 6px 0;
-            font-size: 13px;
+            padding: 7px 0;
+            font-size: 12px;
             font-weight: 600;
             text-align: center;
             z-index: 2;
             cursor: pointer;
             color: rgba(255,255,255,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.3s;
         }
 
-        .segment-item.active { color: white; transition: color 0.3s; }
-        
+        .segment-item.active { color: white; }
+
+        .divider {
+            width: 1px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.15);
+            margin: 0 4px;
+        }
+
         .liquid-slider {
             position: absolute;
             top: 2px;
             left: 2px;
             height: calc(100% - 4px);
-            background: rgba(255, 255, 255, 0.2);
+            /* Ширина теперь вычисляется динамически для 3-х элементов с учетом разделителя */
+            width: calc(33.3% - 4px); 
+            background: rgba(255, 255, 255, 0.18);
             border-radius: 999px;
             z-index: 1;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.1, 1);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
         }
 
         .modal-glass {
@@ -123,24 +121,30 @@
 
         .content-wrapper {
             display: flex;
-            width: 200%;
+            width: 300%; /* Три секции */
             height: 100%;
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
         }
 
         .view-section {
-            width: 50%;
+            width: 33.33%;
             padding: 32px 28px;
+            box-sizing: border-box;
+        }
+
+        .input-pill, .btn-action {
+            height: 44px; /* Единая высота для всего */
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
             box-sizing: border-box;
         }
 
         .input-group { margin-bottom: 8px; }
         .input-pill {
             background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: 9px 14px;
-            display: flex;
-            align-items: center;
+            padding: 0 14px;
             border: 0.5px solid rgba(255,255,255,0.04);
         }
 
@@ -158,25 +162,23 @@
 
         .btn-action {
             background: var(--accent);
-            border-radius: 12px;
-            padding: 13px;
+            justify-content: center;
             font-size: 16px;
             font-weight: 700;
             color: #000;
             width: 100%;
-            margin-top: 18px;
+            margin-top: 12px;
             border: none;
+            cursor: pointer;
         }
 
         .btn-action:active { opacity: 0.8; transform: scale(0.98); }
-
-        .hint { font-size: 11px; color: rgba(255,255,255,0.2); padding: 4px 6px 12px; }
     </style>
 </head>
 <body>
 
     <div class="header-visual">
-        <img src="Content/GIFs/Background.gif" alt="bg">
+        <img src="Content/GIFs/Background.gif">
     </div>
 
     <div class="top-container">
@@ -188,7 +190,9 @@
         <div class="segmented-container">
             <div class="liquid-slider" id="slider"></div>
             <div class="segment-item active" onclick="slideTo(0, this)">Документация</div>
-            <div class="segment-item" onclick="slideTo(1, this)">Логин</div>
+            <div class="segment-item" onclick="slideTo(1, this)">Регистрация</div>
+            <div class="divider"></div>
+            <div class="segment-item" onclick="slideTo(2, this)">Вход</div>
         </div>
     </div>
 
@@ -197,15 +201,11 @@
             
             <div class="view-section">
                 <div class="max-w-[360px] mx-auto">
-                    <h2 class="text-xl font-bold mb-5">Enterprise Messenger</h2>
+                    <h2 class="text-xl font-bold mb-5">Документация</h2>
                     <div class="space-y-3">
                         <div class="bg-white/5 p-4 rounded-xl border border-white/5">
-                            <h3 class="text-[#00B689] font-bold text-[10px] uppercase tracking-widest mb-1">Local Only</h3>
-                            <p class="text-[13px] text-white/60">Ваша переписка никогда не попадает на внешние сервера.</p>
-                        </div>
-                        <div class="bg-white/5 p-4 rounded-xl border border-white/5">
-                            <h3 class="text-[#00B689] font-bold text-[10px] uppercase tracking-widest mb-1">Stealth Mode</h3>
-                            <p class="text-[13px] text-white/60">Автоматическое удаление истории после закрытия сессии.</p>
+                            <h3 class="text-[#00B689] font-bold text-[10px] uppercase tracking-widest mb-1">Безопасность</h3>
+                            <p class="text-[13px] text-white/60">Все ключи хранятся в защищенном анклаве вашего устройства.</p>
                         </div>
                     </div>
                 </div>
@@ -237,7 +237,13 @@
                     </div>
 
                     <button class="btn-action">Продолжить</button>
-                    <p class="text-center text-[10px] text-white/10 mt-6 tracking-widest uppercase">Hash Alpha v1.0</p>
+                </div>
+            </div>
+
+            <div class="view-section">
+                <div class="max-w-[360px] mx-auto text-center pt-10">
+                    <h2 class="text-xl font-bold mb-2">Вход</h2>
+                    <p class="text-white/30 text-sm">Этот раздел находится в разработке.</p>
                 </div>
             </div>
 
@@ -252,15 +258,15 @@
         function slideTo(idx, el) {
             items.forEach(i => i.classList.remove('active'));
             el.classList.add('active');
-            slider.style.left = el.offsetLeft + 'px';
-            slider.style.width = el.offsetWidth + 'px';
-            wrapper.style.transform = `translateX(-${idx * 50}%)`;
+            
+            // Плавное перемещение слайдера через transform (без лагов)
+            // Учитываем ширину одного сегмента (примерно 33.3%)
+            const position = idx * 100;
+            slider.style.transform = `translateX(${position}%)`;
+            
+            // Перелистывание контента
+            wrapper.style.transform = `translateX(-${idx * 33.333}%)`;
         }
-
-        window.onload = () => {
-            slider.style.left = items[0].offsetLeft + 'px';
-            slider.style.width = items[0].offsetWidth + 'px';
-        };
     </script>
 </body>
 </html>
