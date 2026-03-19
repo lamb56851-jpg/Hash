@@ -9,30 +9,37 @@
     <style>
         :root {
             --bg: #000000;
-            --modal-bg: rgba(10, 10, 10, 0.85);
-            --panel-bg: rgba(255, 255, 255, 0.04);
-            --input-bg: rgba(0, 0, 0, 0.5);
+            --modal-bg: rgba(10, 10, 10, 0.75); /* Прозрачность 0.75 */
+            --panel-bg: rgba(255, 255, 255, 0.03); 
+            --input-bg: #000000; /* Глухой черный фон для строк */
             --accent: #00C896;
             --off-white: #FAF9F2;
         }
 
         body, html {
             background-color: var(--bg);
-            font-family: 'Manrope', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", "Manrope", sans-serif;
             color: white;
             margin: 0;
             height: 100vh;
-            overflow: hidden;
+            overflow: hidden; 
             user-select: none;
             -webkit-user-select: none;
         }
 
-        /* Задний план */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* Фон с гифкой */
         .header-bg {
             position: absolute;
             top: 0;
             width: 100%;
-            height: 50vh; /* Увеличили область под гифку */
+            height: 40vh;
             z-index: 1;
         }
 
@@ -42,21 +49,20 @@
             object-fit: cover;
         }
 
-        /* Брендинг по центру (чуть ниже) */
         .branding {
             position: absolute;
-            top: 22vh; /* Спустили ниже */
+            top: 15vh;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
             z-index: 2;
         }
 
         .logo-sq {
-            width: 52px;
-            height: 52px;
+            width: 48px;
+            height: 48px;
             background: var(--accent);
             border-radius: 14px;
             display: flex;
@@ -66,27 +72,27 @@
 
         .logo-symbol {
             font-family: 'Varela Round', sans-serif;
-            font-size: 30px;
+            font-size: 28px;
             color: var(--off-white);
             font-weight: bold;
         }
 
         .logo-text {
-            font-size: 40px;
+            font-size: 36px;
             font-weight: 800;
             letter-spacing: -0.05em;
             text-transform: uppercase;
         }
 
-        /* Модалка с блюром */
+        /* Модалка */
         .modal-view {
             position: relative;
             flex: 1;
-            margin-top: 40vh; /* Плавный переход */
+            margin-top: 30vh;
             background: var(--modal-bg);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border-radius: 40px 40px 0 0;
+            backdrop-filter: blur(35px); /* Усиленный блюр для 0.75 прозрачности */
+            -webkit-backdrop-filter: blur(35px);
+            border-radius: 38px 38px 0 0;
             z-index: 10;
             display: flex;
             flex-direction: column;
@@ -95,8 +101,9 @@
         }
 
         .modal-header {
-            padding: 36px 24px 12px;
+            padding: 32px 24px 16px;
             text-align: center;
+            flex-shrink: 0;
         }
 
         .modal-content {
@@ -108,34 +115,21 @@
 
         .panel {
             background: var(--panel-bg);
-            border-radius: 32px;
+            border-radius: 30px;
             padding: 20px;
-            margin-bottom: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.03);
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
+        /* Островки ввода (не прозрачные) */
         .pill-input {
             background: var(--input-bg);
             border-radius: 9999px;
-            padding: 12px 18px;
+            padding: 14px 20px; /* Немного увеличили высоту для крупных иконок */
             display: flex;
             align-items: center;
             margin-bottom: 12px;
-            transition: background 0.3s ease;
-        }
-
-        /* Стили иконок (плавный переход) */
-        .icon-state {
-            width: 16px;
-            height: 16px;
-            margin-right: 12px;
-            filter: brightness(0) invert(1);
-            opacity: 0.3; /* Состояние "как обычно" */
-            transition: opacity 0.4s ease;
-        }
-
-        .icon-active {
-            opacity: 1 !important; /* Белое состояние */
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         input {
@@ -147,38 +141,45 @@
             user-select: text;
         }
 
+        /* Иконки чуть крупнее */
+        .icon-main {
+            width: 20px; 
+            height: 20px;
+            margin-right: 14px;
+            filter: brightness(0) invert(1);
+            opacity: 0.5;
+        }
+
         .btn-main {
             background: var(--accent);
             border-radius: 9999px;
             padding: 16px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 800;
             color: #000;
             width: 100%;
-            transition: transform 0.1s;
+            margin-top: 10px;
         }
-
-        .btn-main:active { transform: scale(0.98); }
 
         .info-text {
             font-size: 11px;
-            color: rgba(255, 255, 255, 0.25);
+            color: rgba(255, 255, 255, 0.35);
             line-height: 1.5;
-            padding: 0 10px;
+            padding: 0 12px;
         }
 
         .welcome-desc {
             font-size: 14px;
-            color: rgba(255, 255, 255, 0.35);
+            color: rgba(255, 255, 255, 0.45);
             line-height: 1.5;
-            margin-top: 10px;
+            margin-top: 8px;
         }
 
         .footer-tag {
             font-size: 10px;
             font-weight: 900;
             letter-spacing: 0.3em;
-            color: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.15);
             margin-top: 40px;
             text-align: center;
         }
@@ -214,38 +215,35 @@
 
                     <div class="panel">
                         <div class="pill-input">
-                            <img src="https://cdn-icons-png.flaticon.com/512/6997/6997204.png" 
-                                 class="icon-state" id="icon-name" alt="i">
-                            <input type="text" id="input-name" placeholder="Имя" autocomplete="off">
+                            <img src="https://cdn-icons-png.flaticon.com/512/6997/6997204.png" class="icon-main" alt="i">
+                            <input type="text" placeholder="Имя" autocomplete="off">
                         </div>
-                        <p class="info-text mb-5">
+                        <p class="info-text mb-4">
                             Напиши никнейм, который будут видеть другие пользователи
                         </p>
                         
                         <div class="pill-input">
-                            <img src="https://cdn-icons-png.flaticon.com/512/7065/7065720.png" 
-                                 class="icon-state" id="icon-tag" alt="at">
-                            <input type="text" id="input-tag" placeholder="Тег" autocomplete="off">
+                            <img src="https://cdn-icons-png.flaticon.com/512/7065/7065720.png" class="icon-main" alt="tag">
+                            <input type="text" placeholder="Тег" autocomplete="off">
                         </div>
                         <p class="info-text">
-                            Придумай уникальный ник. Лучше, если он не будет связан с твоими другими профилями.
+                            Придумай уникальный ник. Лучше, если он не будет связан с твоими другими профилями
                         </p>
                     </div>
 
                     <div class="panel">
                         <div class="pill-input">
-                            <img src="https://cdn-icons-png.flaticon.com/512/15773/15773700.png" 
-                                 class="icon-state" id="icon-pass" alt="p">
-                            <input type="text" id="input-pass" placeholder="Пароль" autocomplete="off">
+                            <img src="https://cdn-icons-png.flaticon.com/512/15773/15773700.png" class="icon-main" alt="i">
+                            <input type="text" placeholder="Пароль" autocomplete="off">
                         </div>
                         <p class="info-text">
-                            Пароль не скрыт при вводе. Пожалуйста, убедись, что рядом нет посторонних глаз.
+                            Пароль не скрыт при вводе. Пожалуйста, убедись, что рядом нет посторонних глаз
                         </p>
                     </div>
 
                     <div class="flex flex-col items-center gap-6">
                         <button class="btn-main">Продолжить</button>
-                        <p class="text-[14px] text-white/30">
+                        <p class="text-[14px] text-white/40">
                             Уже в системе? <span class="text-[#00C896] font-extrabold cursor-pointer">Войти</span>
                         </p>
                         <div class="footer-tag">ALPHA v0.1</div>
@@ -255,44 +253,6 @@
             </div>
         </div>
     </div>
-
-    <script>
-        const validateName = (val) => {
-            // Не пустой, не только пробелы, без эмодзи/символов
-            const regex = /^[a-zA-Zа-яА-Я0-9\s]+$/;
-            return val.trim().length > 0 && regex.test(val);
-        };
-
-        const validateTag = (val) => {
-            // Только латиница, 3-15 символов
-            const regex = /^[a-zA-Z0-9]{3,15}$/;
-            return regex.test(val);
-        };
-
-        const validatePass = (val) => {
-            // Только латиница и символы
-            const regex = /^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/;
-            return val.length > 0 && regex.test(val);
-        };
-
-        const handleInput = (idInput, idIcon, validationFn) => {
-            const input = document.getElementById(idInput);
-            const icon = document.getElementById(idIcon);
-
-            input.addEventListener('input', () => {
-                if (validationFn(input.value)) {
-                    icon.classList.add('icon-active');
-                } else {
-                    icon.classList.remove('icon-active');
-                }
-            });
-        };
-
-        // Запуск валидации
-        handleInput('input-name', 'icon-name', validateName);
-        handleInput('input-tag', 'icon-tag', validateTag);
-        handleInput('input-pass', 'icon-pass', validatePass);
-    </script>
 
 </body>
 </html>
