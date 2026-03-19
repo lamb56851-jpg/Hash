@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Hash — Messenger</title>
-    <link rel="icon" type="image/jpeg" href="Content/Logos/HashLogo.JPG">
+    <title>Hash — Закреп</title>
+    <link rel="icon" type="image/png" href="Content/Logos/HashLogo.PNG">
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
             --ios-bg: #000000;
             --ios-glass: rgba(28, 28, 30, 0.85); 
-            --accent: #00B689;
+            --accent: #00B689; /* ТехПоддержка и Боты */
+            --role-user: #9D7CFF; /* Пользователи */
             --tab-bar-bg: rgba(28, 28, 30, 0.92);
             --inactive-color: #8e8e93;
-            --glass-border: 1px solid rgba(255, 255, 255, 0.12); /* Тот самый контур */
+            --glass-border: 1px solid rgba(255, 255, 255, 0.12);
         }
 
         body, html {
@@ -32,12 +33,12 @@
         .screen-hidden-left { transform: translateX(-100%); opacity: 0; }
         .screen-hidden-right { transform: translateX(100%); opacity: 0; }
 
-        /* --- Стеклянная модалка (Как в Регистрации) --- */
+        /* --- Стеклянная модалка «Закреп» --- */
         .top-modal-glass {
             background: var(--ios-glass);
             backdrop-filter: blur(40px) saturate(180%);
             -webkit-backdrop-filter: blur(40px) saturate(180%);
-            border-bottom: var(--glass-border); /* Контур */
+            border-bottom: var(--glass-border);
             border-radius: 0 0 32px 32px;
             padding-top: env(safe-area-inset-top);
             padding-bottom: 20px;
@@ -57,18 +58,17 @@
         .pinned-ava img { width: 100%; height: 100%; object-fit: cover; }
         .pinned-name { font-size: 11px; font-weight: 600; opacity: 0.9; }
 
-        /* --- Список чатов с разделителями --- */
+        /* --- Список чатов --- */
         .chats-container { flex: 1; overflow-y: auto; padding-top: 10px; padding-bottom: 120px; }
         
         .chat-row { 
             display: flex; align-items: center; padding: 12px 24px; gap: 14px; 
             position: relative;
         }
-        /* Горизонтальная полоска разделения */
         .chat-row:not(:last-child)::after {
             content: '';
             position: absolute; bottom: 0; right: 0;
-            width: calc(100% - 86px); /* Отступ чтобы не резало аватару */
+            width: calc(100% - 86px);
             height: 0.5px;
             background: rgba(255, 255, 255, 0.08);
         }
@@ -78,8 +78,25 @@
         .ava-box img { width: 100%; height: 100%; object-fit: cover; }
         
         .name-line { display: flex; align-items: center; gap: 6px; }
-        .name-txt { font-size: 16px; font-weight: 700; }
-        .type-txt { font-size: 12px; font-weight: 500; color: var(--inactive-color); }
+        .name-txt { font-size: 16px; font-weight: 500; } /* Убрали жирность */
+        
+        /* --- ТИТУЛЫ (Badges) --- */
+        .role-badge {
+            font-size: 10px; font-weight: 700;
+            padding: 3px 8px; border-radius: 6px;
+            text-transform: uppercase; letter-spacing: 0.05em;
+            display: inline-block;
+        }
+        /* Тип: Акцентный (Бот/Поддержка) */
+        .badge-accent {
+            background-color: rgba(0, 182, 137, 0.65); /* var(--accent) с прозрачностью */
+            color: var(--accent); /* Текст без прозрачности */
+        }
+        /* Тип: Фиолетовый (Пользователь) */
+        .badge-user {
+            background-color: rgba(157, 124, 255, 0.65); /* var(--role-user) с прозрачностью */
+            color: var(--role-user); /* Текст без прозрачности */
+        }
         
         .verify-icon {
             width: 20px; height: 20px; background: var(--accent);
@@ -87,7 +104,7 @@
             mask: url('https://cdn-icons-png.flaticon.com/512/9918/9918743.png') no-repeat center / contain;
         }
 
-        /* --- Настройки (Без плашки) --- */
+        /* --- Настройки --- */
         .settings-header {
             padding-top: env(safe-area-inset-top);
             padding-left: 24px;
@@ -95,7 +112,7 @@
             margin-bottom: 20px;
         }
 
-        /* --- Меню (Компактное) --- */
+        /* --- Меню (С иконкой Домика) --- */
         .menu-wrap {
             position: fixed; bottom: calc(20px + env(safe-area-inset-bottom));
             left: 50%; transform: translateX(-50%); width: 260px; z-index: 150;
@@ -130,11 +147,11 @@
     <div id="screen-chats" class="screen">
         <div class="top-modal-glass">
             <div class="header-area">
-                <h1 class="page-title">Чаты</h1>
+                <h1 class="page-title">Закреп</h1>
             </div>
             <div class="pinned-section">
                 <div class="pinned-user">
-                    <div class="pinned-ava"><img src="Content/Logos/KeysAv.JPG"></div>
+                    <div class="pinned-ava"><img src="Content/Logos/KeysAv.PNG"></div>
                     <span class="pinned-name">Ключи</span>
                 </div>
             </div>
@@ -142,17 +159,24 @@
 
         <div class="chats-container">
             <div class="chat-row">
-                <div class="ava-box"><img src="Content/Logos/KeysAv.JPG"></div>
+                <div class="ava-box"><img src="Content/Logos/KeysAv.PNG"></div>
                 <div class="chat-info">
                     <div class="name-line"><span class="name-txt">Ключи</span><div class="verify-icon"></div></div>
-                    <span class="type-txt">Бот</span>
+                    <div class="mt-1"><span class="role-badge badge-accent">Бот</span></div>
                 </div>
             </div>
             <div class="chat-row">
-                <div class="ava-box"><img src="Content/Logos/TechAv.JPG"></div>
+                <div class="ava-box"><img src="Content/Logos/TechAv.PNG"></div>
                 <div class="chat-info">
                     <div class="name-line"><span class="name-txt">ТехПоддержка</span></div>
-                    <span class="type-txt">Поддержка</span>
+                    <div class="mt-1"><span class="role-badge badge-accent">Поддержка</span></div>
+                </div>
+            </div>
+            <div class="chat-row">
+                <div class="ava-box"><img src="Content/Logos/UserAv.PNG"></div>
+                <div class="chat-info">
+                    <div class="name-line"><span class="name-txt">Temkazavr</span></div>
+                    <div class="mt-1"><span class="role-badge badge-user">Пользователь</span></div>
                 </div>
             </div>
         </div>
@@ -162,15 +186,17 @@
         <div class="settings-header">
             <h1 class="page-title">Настройки</h1>
         </div>
-        </div>
+    </div>
 
     <div class="menu-wrap">
         <nav class="ios-tab-bar">
             <div class="liquid-slider" id="slider"></div>
+            
             <button class="tab-item active" onclick="switchView('chats', this)">
-                <div class="icon-wrap" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/6997/6997415.png');"></div>
-                <span class="tab-txt">Чаты</span>
+                <div class="icon-wrap" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/6997/6997164.png');"></div>
+                <span class="tab-txt">Главная</span>
             </button>
+            
             <button class="tab-item" onclick="switchView('settings', this)">
                 <div class="icon-wrap" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/9959/9959489.png');"></div>
                 <span class="tab-txt">Настройки</span>
