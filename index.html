@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Hash — Node Alpha</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Varela+Round&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --bg: #000000;
+            --modal-bg: #0A0A0A;
+            --panel-bg: #141414; /* Панель чуть светлее */
+            --input-bg: #0A0A0A; /* Инпут в цвет модалки */
+            --accent: #00C896;
+            --accent-soft: #00B084;
+            --off-white: #FAF9F2;
+        }
+
+        body, html {
+            background-color: var(--bg);
+            font-family: 'Manrope', sans-serif;
+            color: white;
+            margin: 0;
+            height: 100%;
+            overflow: hidden; /* Запрещаем скролл самого body */
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* Оболочка всего приложения */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Шапка с гифкой */
+        .header-section {
+            flex-shrink: 0;
+            width: 100%;
+            height: 23vh;
+            position: relative;
+            z-index: 5;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .header-section img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .branding {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-sq {
+            width: 44px;
+            height: 44px;
+            background: var(--accent);
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logo-symbol {
+            font-family: 'Varela Round', sans-serif;
+            font-size: 26px;
+            color: var(--off-white);
+            font-weight: bold;
+        }
+
+        .logo-text {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            text-transform: uppercase;
+        }
+
+        /* Модалка как независимый скролл-контейнер */
+        .modal-scroll-area {
+            flex: 1;
+            background: var(--modal-bg);
+            border-radius: 32px 32px 0 0;
+            margin-top: -30px;
+            position: relative;
+            z-index: 10;
+            overflow-y: auto; /* Скроллится только здесь */
+            box-shadow: 0 -20px 50px rgba(0,0,0,1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 32px 20px 60px;
+        }
+
+        /* Эффект фулл-скрин */
+        .full-screen .modal-scroll-area {
+            border-radius: 0;
+            margin-top: 0;
+        }
+        .full-screen .header-section {
+            height: 0;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Панели и Инпуты */
+        .panel {
+            background: var(--panel-bg);
+            border-radius: 28px;
+            padding: 20px 16px;
+            margin-bottom: 24px;
+        }
+
+        .pill-input {
+            background: var(--input-bg);
+            border-radius: 9999px;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        input {
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 14px;
+            color: white;
+            user-select: text;
+        }
+
+        /* Кнопка */
+        .btn-submit {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
+            border-radius: 9999px;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #000;
+            width: 100%;
+        }
+
+        .info-text {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.25);
+            line-height: 1.5;
+            padding: 0 12px;
+        }
+
+        .welcome-block {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.35);
+            line-height: 1.6;
+            margin-bottom: 32px;
+            padding: 0 8px;
+        }
+
+        .footer-tag {
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.2em;
+            color: rgba(255, 255, 255, 0.1);
+            margin-top: 40px;
+        }
+
+        * { -webkit-tap-highlight-color: transparent; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container" id="app">
+        <div class="header-section">
+            <img src="https://i.ibb.co/35scBynG/IMG-5882.gif" alt="bg">
+            <div class="branding">
+                <div class="logo-sq"><span class="logo-symbol">#</span></div>
+                <span class="logo-text">Hash</span>
+            </div>
+        </div>
+
+        <div class="modal-scroll-area" id="scrollArea">
+            <div class="max-w-[340px] mx-auto">
+                
+                <h2 class="text-[22px] font-bold mb-3 text-center">Твой доступ</h2>
+                
+                <p class="welcome-block text-center">
+                    Hash — твой личный узел. Здесь нет алгоритмов и посторонних. Выбери имя и заходи, мы тебя ждали.
+                </p>
+
+                <div class="panel">
+                    <div class="pill-input">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6997/6997204.png" 
+                             style="filter: brightness(0) invert(1); opacity: 0.4;" 
+                             class="w-4 h-4 mr-3" alt="i">
+                        <input type="text" placeholder="Имя" autocomplete="off">
+                    </div>
+                    <div class="pill-input">
+                        <span class="text-white/20 font-bold mr-3 ml-0.5 text-[15px]">@</span>
+                        <input type="text" placeholder="username" autocomplete="off">
+                    </div>
+                    <p class="info-text">
+                        Придумай уникальный ник. Лучше, если он не будет связан с твоими другими соцсетями.
+                    </p>
+                </div>
+
+                <div class="panel">
+                    <div class="pill-input">
+                        <img src="https://cdn-icons-png.flaticon.com/512/15773/15773700.png" 
+                             style="filter: brightness(0) invert(1); opacity: 0.4;" 
+                             class="w-4 h-4 mr-3" alt="i">
+                        <input type="text" placeholder="Пароль" autocomplete="off">
+                    </div>
+                    <p class="info-text">
+                        Пароль не скрыт при вводе. Будь внимателен к окружению.
+                    </p>
+                </div>
+
+                <div class="flex flex-col items-center gap-6 pt-2">
+                    <button class="btn-submit">Продолжить</button>
+                    <p class="text-[13px] text-white/40">
+                        Уже в системе? <span class="text-[#00C896] font-bold">Войти</span>
+                    </p>
+                    <div class="footer-tag">ALPHA v0.1</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const app = document.getElementById('app');
+        const scrollArea = document.getElementById('scrollArea');
+
+        // Отслеживаем скролл внутри модалки
+        scrollArea.addEventListener('scroll', () => {
+            if (scrollArea.scrollTop > 20) {
+                app.classList.add('full-screen');
+            } else if (scrollArea.scrollTop <= 0) {
+                app.classList.remove('full-screen');
+            }
+        });
+    </script>
+
+</body>
+</html>
