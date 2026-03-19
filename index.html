@@ -23,175 +23,68 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        .header-visual {
-            position: absolute;
-            top: 0;
-            width: 100%;
-            height: 40vh;
-            z-index: 1;
-        }
+        .header-visual { position: absolute; top: 0; width: 100%; height: 40vh; z-index: 1; }
         .header-visual img { width: 100%; height: 100%; object-fit: cover; }
-        .header-visual::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, transparent 0%, var(--ios-bg) 98%);
-        }
+        .header-visual::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 0%, var(--ios-bg) 98%); }
 
-        .top-container {
-            position: absolute;
-            top: 6vh;
-            width: 100%;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-        }
-
+        .top-container { position: absolute; top: 6vh; width: 100%; z-index: 10; display: flex; flex-direction: column; align-items: center; gap: 16px; }
         .branding { display: flex; align-items: center; gap: 12px; }
         .logo-img { width: 52px; height: 52px; border-radius: 12px; object-fit: cover; }
         .logo-text { font-size: 38px; font-weight: 800; letter-spacing: -0.06em; line-height: 1; }
 
-        .segmented-container {
-            width: 240px;
-            background: rgba(120, 120, 128, 0.22);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 999px;
-            padding: 2px;
-            display: flex;
-            position: relative;
-            border: 0.5px solid rgba(255,255,255,0.08);
-        }
-
-        .segment-item {
-            flex: 1;
-            padding: 6px 0;
-            font-size: 13px;
-            font-weight: 600;
-            text-align: center;
-            z-index: 2;
-            cursor: pointer;
-            color: rgba(255,255,255,0.4);
-        }
-
+        .segmented-container { width: 240px; background: rgba(120, 120, 128, 0.22); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 999px; padding: 2px; display: flex; position: relative; border: 0.5px solid rgba(255,255,255,0.08); }
+        .segment-item { flex: 1; padding: 6px 0; font-size: 13px; font-weight: 600; text-align: center; z-index: 2; cursor: pointer; color: rgba(255,255,255,0.4); }
         .segment-item.active { color: white; }
         
-        .liquid-slider {
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            height: calc(100% - 4px);
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 999px;
-            z-index: 1;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            will-change: transform, width;
-        }
+        .liquid-slider { position: absolute; top: 2px; left: 2px; height: calc(100% - 4px); background: rgba(255, 255, 255, 0.2); border-radius: 999px; z-index: 1; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1); will-change: transform, width; }
 
-        .modal-glass {
-            position: relative;
-            height: 75vh;
-            margin-top: 25vh;
-            background: var(--ios-glass);
-            backdrop-filter: blur(40px) saturate(180%);
-            -webkit-backdrop-filter: blur(40px) saturate(180%);
-            border-radius: 32px 32px 0 0;
-            z-index: 5;
-            overflow: hidden;
-            border-top: 1px solid rgba(255,255,255,0.12);
-        }
+        .modal-glass { position: relative; height: 75vh; margin-top: 25vh; background: var(--ios-glass); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); border-radius: 32px 32px 0 0; z-index: 5; overflow: hidden; border-top: 1px solid rgba(255,255,255,0.12); }
+        .content-wrapper { display: flex; width: 200%; height: 100%; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); will-change: transform; }
+        .view-section { width: 50%; height: 100%; display: flex; flex-direction: column; box-sizing: border-box; }
 
-        .content-wrapper {
-            display: flex;
-            width: 200%;
-            height: 100%;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            will-change: transform;
-        }
+        .sticky-header { padding: 20px 28px 10px; background: transparent; z-index: 20; }
+        .scroll-content { flex: 1; overflow-y: auto; padding: 0 28px 40px; -webkit-mask-image: linear-gradient(to bottom, transparent, black 20px); mask-image: linear-gradient(to bottom, transparent, black 20px); }
+        .scroll-content::-webkit-scrollbar { display: none; }
 
-        .view-section {
-            width: 50%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            box-sizing: border-box;
-        }
-
-        .sticky-header {
-            padding: 20px 28px 10px;
-            background: transparent;
-            z-index: 20;
-        }
-
-        .scroll-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0 28px 40px;
-            mask-image: linear-gradient(to bottom, transparent, black 20px);
-            -webkit-mask-image: linear-gradient(to bottom, transparent, black 20px);
-        }
-
-        .title-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        .title-row { display: flex; align-items: center; gap: 12px; }
         .v-divider { width: 1px; height: 18px; background: rgba(255,255,255,0.15); }
         .inactive-title { color: rgba(255,255,255,0.2); }
 
-        .input-pill, .btn-action {
-            height: 44px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            box-sizing: border-box;
-        }
-
-        .input-pill {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 0 14px;
-            border: 0.5px solid rgba(255,255,255,0.04);
-            margin-bottom: 10px;
-        }
-
-        .icon-small { width: 18px; height: 18px; margin-right: 12px; filter: brightness(0) invert(1); opacity: 0.4; }
+        /* Формы */
+        .input-group { margin-bottom: 20px; }
+        .input-pill { height: 44px; border-radius: 12px; background: rgba(255, 255, 255, 0.05); padding: 0 14px; border: 0.5px solid rgba(255,255,255,0.04); display: flex; align-items: center; }
+        .input-hint { font-size: 11px; color: rgba(255,255,255,0.35); padding: 6px 4px 0; line-height: 1.3; }
+        
+        .icon-small { width: 18px; height: 18px; margin-right: 12px; filter: brightness(0) invert(1); opacity: 0.4; cursor: pointer; transition: opacity 0.2s; }
+        .icon-small:active { opacity: 0.8; }
         .at-icon { font-size: 17px; font-weight: 500; color: white; opacity: 0.4; margin-right: 12px; width: 18px; text-align: center; }
-        input { background: transparent; outline: none; width: 100%; font-size: 16px; color: white; }
+        
+        input { background: transparent; outline: none; width: 100%; font-size: 15px; color: white; }
+        .char-counter { font-size: 11px; color: rgba(255,255,255,0.2); margin-left: 8px; font-variant-numeric: tabular-nums; }
 
-        .btn-action {
-            background: var(--accent);
-            justify-content: center;
-            font-size: 16px;
-            font-weight: 700;
-            color: #000;
-            width: 100%;
-            margin-top: 10px;
-            border: none;
-        }
+        /* Валидация */
+        .val-list { margin-top: 8px; display: flex; flex-direction: column; gap: 4px; }
+        .val-item { font-size: 11px; color: rgba(255,255,255,0.2); display: flex; align-items: center; gap: 6px; transition: color 0.3s; }
+        .val-item.done { color: var(--accent); }
+        .val-dot { width: 4px; height: 4px; border-radius: 50%; background: currentColor; }
+
+        .btn-action { height: 44px; background: var(--accent); border-radius: 12px; justify-content: center; display: flex; align-items: center; font-size: 16px; font-weight: 700; color: #000; width: 100%; margin-top: 10px; border: none; }
         .btn-action:active { opacity: 0.8; transform: scale(0.98); }
 
         .doc-item { margin-bottom: 22px; }
         .doc-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; color: white; }
         .doc-desc { font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.45); line-height: 1.4; }
-        
-        .scroll-content::-webkit-scrollbar { display: none; }
-        .scroll-content { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body>
 
-    <div class="header-visual">
-        <img src="Content/GIFs/Background.gif">
-    </div>
+    <div class="header-visual"><img src="Content/GIFs/Background.gif"></div>
 
     <div class="top-container">
         <div class="branding">
             <img src="Content/Logos/HashLogo.JPG" class="logo-img">
             <span class="logo-text">Hash</span>
         </div>
-
         <div class="segmented-container" id="tabBar">
             <div class="liquid-slider" id="slider"></div>
             <div class="segment-item active" onclick="slideTo(0, this)">Документация</div>
@@ -203,11 +96,8 @@
         <div class="content-wrapper" id="contentWrapper">
             
             <div class="view-section">
-                <div class="sticky-header">
-                    <h2 class="text-xl font-bold">Документация</h2>
-                </div>
-                <div class="scroll-content" id="docList">
-                    </div>
+                <div class="sticky-header"><h2 class="text-xl font-bold">Документация</h2></div>
+                <div class="scroll-content" id="docList"></div>
             </div>
 
             <div class="view-section">
@@ -219,19 +109,38 @@
                     </div>
                 </div>
                 <div class="scroll-content">
-                    <div class="max-w-[360px] mx-auto pt-4">
-                        <div class="input-pill">
-                            <img src="https://cdn-icons-png.flaticon.com/512/6997/6997204.png" class="icon-small">
-                            <input type="text" placeholder="Имя" spellcheck="false">
+                    <div class="max-w-[360px] mx-auto pt-2">
+                        
+                        <div class="input-group">
+                            <div class="input-pill">
+                                <img src="https://cdn-icons-png.flaticon.com/512/6997/6997204.png" class="icon-small" onclick="generateName()" title="Сгенерировать">
+                                <input type="text" id="regName" placeholder="Имя" spellcheck="false">
+                            </div>
+                            <p class="input-hint">Придумай себе имя, которое другие пользователи будут видеть. Ну, или сгенерируй рандомное, нажав на иконку слева</p>
                         </div>
-                        <div class="input-pill">
-                            <span class="at-icon">@</span>
-                            <input type="text" placeholder="username" spellcheck="false">
+
+                        <div class="input-group">
+                            <div class="input-pill">
+                                <span class="at-icon">@</span>
+                                <input type="text" id="regUser" placeholder="username" maxlength="15" spellcheck="false" oninput="updateCounter(this)">
+                                <span class="char-counter" id="userCounter">0/15</span>
+                            </div>
+                            <p class="input-hint">Придумай себе юзернейм, по которому пользователи смогут отметить тебя. Лучше не использовать юзернейм, совпадающий с Telegram или Instagram*</p>
                         </div>
-                        <div class="input-pill">
-                            <img src="https://cdn-icons-png.flaticon.com/512/15773/15773700.png" class="icon-small">
-                            <input type="password" placeholder="Пароль">
+
+                        <div class="input-group">
+                            <div class="input-pill">
+                                <img src="https://cdn-icons-png.flaticon.com/512/15773/15773700.png" class="icon-small">
+                                <input type="password" id="regPass" placeholder="Пароль" oninput="validatePass(this)">
+                            </div>
+                            <p class="input-hint">Придумай надежный пароль, который будет невозможно угадать</p>
+                            <div class="val-list">
+                                <div class="val-item" id="v-len"><div class="val-dot"></div>Минимум 8 символов</div>
+                                <div class="val-item" id="v-num"><div class="val-dot"></div>Цифра</div>
+                                <div class="val-item" id="v-cap"><div class="val-dot"></div>Заглавная буква</div>
+                            </div>
                         </div>
+
                         <button class="btn-action">Продолжить</button>
                         <p class="text-center text-[10px] text-white/10 mt-8 tracking-widest uppercase">Hash Alpha v1.0</p>
                     </div>
@@ -243,47 +152,57 @@
 
     <script>
         const DOC_DATA = [
-            { title: "Всё летает", desc: "Hash работает настолько быстро — насколько позволит твой вайфай. Здесь из пользователей только наша компашка — а значит и нагрузка меньше!" },
-            { title: "Только свои", desc: "Это закрытое пространство лично для нас. Здесь нет спам-ботов, левых каналов и рекламы — только живое общение." },
-            { title: "Честный Синк", desc: "Заходи с любого устройства, главное пароль запомни! Переписка, файлы и важные ссылки подтянутся мгновенно. Начал писать с компа — закончил с телефона, можешь в это время хоть на велике кататься." },
-            { title: "Разработчики", desc: "Этот замечательный мессенджер разработан пользователями temkazavr и RibaPibaa, под спонсорством гильдии «Те, кто в тени»." },
-            { title: "Твои правила", desc: "Мессенджер полностью подстраивается под тебя. Настраивай оформление, закрепляй важные диалоги и не отвлекайся на лишнее." },
-            { title: "Безопасно", desc: "Достаточно безопасный мессенджер, он не требует твоей почты или номера." }
+            { title: "Всё летает", desc: "Hash работает настолько быстро - насколько позволит твой вайфай. Здесь из пользователей только наша компашка - а значит и нагрузка меньше" },
+            { title: "Только свои", desc: "Это закрытое пространство лично для нас. Здесь нет спам ботов, левых каналов и рекламы - только живое общение" },
+            { title: "Честный Синк", desc: "Заходи с любого устройства, главное пароль запомни! Переписка, файлы и важные ссылки подтянутся мгновенно. Начал писать с компа - закончил с телефона, можешь в это время хоть на велике кататься" },
+            { title: "Разработчики", desc: "Этот замечательный мессенджер разработан пользователями temkazavr и RibaPibaa, под спонсорством гильдии «Те, кто в тени»" },
+            { title: "Твои правила", desc: "Мессенджер полностью подстраивается под тебя. Настраивай оформление, закрепляй важные диалоги и не отвлекайся на лишнее" },
+            { title: "Безопасно", desc: "Достаточно безопасный мессенджер, он не требует твоей почты или номера" }
         ];
 
-        const slider = document.getElementById('slider');
-        const wrapper = document.getElementById('contentWrapper');
-        const items = document.querySelectorAll('.segment-item');
-        const docContainer = document.getElementById('docList');
+        function generateName() {
+            const adj = ['Silent', 'Swift', 'Bright', 'Neon', 'Lunar', 'Iron', 'Rapid', 'Cool', 'Vivid', 'Deep'];
+            const noun = ['Shadow', 'Fox', 'Hawk', 'Wave', 'Node', 'Byte', 'Sky', 'Void', 'Rain', 'Storm'];
+            const r = (a) => a[Math.floor(Math.random() * a.length)];
+            const name = `${r(adj)}-${r(noun)}-${Math.floor(Math.random() * 99)}`;
+            document.getElementById('regName').value = name;
+        }
+
+        function updateCounter(el) {
+            document.getElementById('userCounter').innerText = `${el.value.length}/15`;
+        }
+
+        function validatePass(el) {
+            const v = el.value;
+            const checks = {
+                'v-len': v.length >= 8,
+                'v-num': /[0-9]/.test(v),
+                'v-cap': /[A-Z]/.test(v)
+            };
+            for (let id in checks) {
+                document.getElementById(id).classList.toggle('done', checks[id]);
+            }
+        }
 
         function renderDocs() {
-            docContainer.innerHTML = `
-                <div class="max-w-[360px] mx-auto pt-4">
-                    ${DOC_DATA.map(item => `
-                        <div class="doc-item">
-                            <div class="doc-title">${item.title}</div>
-                            <div class="doc-desc">${item.desc}</div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
+            document.getElementById('docList').innerHTML = `<div class="max-w-[360px] mx-auto pt-2">${DOC_DATA.map(i => `<div class="doc-item"><div class="doc-title">${i.title}</div><div class="doc-desc">${i.desc}</div></div>`).join('')}</div>`;
         }
 
         function slideTo(idx, el) {
-            items.forEach(i => i.classList.remove('active'));
+            document.querySelectorAll('.segment-item').forEach(i => i.classList.remove('active'));
             el.classList.add('active');
-            
-            const x = el.offsetLeft - 2; 
-            slider.style.transform = `translateX(${x}px)`;
+            const slider = document.getElementById('slider');
+            slider.style.transform = `translateX(${el.offsetLeft - 2}px)`;
             slider.style.width = el.offsetWidth + 'px';
-            wrapper.style.transform = `translateX(-${idx * 50}%)`;
+            document.getElementById('contentWrapper').style.transform = `translateX(-${idx * 50}%)`;
         }
 
         window.onload = () => {
             renderDocs();
-            const initial = items[0];
-            slider.style.width = initial.offsetWidth + 'px';
-            slider.style.transform = `translateX(${initial.offsetLeft - 2}px)`;
+            const init = document.querySelectorAll('.segment-item')[0];
+            const slider = document.getElementById('slider');
+            slider.style.width = init.offsetWidth + 'px';
+            slider.style.transform = `translateX(${init.offsetLeft - 2}px)`;
         };
     </script>
 </body>
