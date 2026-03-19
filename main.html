@@ -3,235 +3,310 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Hash — Messenger</title>
+    <title>Hash — Закреп</title>
     <link rel="icon" type="image/png" href="Content/Logos/HashLogo.PNG">
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
             --ios-bg: #000000;
-            --ios-glass: rgba(28, 28, 30, 0.85); 
+            --ios-glass: rgba(25, 25, 27, 0.82); 
             --accent: #00B689; 
-            --tab-bar-bg: rgba(28, 28, 30, 0.92);
-            --inactive-color: #8e8e93;
-            --glass-border: 1px solid rgba(255, 255, 255, 0.12);
+            --glass-border: 1.2px solid rgba(255, 255, 255, 0.18); /* Тот самый контур из логина */
+            --sub-text: #8E8E93;
         }
 
         body, html {
             background: var(--ios-bg);
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Manrope", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", sans-serif;
             color: white; margin: 0; height: 100vh; width: 100vw;
-            overflow: hidden; position: fixed; -webkit-font-smoothing: antialiased;
+            overflow: hidden; -webkit-font-smoothing: antialiased;
         }
 
-        /* --- Навигация экранов --- */
+        /* --- Слой Экранов --- */
         .screen {
             position: absolute; inset: 0; display: flex; flex-direction: column;
-            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s;
+            transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.4s;
         }
-        .screen-hidden-left { transform: translateX(-100%); opacity: 0; }
+        .screen-hidden-left { transform: translateX(-30%) scale(0.95); opacity: 0; }
         .screen-hidden-right { transform: translateX(100%); opacity: 0; }
 
-        /* --- Верхняя Стеклянная Модалка (Единая) --- */
-        .top-modal-glass {
+        /* --- ВЕРХНЯЯ ПАНЕЛЬ (СТИЛЬ ЛОГИНА) --- */
+        .top-glass-panel {
             background: var(--ios-glass);
-            backdrop-filter: blur(40px) saturate(180%);
-            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            backdrop-filter: blur(45px) saturate(190%);
+            -webkit-backdrop-filter: blur(45px) saturate(190%);
             border-bottom: var(--glass-border);
             border-radius: 0 0 32px 32px;
             padding-top: env(safe-area-inset-top);
-            padding-bottom: 20px;
             z-index: 100;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.5);
         }
-        
-        /* Заголовок (Как в Документации) */
-        .header-area { padding: 20px 24px 10px; }
-        .page-title { font-size: 20px; font-weight: 700; } /* Убрали жирность, уменьшили размер */
 
-        .pinned-section { padding: 5px 24px 0; }
-        .pinned-user { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 60px; }
-        .pinned-ava { 
-            width: 56px; height: 56px; border-radius: 18px; 
-            background: #1c1c1e; border: 1px solid rgba(255,255,255,0.1); 
-            overflow: hidden; 
+        .header-content {
+            padding: 16px 24px 8px;
+            display: flex;
+            align-items: center;
         }
-        .pinned-ava img { width: 100%; height: 100%; object-fit: cover; }
-        .pinned-name { font-size: 11px; font-weight: 600; opacity: 0.9; }
 
-        /* --- Список чатов (Помельче) --- */
-        .chats-container { flex: 1; overflow-y: auto; padding-top: 10px; padding-bottom: 120px; }
-        
-        .chat-row { 
-            display: flex; align-items: center; padding: 12px 24px; gap: 14px; 
-            position: relative;
+        .page-title {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #ffffff;
         }
-        /* Разделительная полоска (Ярче) */
-        .chat-row:not(:last-child)::after {
-            content: '';
-            position: absolute; bottom: 0; right: 0;
-            width: calc(100% - 86px); /* Отступ чтобы не резало аватару */
-            height: 0.5px;
-            background: rgba(255, 255, 255, 0.15); /* Ярче */
+
+        /* ЗАКРЕП (Аватарки) */
+        .pinned-row {
+            padding: 4px 24px 20px;
+            display: flex;
+            gap: 18px;
         }
-        .chat-row:active { background: rgba(255,255,255,0.05); }
-        
-        .ava-box { width: 48px; height: 48px; border-radius: 13px; overflow: hidden; flex-shrink: 0; background: #1c1c1e; }
-        .ava-box img { width: 100%; height: 100%; object-fit: cover; }
-        
-        .chat-info { flex: 1; display: flex; flex-direction: column; gap: 4px; } /* Gap для vertical layout */
-        .name-line { display: flex; align-items: center; gap: 6px; }
-        .name-txt { font-size: 16px; font-weight: 500; color: white; }
-        
-        /* БЕЙДЖИ (Титулы) */
-        .role-badge {
-            font-size: 9px; font-weight: 800;
-            padding: 3px 6px; border-radius: 5px;
-            text-transform: uppercase; letter-spacing: 0.05em;
-            background-color: rgba(0, 182, 137, 0.25); /* Прозрачность 0.25 */
+
+        .pinned-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .pinned-ava-wrap {
+            width: 62px;
+            height: 62px;
+            border-radius: 19px;
+            background: #1c1c1e;
+            border: 0.5px solid rgba(255,255,255,0.1);
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .pinned-ava-wrap img { width: 100%; height: 100%; object-fit: cover; }
+
+        .pinned-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.8);
+        }
+
+        /* --- СПИСОК ЧАТОВ --- */
+        .chats-list {
+            flex: 1;
+            overflow-y: auto;
+            padding-top: 12px;
+            padding-bottom: 140px;
+        }
+
+        .chat-cell {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            gap: 14px;
+            transition: background 0.2s;
+        }
+
+        .chat-cell:active { background: rgba(255,255,255,0.1); }
+
+        .cell-ava {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #1c1c1e;
+        }
+
+        .cell-ava img { width: 100%; height: 100%; object-fit: cover; }
+
+        .cell-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .cell-name-row {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .cell-name {
+            font-size: 17px;
+            font-weight: 500;
+            color: #ffffff;
+            letter-spacing: -0.3px;
+        }
+
+        /* БЕЙДЖИ (Микро-стекло) */
+        .badge {
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 5px;
+            background: rgba(0, 182, 137, 0.15);
             color: var(--accent);
-            display: inline-block;
-            line-height: 1;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
         }
-        
-        .verify-icon {
-            width: 18px; height: 18px; background: var(--accent);
+
+        .v-icon {
+            width: 18px;
+            height: 18px;
+            background: var(--accent);
             -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9918/9918743.png') no-repeat center / contain;
             mask: url('https://cdn-icons-png.flaticon.com/512/9918/9918743.png') no-repeat center / contain;
         }
 
-        /* --- Настройки (Выровнены с закрепом) --- */
-        .settings-header {
-            padding-top: env(safe-area-inset-top);
-            padding-left: 24px;
-            padding-top: 20px; /* Совпадает с header-area */
-            margin-bottom: 20px;
+        /* Разделитель как в iOS */
+        .separator {
+            height: 0.5px;
+            background: rgba(255,255,255,0.12);
+            margin-left: 86px;
         }
 
-        /* --- Меню (Компактное) --- */
-        .menu-wrap {
-            position: fixed; bottom: calc(20px + env(safe-area-inset-bottom));
-            left: 50%; transform: translateX(-50%); width: 260px; z-index: 150;
+        /* --- МЕНЮ (ПУЛЬТ) --- */
+        .tab-bar-container {
+            position: fixed;
+            bottom: calc(25px + env(safe-area-inset-bottom));
+            left: 50%;
+            transform: translateX(-50%);
+            width: 240px;
+            z-index: 1000;
         }
-        .ios-tab-bar {
-            position: relative; background: var(--tab-bar-bg);
-            backdrop-filter: blur(25px) saturate(180%); -webkit-backdrop-filter: blur(25px) saturate(180%);
-            border-radius: 30px; display: flex; padding: 3px; border: 0.5px solid rgba(255, 255, 255, 0.08);
-        }
-        .tab-item {
-            position: relative; z-index: 2; padding: 6px 0; display: flex;
-            flex-direction: column; align-items: center; flex: 1;
-            background: none; border: none; outline: none; cursor: pointer;
-        }
-        .icon-wrap {
-            width: 22px; height: 22px; margin-bottom: 3px; background-color: var(--inactive-color);
-            -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center;
-        }
-        .tab-txt { font-size: 10px; font-weight: 600; color: var(--inactive-color); }
-        .tab-item.active .icon-wrap { background-color: var(--accent); }
-        .tab-item.active .tab-txt { color: var(--accent); }
 
-        .liquid-slider {
-            position: absolute; top: 3px; left: 3px; height: calc(100% - 6px);
-            background: rgba(255, 255, 255, 0.12); border-radius: 26px; z-index: 1;
-            pointer-events: none; will-change: transform, left, width;
+        .tab-bar-body {
+            background: rgba(30, 30, 32, 0.8);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 0.5px solid rgba(255,255,255,0.08);
+            border-radius: 32px;
+            display: flex;
+            padding: 4px;
+            position: relative;
+        }
+
+        .tab-btn {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 0;
+            border: none;
+            background: none;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .tab-icon {
+            width: 22px;
+            height: 22px;
+            background: var(--sub-text);
+            transition: background 0.3s;
+            -webkit-mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+        }
+
+        .tab-text {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--sub-text);
+            margin-top: 2px;
+        }
+
+        .tab-btn.active .tab-icon { background: var(--accent); }
+        .tab-btn.active .tab-text { color: var(--accent); }
+
+        .slider {
+            position: absolute;
+            background: rgba(255,255,255,0.1);
+            border-radius: 28px;
+            height: calc(100% - 8px);
+            top: 4px;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: 1;
         }
     </style>
 </head>
 <body>
 
-    <div id="screen-chats" class="screen">
-        <div class="top-modal-glass">
-            <div class="header-area">
-                <h1 class="page-title">Закреп</h1>
+    <div id="scr-home" class="screen">
+        <div class="top-glass-panel">
+            <div class="header-content">
+                <span class="page-title">Закреп</span>
             </div>
-            <div class="pinned-section">
-                <div class="pinned-user">
-                    <div class="pinned-ava"><img src="Content/Logos/KeysAv.PNG"></div>
-                    <span class="pinned-name">Ключи</span>
+            <div class="pinned-row">
+                <div class="pinned-item">
+                    <div class="pinned-ava-wrap"><img src="Content/Logos/KeysAv.PNG"></div>
+                    <span class="pinned-label">Ключи</span>
                 </div>
             </div>
         </div>
 
-        <div class="chats-container">
-            <div class="chat-row">
-                <div class="ava-box"><img src="Content/Logos/KeysAv.PNG"></div>
-                <div class="chat-info">
-                    <div class="name-line"><span class="name-txt">Ключи</span><div class="verify-icon"></div></div>
-                    <div><span class="role-badge">Бот</span></div> </div>
+        <div class="chats-list">
+            <div class="chat-cell">
+                <div class="cell-ava"><img src="Content/Logos/KeysAv.PNG"></div>
+                <div class="cell-content">
+                    <div class="cell-name-row">
+                        <span class="cell-name">Ключи</span>
+                        <div class="v-icon"></div>
+                    </div>
+                    <div><span class="badge">Бот</span></div>
+                </div>
             </div>
-            <div class="chat-row">
-                <div class="ava-box"><img src="Content/Logos/TechAv.PNG"></div>
-                <div class="chat-info">
-                    <div class="name-line"><span class="name-txt">ТехПоддержка</span></div>
-                    <div><span class="role-badge">Поддержка</span></div> </div>
+            <div class="separator"></div>
+            <div class="chat-cell">
+                <div class="cell-ava"><img src="Content/Logos/TechAv.PNG"></div>
+                <div class="cell-content">
+                    <div class="cell-name">ТехПоддержка</div>
+                    <div><span class="badge">Поддержка</span></div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="screen-settings" class="screen screen-hidden-right">
-        <div class="settings-header">
-            <h1 class="page-title">Настройки</h1>
+    <div id="scr-settings" class="screen screen-hidden-right">
+        <div style="padding: 60px 24px;">
+            <h1 class="page-title" style="font-size: 28px;">Настройки</h1>
+            <p style="color: var(--sub-text);">Здесь будет твой профиль</p>
         </div>
-        </div>
+    </div>
 
-    <div class="menu-wrap">
-        <nav class="ios-tab-bar">
-            <div class="liquid-slider" id="slider"></div>
-            
-            <button class="tab-item active" onclick="switchView('chats', this)">
-                <div class="icon-wrap" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/6997/6997164.png');"></div>
-                <span class="tab-txt">Главная</span>
+    <div class="tab-bar-container">
+        <div class="tab-bar-body" id="tabBar">
+            <div class="slider" id="slider"></div>
+            <button class="tab-btn active" onclick="nav('home', this)">
+                <div class="tab-icon" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/6997/6997164.png');"></div>
+                <span class="tab-text">Главная</span>
             </button>
-            
-            <button class="tab-item" onclick="switchView('settings', this)">
-                <div class="icon-wrap" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/9959/9959489.png');"></div>
-                <span class="tab-txt">Настройки</span>
+            <button class="tab-btn" onclick="nav('settings', this)">
+                <div class="tab-icon" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/9959/9959489.png');"></div>
+                <span class="tab-text">Настройки</span>
             </button>
-        </nav>
+        </div>
     </div>
 
     <script>
         const slider = document.getElementById('slider');
-        let sState = { x: 0, tx: 0, vx: 0, w: 0, tw: 0, vw: 0 };
-
-        function spring(curr, target, vel) {
-            const force = -380 * (curr - target);
-            const damp = -38 * vel;
-            vel += (force + damp) * 0.016; curr += vel * 0.016;
-            return [curr, vel];
+        
+        function updateSlider(btn) {
+            slider.style.left = btn.offsetLeft + 'px';
+            slider.style.width = btn.offsetWidth + 'px';
         }
 
-        function update() {
-            [sState.x, sState.vx] = spring(sState.x, sState.tx, sState.vx);
-            [sState.w, sState.vw] = spring(sState.w, sState.tw, sState.vw);
-            slider.style.left = sState.x + 'px';
-            slider.style.width = sState.w + 'px';
-            requestAnimationFrame(update);
-        }
+        function nav(target, btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            updateSlider(btn);
 
-        function switchView(view, el) {
-            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
-            el.classList.add('active');
-            sState.tx = el.offsetLeft;
-            sState.tw = el.offsetWidth;
-
-            const chats = document.getElementById('screen-chats');
-            const settings = document.getElementById('screen-settings');
-
-            if (view === 'chats') {
-                chats.classList.remove('screen-hidden-left');
-                settings.classList.add('screen-hidden-right');
+            if(target === 'home') {
+                document.getElementById('scr-home').classList.remove('screen-hidden-left');
+                document.getElementById('scr-settings').classList.add('screen-hidden-right');
             } else {
-                chats.classList.add('screen-hidden-left');
-                settings.classList.remove('screen-hidden-right');
+                document.getElementById('scr-home').classList.add('screen-hidden-left');
+                document.getElementById('scr-settings').classList.remove('screen-hidden-right');
             }
         }
 
         window.onload = () => {
-            const active = document.querySelector('.tab-item.active');
-            sState.x = active.offsetLeft; sState.tx = active.offsetLeft;
-            sState.w = active.offsetWidth; sState.tw = active.offsetWidth;
-            update();
+            updateSlider(document.querySelector('.tab-btn.active'));
         };
     </script>
 </body>
