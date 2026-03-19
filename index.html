@@ -13,17 +13,19 @@
             --accent: #00B689;
         }
 
+        /* Блокируем скролл и фиксируем экран */
         body, html {
             background-color: var(--ios-bg);
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Manrope", sans-serif;
             color: white;
             margin: 0;
-            height: 100vh;
-            /* Убираем лишний скролл всей страницы */
-            overflow: hidden;
-            -webkit-font-smoothing: antialiased;
-            position: fixed; /* Фиксируем body, чтобы он не прыгал за клавиатурой */
+            padding: 0;
+            height: 100%;
             width: 100%;
+            overflow: hidden; /* Запрет системного скролла */
+            position: fixed; /* Фиксация от сдвигов клавиатурой */
+            -webkit-font-smoothing: antialiased;
+            touch-action: manipulation; /* Запрет зума пальцами на кнопках */
         }
 
         .header-visual { position: absolute; top: 0; width: 100%; height: 40vh; z-index: 1; }
@@ -60,7 +62,7 @@
         .icon-small { width: 18px; height: 18px; margin-right: 12px; filter: brightness(0) invert(1); opacity: 0.4; cursor: pointer; transition: opacity 0.2s; }
         .at-icon { font-size: 17px; font-weight: 500; color: white; opacity: 0.4; margin-right: 12px; width: 18px; text-align: center; }
         
-        input { background: transparent; outline: none; width: 100%; font-size: 15px; color: white; }
+        input { background: transparent; outline: none; width: 100%; font-size: 16px; color: white; } /* 16px предотвращает зум в iOS */
         .char-counter { font-size: 11px; color: rgba(255,255,255,0.2); margin-left: 8px; font-variant-numeric: tabular-nums; }
 
         .val-list { margin-top: 8px; display: flex; flex-direction: column; gap: 4px; }
@@ -113,7 +115,7 @@
                         <div class="input-group">
                             <div class="input-pill">
                                 <img src="https://cdn-icons-png.flaticon.com/512/6997/6997204.png" class="icon-small" onclick="generateName()">
-                                <input type="text" id="regName" placeholder="Имя" class="form-input">
+                                <input type="text" id="regName" placeholder="Имя" spellcheck="false" onblur="fixPosition()">
                             </div>
                             <p class="input-hint">Придумай себе имя, которое другие пользователи будут видеть. Ну, или сгенерируй рандомное, нажав на иконку слева</p>
                         </div>
@@ -121,7 +123,7 @@
                         <div class="input-group">
                             <div class="input-pill">
                                 <span class="at-icon">@</span>
-                                <input type="text" id="regUser" placeholder="username" maxlength="15" oninput="validateUser(this)" class="form-input">
+                                <input type="text" id="regUser" placeholder="username" maxlength="15" spellcheck="false" oninput="validateUser(this)" onblur="fixPosition()">
                                 <span class="char-counter" id="userCounter">0/15</span>
                             </div>
                             <p class="input-hint">Придумай себе юзернейм, по которому пользователи смогут отметить тебя. Лучше не использовать юзернейм, совпадающий с Telegram или Instagram*</p>
@@ -130,7 +132,7 @@
                         <div class="input-group">
                             <div class="input-pill">
                                 <img src="https://cdn-icons-png.flaticon.com/512/15773/15773700.png" class="icon-small" onclick="togglePass()" id="passToggle">
-                                <input type="password" id="regPass" placeholder="Пароль" oninput="validatePass(this)" class="form-input">
+                                <input type="password" id="regPass" placeholder="Пароль" oninput="validatePass(this)" onblur="fixPosition()">
                             </div>
                             <p class="input-hint">Придумай надежный пароль, который будет невозможно угадать</p>
                             <div class="val-list">
@@ -159,12 +161,24 @@
             { title: "Безопасно", desc: "Достаточно безопасный мессенджер, он не требует твоей почты или номера" }
         ];
 
-        // Фикс "съезжания" сайта после клавиатуры
-        document.querySelectorAll('.form-input').forEach(input => {
-            input.addEventListener('blur', () => {
+        // Функция возврата позиции после клавиатуры
+        function fixPosition() {
+            setTimeout(() => {
                 window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-            });
-        });
+            }, 10);
+        }
+
+        // Запрет зума при двойном тапе
+        document.addEventListener('touchstart', function (event) {
+            if (event.touches.length > 1) { event.preventDefault(); }
+        }, { passive: false });
+
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) { event.preventDefault(); }
+            lastTouchEnd = now;
+        }, false);
 
         function generateName() {
             const adj = ['Silent', 'Swift', 'Bright', 'Neon', 'Lunar', 'Iron', 'Rapid', 'Cool', 'Vivid', 'Deep'];
@@ -194,9 +208,7 @@
         function validatePass(el) {
             const v = el.value;
             const checks = {
-                'v-len': v.length >= 8,
-                'v-num': /[0-9]/.test(v),
-                'v-cap': /[A-Z]/.test(v)
+                'v-len': v.length >= 8, 'v-num': /[0-9]/.test(v), 'v-cap': /[A-Z]/.test(v)
             };
             for (let id in checks) {
                 document.getElementById(id).classList.toggle('done', checks[id]);
