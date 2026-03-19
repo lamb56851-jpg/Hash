@@ -3,23 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Hash — Вход</title>
+    <title>Hash — Private Messenger</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #000000;
             --accent: #00B689;
-            --modal-bg: rgba(10, 10, 10, 0.8);
-            --input-bg: #0F0F0F;
-            --text-secondary: rgba(255, 255, 255, 0.4);
+            --modal-bg: rgba(12, 12, 12, 0.85);
+            --input-bg: #0A0A0A;
+            --hint-color: rgba(255, 255, 255, 0.3);
+            --pill-bg: rgba(255, 255, 255, 0.1);
         }
 
-        /* Глобальные запреты */
+        /* Запрет выделения и масштабирования */
         * {
             -webkit-tap-highlight-color: transparent;
-            user-select: none; /* Запрет выделения */
-            -webkit-user-drag: none;
-            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        /* Разрешаем выделение только в полях ввода */
+        input, textarea {
+            user-select: text;
+            -webkit-user-select: text;
         }
 
         body, html {
@@ -31,38 +38,32 @@
             overflow: hidden;
         }
 
-        /* Верхняя зона с фоном (уменьшенная высота) */
-        .header-section {
-            position: relative;
-            height: 35vh; /* Меньше места для гифки */
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding-top: env(safe-area-inset-top);
-        }
-
-        .background-gif {
+        /* Верхняя визуальная часть */
+        .header-visual {
             position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            object-fit: cover;
+            top: 0;
+            width: 100%;
+            height: 42vh; /* Ограничили высоту гифки */
             z-index: 1;
         }
+        .header-visual img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-        /* Контент поверх гифки */
-        .header-content {
-            position: relative;
-            z-index: 2;
+        /* Брендинг + Навигация (поверх гифки) */
+        .top-overlay {
+            position: absolute;
+            top: 8vh;
+            width: 100%;
+            z-index: 5;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 25px;
-            width: 100%;
         }
 
-        /* Лого и Название в ряд */
         .branding-row {
             display: flex;
             align-items: center;
@@ -70,29 +71,30 @@
         }
 
         .logo-img {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
+            width: 55px;
+            height: 55px;
+            border-radius: 14px;
             object-fit: cover;
+            box-shadow: 0 8px 25px rgba(0, 182, 137, 0.25);
         }
 
         .logo-text {
-            font-size: 36px;
+            font-size: 38px;
             font-weight: 800;
             letter-spacing: -0.05em;
         }
 
-        /* Переключатель на фоне */
+        /* Тот самый Таб-бар (теперь на фоне) */
         .ios-tab-bar {
             position: relative;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             border-radius: 99px;
             display: flex;
-            padding: 3px;
-            width: 260px;
-            border: 0.5px solid rgba(255,255,255,0.1);
+            padding: 4px;
+            width: 280px;
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
         }
 
         .tab-item {
@@ -103,171 +105,185 @@
             text-align: center;
             font-size: 13px;
             font-weight: 600;
-            color: var(--text-secondary);
+            color: rgba(255,255,255,0.5);
             cursor: pointer;
             border: none;
             background: none;
             transition: color 0.3s;
         }
-
         .tab-item.active { color: white; }
 
         .liquid-slider {
             position: absolute;
-            top: 3px; bottom: 3px;
-            background: rgba(255, 255, 255, 0.15);
+            top: 4px; bottom: 4px;
+            background: var(--pill-bg);
             border-radius: 99px;
             z-index: 1;
+            border: 1px solid transparent;
             transition: background-color 0.2s;
         }
-        
         .liquid-slider.flying {
             background-color: transparent;
-            border: 1px solid rgba(255,255,255,0.3);
+            border-color: rgba(255, 255, 255, 0.25);
         }
 
-        /* Нижняя часть (Модалка) */
+        /* Стеклянная панель контента */
         .modal-glass {
             position: relative;
             height: 65vh;
+            margin-top: 38vh;
             background: var(--modal-bg);
-            backdrop-filter: blur(40px);
-            -webkit-backdrop-filter: blur(40px);
-            border-radius: 35px 35px 0 0;
+            backdrop-filter: blur(50px);
+            -webkit-backdrop-filter: blur(50px);
+            border-radius: 40px 40px 0 0;
             z-index: 10;
             border-top: 1px solid rgba(255,255,255,0.08);
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
-        .scroll-area {
-            height: 100%;
+        .content-scroll {
+            flex: 1;
             overflow-y: auto;
             padding: 35px 25px 50px;
         }
 
-        /* Стилизация скроллбара */
-        .scroll-area::-webkit-scrollbar { width: 4px; }
-        .scroll-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-
-        /* Формы */
-        .input-group { margin-bottom: 20px; }
-
+        /* Формы и описания */
         .input-pill {
             background: var(--input-bg);
             border-radius: 99px;
-            padding: 12px 20px; /* Уменьшенная высота */
+            padding: 12px 20px; /* Уменьшили высоту */
             display: flex;
             align-items: center;
             border: 1px solid rgba(255,255,255,0.03);
+            margin-top: 5px;
         }
-
-        .icon-flaticon {
-            width: 20px; height: 20px;
-            margin-right: 12px;
-            filter: brightness(0) invert(1);
-            opacity: 0.6;
+        .icon-field {
+            width: 20px;
+            height: 20px;
+            margin-right: 14px;
+            opacity: 0.7;
+            filter: invert(1) brightness(2);
         }
-
         input {
-            background: none; border: none; outline: none;
-            color: white; width: 100%; font-size: 15px;
+            background: none;
+            border: none;
+            outline: none;
+            color: white;
+            width: 100%;
+            font-size: 16px;
             font-family: inherit;
+        }
+
+        .field-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+            margin-left: 15px;
+            margin-top: 15px;
         }
 
         .hint {
             font-size: 12px;
-            color: rgba(255, 255, 255, 0.25);
-            padding: 8px 15px 0;
+            color: var(--hint-color);
+            margin: 8px 15px 0;
             line-height: 1.4;
         }
 
         .btn-action {
             background: var(--accent);
-            color: #000;
+            color: black;
             border-radius: 99px;
             padding: 16px;
             font-weight: 800;
             width: 100%;
             border: none;
-            margin-top: 10px;
+            margin-top: 30px;
             font-size: 16px;
-            cursor: pointer;
+            transition: opacity 0.2s;
         }
+        .btn-action:active { opacity: 0.7; }
 
-        /* Тексты Документации */
-        .doc-content h2 { font-size: 22px; margin-bottom: 10px; color: var(--accent); font-weight: 800; }
-        .doc-content p { font-size: 15px; color: rgba(255,255,255,0.6); margin-bottom: 30px; line-height: 1.6; }
+        /* Документация */
+        .doc-item { margin-bottom: 30px; }
+        .doc-item h3 { font-size: 22px; font-weight: 800; margin-bottom: 10px; }
+        .doc-item p { font-size: 15px; color: rgba(255,255,255,0.5); line-height: 1.6; }
 
-        /* Анимация переключения страниц */
-        .page { display: none; animation: fadeIn 0.4s ease forwards; }
-        .page.active { display: block; }
+        /* Скрытие/Показ секций */
+        .section { display: none; }
+        .section.active { display: block; animation: fadeIn 0.4s ease; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* Показываем скроллбар */
+        .content-scroll::-webkit-scrollbar { width: 4px; }
+        .content-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <div class="header-section">
-        <img src="Content/GIFs/Background.gif" class="background-gif" alt="bg">
-        
-        <div class="header-content">
-            <div class="branding-row">
-                <img src="Content/Logos/HashLogo.jpg" class="logo-img" alt="Hash" onerror="this.style.background='var(--accent)'">
-                <span class="logo-text">Hash</span>
-            </div>
+    <div class="header-visual">
+        <img src="Content/GIFs/Background.gif" alt="bg" onerror="this.src='https://i.ibb.co/fdpZnpt5/IMG-5887.gif'">
+    </div>
 
-            <nav class="ios-tab-bar" id="tabBar">
-                <div class="liquid-slider" id="slider"></div>
-                <button class="tab-item active" data-index="0">Документация</button>
-                <button class="tab-item" data-index="1">Логин</button>
-            </nav>
+    <div class="top-overlay">
+        <div class="branding-row">
+            <img src="Content/Logos/HashLogo.jpg" class="logo-img" alt="Hash" onerror="this.style.background='var(--accent)'">
+            <span class="logo-text">Hash</span>
         </div>
+
+        <nav class="ios-tab-bar" id="tabBar">
+            <div class="liquid-slider" id="slider"></div>
+            <button class="tab-item active" data-index="0">Документация</button>
+            <button class="tab-item" data-index="1">Логин</button>
+        </nav>
     </div>
 
     <div class="modal-glass">
-        <div class="scroll-area">
+        <div class="content-scroll">
             
-            <div class="page active" id="page-0">
-                <div class="doc-content">
-                    <h2>Что такое Hash?</h2>
-                    <p>Наш закрытый мессенджер для своих. Полная приватность, никаких лишних данных — только ты и твоя команда.</p>
-                    
-                    <h2>Почему это безопасно?</h2>
-                    <p>Мы используем собственные протоколы. Никаких привязок к почте или телефону. Твой профиль — твои правила.</p>
-                    
-                    <h2>Сколько лет проекту?</h2>
-                    <p>Hash — это результат долгой работы над идеальным инструментом общения. И сегодня мы запускаем его для тебя.</p>
+            <div id="sec-0" class="section active">
+                <div class="doc-item">
+                    <h3>Что такое Hash?</h3>
+                    <p>Твой новый способ общения внутри команды. Без лишних данных, без контроля извне. Только ты и твои 49 коллег в защищенном контуре.</p>
+                </div>
+                <div class="doc-item">
+                    <h3>Почему это безопасно?</h3>
+                    <p>Мы не запрашиваем номер телефона или почту. Твой аккаунт — это твой выбор ника и пароля. Данные живут только на нашем сервере.</p>
+                </div>
+                <div class="doc-item">
+                    <h3>Как начать?</h3>
+                    <p>Переходи во вкладку «Логин», придумай себе имя и уникальный @юзернейм. Пароль лучше записать — восстановить его по почте не получится!</p>
                 </div>
             </div>
 
-            <div class="page" id="page-1">
-                
-                <div class="input-group">
-                    <div class="input-pill">
-                        <img src="https://cdn-icons-png.flaticon.com/512/6997/6997204.png" class="icon-flaticon" alt="u">
-                        <input type="text" placeholder="Твое имя" autocomplete="off">
-                    </div>
-                    <p class="hint">Никнейм, который будут видеть друзья в списке чатов</p>
+            <div id="sec-1" class="section">
+                <span class="field-label">Основное</span>
+                <div class="input-pill">
+                    <img src="https://cdn-icons-png.flaticon.com/512/6997/6997204.png" class="icon-field" alt="u">
+                    <input type="text" placeholder="Имя" autocomplete="off">
                 </div>
+                <p class="hint">Это то, как тебя будут называть друзья в чатах</p>
 
-                <div class="input-group">
-                    <div class="input-pill">
-                        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" class="icon-flaticon" alt="t">
-                        <input type="text" placeholder="@юзернейм" autocomplete="off">
-                    </div>
-                    <p class="hint">Твой уникальный адрес для поиска в системе</p>
+                <div class="input-pill">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" class="icon-field" alt="at">
+                    <input type="text" placeholder="@юзернейм" autocomplete="off">
                 </div>
+                <p class="hint">Уникальный адрес для поиска твоего профиля</p>
 
-                <div class="input-group">
-                    <div class="input-pill">
-                        <img src="https://cdn-icons-png.flaticon.com/512/15773/15773700.png" class="icon-flaticon" alt="p">
-                        <input type="password" placeholder="Пароль">
-                    </div>
-                    <p class="hint">Минимум 8 символов. Защити свой аккаунт надежно</p>
+                <span class="field-label" style="margin-top:25px">Безопасность</span>
+                <div class="input-pill">
+                    <img src="https://cdn-icons-png.flaticon.com/512/15773/15773700.png" class="icon-field" alt="p">
+                    <input type="password" placeholder="Придумай пароль">
                 </div>
+                <p class="hint">Минимум 8 знаков. Мы серьезно относимся к защите</p>
 
                 <button class="btn-action">Продолжить</button>
             </div>
@@ -276,37 +292,61 @@
     </div>
 
     <script>
+        const PHYSICS = { pos: { k: 380, d: 38, m: 1 }, scale: { k: 420, d: 24, m: 1 } };
         const slider = document.getElementById('slider');
         const tabs = document.querySelectorAll('.tab-item');
-        const pages = document.querySelectorAll('.page');
+        const sections = document.querySelectorAll('.section');
 
-        function updateSlider(el, instant = false) {
-            tabs.forEach(t => t.classList.remove('active'));
-            el.classList.add('active');
+        let state = { x: 0, tx: 0, vx: 0, w: 0, tw: 0, vw: 0, sx: 1, tsx: 1, vsx: 0, sy: 1, tsy: 1, vsy: 0, isMoving: false };
 
-            const targetX = el.offsetLeft;
-            const targetW = el.offsetWidth;
-
-            if (!instant) {
-                slider.classList.add('flying');
-                setTimeout(() => slider.classList.remove('flying'), 300);
-            }
-
-            slider.style.left = `${targetX}px`;
-            slider.style.width = `${targetW}px`;
-
-            // Переключение контента
-            const index = el.dataset.index;
-            pages.forEach(p => p.classList.remove('active'));
-            document.getElementById(`page-${index}`).classList.add('active');
+        function spring(current, target, velocity, config) {
+            let force = -config.k * (current - target);
+            let damping = -config.d * velocity;
+            velocity += (force + damping) * 0.016;
+            current += velocity * 0.016;
+            return [current, velocity];
         }
 
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => updateSlider(tab));
-        });
+        function update() {
+            const dist = Math.abs(state.x - state.tx);
+            if (state.isMoving) {
+                if (dist > 10) {
+                    slider.classList.add('flying');
+                    state.tsy = 1.15; state.tsx = 0.85;
+                } else {
+                    slider.classList.remove('flying');
+                    state.tsx = 1; state.tsy = 1;
+                    if (Math.abs(state.vx) < 0.1) state.isMoving = false;
+                }
+            }
 
-        // Инициализация
-        window.onload = () => updateSlider(tabs[0], true);
+            [state.x, state.vx] = spring(state.x, state.tx, state.vx, PHYSICS.pos);
+            [state.w, state.vw] = spring(state.w, state.tw, state.vw, PHYSICS.pos);
+            [state.sx, state.vsx] = spring(state.sx, state.tsx, state.vsx, PHYSICS.scale);
+            [state.sy, state.vsy] = spring(state.sy, state.tsy, state.vsy, PHYSICS.scale);
+
+            slider.style.left = `${state.x}px`;
+            slider.style.width = `${state.w}px`;
+            slider.style.transform = `scale(${state.sx}, ${state.sy})`;
+            requestAnimationFrame(update);
+        }
+
+        function setActive(el, instant = false) {
+            tabs.forEach(t => t.classList.remove('active'));
+            sections.forEach(s => s.classList.remove('active'));
+            
+            el.classList.add('active');
+            document.getElementById(`sec-${el.dataset.index}`).classList.add('active');
+
+            state.tx = el.offsetLeft;
+            state.tw = el.offsetWidth;
+            state.isMoving = true;
+            if (instant) { state.x = state.tx; state.w = state.tw; }
+        }
+
+        tabs.forEach(tab => tab.addEventListener('click', () => setActive(tab)));
+        setActive(tabs[0], true);
+        update();
     </script>
 </body>
 </html>
