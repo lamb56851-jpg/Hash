@@ -3,43 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Hash — Добро пожаловать</title>
+    <title>Hash — Welcome</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Varela+Round&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
             --bg: #000000;
-            --modal-glass: rgba(10, 10, 10, 0.85); /* Прозрачность 0.85 */
-            --panel-bg: rgba(255, 255, 255, 0.05); /* Панели чуть светлее для контраста на стекле */
-            --input-bg: rgba(0, 0, 0, 0.3);
+            --modal-bg: rgba(10, 10, 10, 0.85); /* Прозрачность 0.85 */
+            --panel-bg: rgba(255, 255, 255, 0.04); /* Тонкая панель */
+            --input-bg: rgba(0, 0, 0, 0.5); /* Инпут утоплен в панель */
             --accent: #00C896;
-            --accent-soft: #00B084;
             --off-white: #FAF9F2;
         }
 
         body, html {
             background-color: var(--bg);
-            /* Приоритет системного шрифта Apple */
-            font-family: '-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'Manrope', sans-serif;
+            /* Используем системный стек Apple для SF Pro Display */
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", "Manrope", sans-serif;
             color: white;
             margin: 0;
             height: 100vh;
-            overflow: hidden;
+            overflow: hidden; 
             user-select: none;
             -webkit-user-select: none;
         }
 
-        /* Фоновая гифка "пинг-понг" (визуально зациклена) */
-        .bg-wrapper {
-            position: fixed;
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* Задний фон: Гифка на весь экран для глубины */
+        .header-bg {
+            position: absolute;
             top: 0;
-            left: 0;
             width: 100%;
-            height: 50vh; /* Возвращаем полный объем верхней части */
+            height: 40vh; /* Возвращаем объем гифке */
             z-index: 1;
         }
 
-        .bg-wrapper img {
+        .header-bg img {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -47,29 +52,28 @@
 
         .branding {
             position: absolute;
-            top: 45%;
+            top: 15vh;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
             z-index: 2;
         }
 
         .logo-sq {
-            width: 50px;
-            height: 50px;
+            width: 48px;
+            height: 48px;
             background: var(--accent);
             border-radius: 14px;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         .logo-symbol {
             font-family: 'Varela Round', sans-serif;
-            font-size: 30px;
+            font-size: 28px;
             color: var(--off-white);
             font-weight: bold;
         }
@@ -81,42 +85,44 @@
             text-transform: uppercase;
         }
 
-        /* Модалка с эффектом размытия (Blur) */
-        .modal-container {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 65vh; /* Модалка занимает большую часть экрана */
-            background: var(--modal-glass);
-            backdrop-filter: blur(25px); /* Тот самый блюр объектов на фоне */
+        /* Модалка с блюром */
+        .modal-view {
+            position: relative;
+            flex: 1;
+            margin-top: 30vh; /* Оставляем место под брендинг */
+            background: var(--modal-bg);
+            backdrop-filter: blur(25px); /* Тот самый стеклянный блюр */
             -webkit-backdrop-filter: blur(25px);
-            border-radius: 36px 36px 0 0;
+            border-radius: 38px 38px 0 0;
             z-index: 10;
             display: flex;
             flex-direction: column;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
         }
 
-        /* Закрепленная шапка модалки */
+        /* Закрепленная шапка внутри модалки */
         .modal-header {
-            padding: 32px 24px 10px;
+            padding: 32px 24px 16px;
+            background: transparent;
             text-align: center;
             flex-shrink: 0;
         }
 
-        /* Скролл-зона внутри модалки */
+        /* Скролл-зона */
         .modal-content {
             flex: 1;
             overflow-y: auto;
-            padding: 10px 24px 60px;
-            mask-image: linear-gradient(to bottom, transparent, black 5%, black 95%, transparent);
+            padding: 0 24px 60px;
+            -webkit-overflow-scrolling: touch;
         }
 
         .panel {
             background: var(--panel-bg);
-            border-radius: 28px;
-            padding: 20px 16px;
+            border-radius: 30px;
+            padding: 20px;
             margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .pill-input {
@@ -137,14 +143,15 @@
             user-select: text;
         }
 
-        .btn-submit {
-            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
+        .btn-main {
+            background: var(--accent);
             border-radius: 9999px;
             padding: 16px;
-            font-size: 16px;
-            font-weight: 700;
+            font-size: 15px;
+            font-weight: 800;
             color: #000;
             width: 100%;
+            margin-top: 10px;
         }
 
         .info-text {
@@ -156,7 +163,7 @@
 
         .welcome-desc {
             font-size: 14px;
-            color: rgba(255, 255, 255, 0.5);
+            color: rgba(255, 255, 255, 0.4);
             line-height: 1.5;
             margin-top: 8px;
         }
@@ -170,7 +177,7 @@
             text-align: center;
         }
 
-        /* Скроллбар */
+        /* Скрытие скроллбара */
         .modal-content::-webkit-scrollbar { width: 0; }
 
         * { -webkit-tap-highlight-color: transparent; }
@@ -178,67 +185,72 @@
 </head>
 <body>
 
-    <div class="bg-wrapper">
-        <img src="https://i.ibb.co/fdpZnpt5/IMG-5887.gif" alt="Hash Background">
+    <div class="app-container">
+        
+        <div class="header-bg">
+            <img src="https://i.ibb.co/fdpZnpt5/IMG-5887.gif" alt="bg">
+        </div>
+
         <div class="branding">
             <div class="logo-sq"><span class="logo-symbol">#</span></div>
             <span class="logo-text">Hash</span>
         </div>
-    </div>
 
-    <div class="modal-container">
-        <div class="modal-header">
-            <h2 class="text-[26px] font-extrabold tracking-tight">Добро пожаловать</h2>
-            <p class="welcome-desc">
-                Чтобы начать общение, зарегистрируйся или войди в свой аккаунт
-            </p>
-        </div>
+        <div class="modal-view">
+            
+            <div class="modal-header">
+                <h2 class="text-[26px] font-extrabold tracking-tight">Добро пожаловать</h2>
+                <p class="welcome-desc">
+                    Чтобы начать общение, зарегистрируйся или войди в свой аккаунт
+                </p>
+            </div>
 
-        <div class="modal-content">
-            <div class="max-w-[340px] mx-auto">
-                
-                <div class="panel">
-                    <div class="pill-input">
-                        <img src="https://cdn-icons-png.flaticon.com/512/6997/6997204.png" 
-                             style="filter: brightness(0) invert(1); opacity: 0.4;" 
-                             class="w-4 h-4 mr-3" alt="i">
-                        <input type="text" placeholder="Имя" autocomplete="off">
+            <div class="modal-content">
+                <div class="max-w-[340px] mx-auto">
+
+                    <div class="panel">
+                        <div class="pill-input">
+                            <img src="https://cdn-icons-png.flaticon.com/512/6997/6997204.png" 
+                                 style="filter: brightness(0) invert(1); opacity: 0.4;" 
+                                 class="w-4 h-4 mr-3" alt="i">
+                            <input type="text" placeholder="Имя" autocomplete="off">
+                        </div>
+                        <p class="info-text mb-4">
+                            Напиши никнейм, который будут видеть другие пользователи
+                        </p>
+                        
+                        <div class="pill-input">
+                            <img src="https://cdn-icons-png.flaticon.com/512/7065/7065720.png" 
+                                 style="filter: brightness(0) invert(1); opacity: 0.4;" 
+                                 class="w-4 h-4 mr-3" alt="tag">
+                            <input type="text" placeholder="Тег" autocomplete="off">
+                        </div>
+                        <p class="info-text">
+                            Придумай уникальный ник. Лучше, если он не будет связан с твоими другими профилями.
+                        </p>
                     </div>
-                    <p class="info-text mb-4">
-                        Напиши никнейм, который будут видеть другие пользователи.
-                    </p>
 
-                    <div class="pill-input">
-                        <img src="https://cdn-icons-png.flaticon.com/512/7065/7065720.png" 
-                             style="filter: brightness(0) invert(1); opacity: 0.4;" 
-                             class="w-4 h-4 mr-3" alt="tag">
-                        <input type="text" placeholder="Тег" autocomplete="off">
+                    <div class="panel">
+                        <div class="pill-input">
+                            <img src="https://cdn-icons-png.flaticon.com/512/15773/15773700.png" 
+                                 style="filter: brightness(0) invert(1); opacity: 0.4;" 
+                                 class="w-4 h-4 mr-3" alt="i">
+                            <input type="text" placeholder="Пароль" autocomplete="off">
+                        </div>
+                        <p class="info-text">
+                            Пароль не скрыт при вводе. Пожалуйста, убедись, что рядом нет посторонних глаз.
+                        </p>
                     </div>
-                    <p class="info-text">
-                        Придумай уникальный ник. Лучше, если он не будет связан с твоими другими профилями.
-                    </p>
-                </div>
 
-                <div class="panel">
-                    <div class="pill-input">
-                        <img src="https://cdn-icons-png.flaticon.com/512/15773/15773700.png" 
-                             style="filter: brightness(0) invert(1); opacity: 0.4;" 
-                             class="w-4 h-4 mr-3" alt="i">
-                        <input type="text" placeholder="Пароль" autocomplete="off">
+                    <div class="flex flex-col items-center gap-6">
+                        <button class="btn-main">Продолжить</button>
+                        <p class="text-[14px] text-white/40">
+                            Уже в системе? <span class="text-[#00C896] font-extrabold">Войти</span>
+                        </p>
+                        <div class="footer-tag">ALPHA v0.1</div>
                     </div>
-                    <p class="info-text">
-                        Пароль не скрыт при вводе. Пожалуйста, убедись, что рядом нет посторонних глаз.
-                    </p>
-                </div>
 
-                <div class="flex flex-col items-center gap-6 pt-4">
-                    <button class="btn-submit">Продолжить</button>
-                    <p class="text-[14px] text-white/40">
-                        Уже в системе? <span class="text-[#00C896] font-extrabold cursor-pointer">Войти</span>
-                    </p>
-                    <div class="footer-tag">ALPHA v0.1</div>
                 </div>
-
             </div>
         </div>
     </div>
