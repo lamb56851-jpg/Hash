@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Hash — Secure Messenger</title>
+    <title>Hash — Welcome</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
-            --bg: #000000;
-            --modal-bg: rgba(14, 14, 15, 0.8); 
-            --input-bg: rgba(255, 255, 255, 0.05);
+            /* Официальные Dark Mode цвета iOS */
+            --ios-bg: #000000;
+            --ios-secondary-bg: #1C1C1E; 
+            --ios-tertiary-bg: #2C2C2E;
             --accent: #00B689;
-            --pill-bg: rgba(255, 255, 255, 0.12);
-            --pill-border-moving: rgba(255, 255, 255, 0.25);
+            --pill-bg: rgba(255, 255, 255, 0.1);
         }
 
         body, html {
-            background-color: var(--bg);
+            background-color: var(--ios-bg);
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Manrope", sans-serif;
             color: white;
             margin: 0;
@@ -26,12 +26,12 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Фоновая гифка */
+        /* Фон с гифкой */
         .header-visual {
             position: absolute;
             top: 0;
             width: 100%;
-            height: 48vh;
+            height: 40vh;
             z-index: 1;
         }
         .header-visual img {
@@ -39,147 +39,137 @@
             height: 100%;
             object-fit: cover;
         }
+        /* Мягкое затемнение снизу, чтобы гифка не обрывалась резко */
         .header-visual::after {
             content: '';
             position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100px;
-            background: linear-gradient(to top, var(--bg), transparent);
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 40%, var(--ios-bg) 100%);
         }
 
-        /* Брендинг */
-        .branding {
+        /* Центрированный блок брендинга и табов */
+        .top-container {
             position: absolute;
-            top: 15vh;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            z-index: 2;
-        }
-        .logo-img {
-            width: 60px;
-            height: 60px;
-            border-radius: 16px;
-            object-fit: cover;
-            box-shadow: 0 10px 30px rgba(0, 182, 137, 0.3);
-        }
-        .logo-text {
-            font-size: 42px;
-            font-weight: 800;
-            letter-spacing: -0.04em;
-        }
-
-        /* Стеклянная модалка */
-        .modal-glass {
-            position: relative;
-            height: 65vh;
-            margin-top: 35vh;
-            background: var(--modal-bg);
-            backdrop-filter: blur(40px) saturate(150%);
-            -webkit-backdrop-filter: blur(40px) saturate(150%);
-            border-radius: 40px 40px 0 0;
+            top: 10vh;
+            width: 100%;
             z-index: 10;
             display: flex;
             flex-direction: column;
-            border: 1px solid rgba(255,255,255,0.05);
+            align-items: center;
+            gap: 20px;
         }
 
-        /* Liquid Segmented Control */
-        .segmented-container {
-            width: 240px;
-            margin: 24px auto 0;
-            position: relative;
-            background: rgba(255,255,255,0.05);
-            border-radius: 999px;
-            padding: 4px;
+        .branding {
             display: flex;
-            border: 0.5px solid rgba(255,255,255,0.08);
+            align-items: center;
+            gap: 12px;
         }
+
+        .logo-img {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            object-fit: cover;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+        }
+
+        .logo-text {
+            font-size: 38px;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+        }
+
+        /* Segmented Control (Твой физический слайдер) */
+        .segmented-container {
+            width: 220px;
+            background: rgba(120, 120, 128, 0.24);
+            border-radius: 999px;
+            padding: 2px;
+            display: flex;
+            position: relative;
+        }
+
         .segment-item {
             flex: 1;
-            padding: 8px 0;
+            padding: 6px 0;
             font-size: 13px;
             font-weight: 600;
             text-align: center;
             z-index: 2;
             cursor: pointer;
-            color: rgba(255,255,255,0.5);
-            transition: color 0.3s;
+            color: rgba(255,255,255,0.7);
+            transition: color 0.2s;
         }
         .segment-item.active { color: white; }
 
         .liquid-slider {
             position: absolute;
-            top: 4px;
-            left: 4px;
-            height: calc(100% - 8px);
-            background: var(--pill-bg);
+            top: 2px;
+            left: 2px;
+            height: calc(100% - 4px);
+            background: #636366; /* Цвет активной плашки iOS */
             border-radius: 999px;
             z-index: 1;
-            border: 1px solid transparent;
-            transition: background-color 0.16s ease-out, border-color 0.16s ease-out;
-        }
-        .liquid-slider.flying {
-            background-color: transparent !important;
-            border-color: var(--pill-border-moving);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
         }
 
-        /* Контент */
-        .scroll-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 24px 28px 60px;
+        /* Основная панель */
+        .modal-glass {
+            position: relative;
+            height: 65vh;
+            margin-top: 35vh;
+            background: var(--ios-secondary-bg);
+            border-radius: 35px 35px 0 0;
+            z-index: 5;
+            padding: 30px 24px;
+            border-top: 1px solid rgba(255,255,255,0.05);
         }
+
         .view-section { display: none; }
-        .view-section.active { display: block; }
+        .view-section.active { display: block; animation: fadeIn 0.4s ease; }
 
-        /* Поля ввода */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Поля ввода (Apple Style) */
+        .input-group { margin-bottom: 12px; }
         .input-pill {
-            background: var(--input-bg);
+            background: var(--ios-tertiary-bg);
             border-radius: 999px;
-            padding: 12px 18px;
+            padding: 10px 16px;
             display: flex;
             align-items: center;
-            margin-bottom: 8px;
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.02);
         }
         .icon-small {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             margin-right: 12px;
             filter: brightness(0) invert(1);
-            opacity: 0.7;
+            opacity: 0.5;
         }
         input {
             background: transparent;
             outline: none;
             width: 100%;
-            font-size: 15px;
+            font-size: 16px;
             color: white;
+        }
+        .hint {
+            font-size: 12px;
+            color: #8E8E93;
+            padding: 6px 16px 0;
         }
 
         .btn-action {
             background: var(--accent);
             border-radius: 999px;
             padding: 16px;
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 700;
             color: #000;
             width: 100%;
-            margin-top: 12px;
-            transition: transform 0.1s;
-        }
-        .btn-action:active { transform: scale(0.98); }
-
-        .hint {
-            font-size: 11px;
-            color: rgba(255,255,255,0.3);
-            padding: 0 16px 20px;
-            line-height: 1.3;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(0, 182, 137, 0.2);
         }
     </style>
 </head>
@@ -189,129 +179,93 @@
         <img src="Content/GIFs/Background.gif" alt="bg">
     </div>
 
-    <div class="branding">
-        <img src="Content/Logos/HashLogo.jpg" class="logo-img" alt="Hash">
-        <span class="logo-text">Hash</span>
-    </div>
+    <div class="top-container">
+        <div class="branding">
+            <img src="Content/Logos/HashLogo.JPG" class="logo-img" alt="Hash">
+            <span class="logo-text">Hash</span>
+        </div>
 
-    <div class="modal-glass">
         <div class="segmented-container" id="tabBar">
             <div class="liquid-slider" id="slider"></div>
             <div class="segment-item active" data-target="doc-view" data-index="0">Документация</div>
             <div class="segment-item" data-target="login-view" data-index="1">Логин</div>
         </div>
+    </div>
 
-        <div class="scroll-content">
-            <div class="max-w-[360px] mx-auto">
-                
-                <div id="doc-view" class="view-section active">
-                    <h2 class="text-2xl font-extrabold mb-4">Философия Hash</h2>
-                    <div class="space-y-6">
-                        <div>
-                            <h3 class="text-[#00B689] font-bold uppercase text-xs tracking-widest mb-1">Приватность</h3>
-                            <p class="text-white/60 text-sm">Никаких номеров телефонов или почты. Только ваш уникальный тег в зашифрованной сети.</p>
-                        </div>
-                        <div>
-                            <h3 class="text-[#00B689] font-bold uppercase text-xs tracking-widest mb-1">Безопасность</h3>
-                            <p class="text-white/60 text-sm">Сообщения хранятся локально и удаляются сразу после прочтения, если включен режим Stealth.</p>
-                        </div>
-                        <div>
-                            <h3 class="text-[#00B689] font-bold uppercase text-xs tracking-widest mb-1">Корпоративный стандарт</h3>
-                            <p class="text-white/60 text-sm">Создан специально для внутреннего общения команды из 50 человек.</p>
-                        </div>
+    <div class="modal-glass">
+        <div class="max-w-[400px] mx-auto h-full overflow-y-auto">
+            
+            <div id="doc-view" class="view-section active">
+                <h2 class="text-[24px] font-bold mb-6">О приложении</h2>
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-[#00B689] font-bold text-sm mb-1">Полная анонимность</h3>
+                        <p class="text-[#8E8E93] text-[15px]">Hash не запрашивает доступ к контактам, геолокации или номеру телефона.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-[#00B689] font-bold text-sm mb-1">Сквозное шифрование</h3>
+                        <p class="text-[#8E8E93] text-[15px]">Все данные шифруются на стороне клиента. Даже мы не можем их прочитать.</p>
                     </div>
                 </div>
+            </div>
 
-                <div id="login-view" class="view-section">
-                    <h2 class="text-2xl font-extrabold text-center mb-6">Вход в систему</h2>
-                    
+            <div id="login-view" class="view-section">
+                <h2 class="text-[24px] font-bold mb-6">Создать профиль</h2>
+                
+                <div class="input-group">
                     <div class="input-pill">
                         <img src="https://cdn-icons-png.flaticon.com/512/6997/6997204.png" class="icon-small">
-                        <input type="text" placeholder="Имя" autocomplete="off">
+                        <input type="text" placeholder="Ваше имя" autocomplete="off">
                     </div>
-                    <p class="hint">Как к вам обращаться?</p>
+                    <p class="hint">Видимое имя в чатах</p>
+                </div>
 
+                <div class="input-group">
                     <div class="input-pill">
-                        <div class="text-white/40 mr-2 font-medium">@</div>
-                        <input type="text" placeholder="Юзернейм" autocomplete="off">
+                        <span class="text-white/30 mr-2 font-medium">@</span>
+                        <input type="text" placeholder="username" autocomplete="off">
                     </div>
-                    <p class="hint">Уникальный тег для поиска в Hash</p>
+                    <p class="hint">Уникальный идентификатор</p>
+                </div>
 
+                <div class="input-group">
                     <div class="input-pill">
                         <img src="https://cdn-icons-png.flaticon.com/512/15773/15773700.png" class="icon-small">
                         <input type="password" placeholder="Пароль" autocomplete="off">
                     </div>
-                    <p class="hint">Минимум 8 символов</p>
-
-                    <button class="btn-action">Продолжить</button>
+                    <p class="hint">Надежный пароль для входа</p>
                 </div>
 
+                <button class="btn-action">Продолжить</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Физика из твоего примера
-        const PHYSICS = { pos: { k: 380, d: 38, m: 1 }, scale: { k: 420, d: 24, m: 1 } };
+        // Твоя физика слайдера (упрощенная для 2-х позиций)
         const slider = document.getElementById('slider');
         const segments = document.querySelectorAll('.segment-item');
         const views = document.querySelectorAll('.view-section');
 
-        let state = { x: 0, tx: 0, vx: 0, w: 0, tw: 0, vw: 0, sx: 1, tsx: 1, vsx: 0, sy: 1, tsy: 1, vsy: 0, isMoving: false, currentIndex: 0 };
-
-        function spring(current, target, velocity, config) {
-            const force = -config.k * (current - target);
-            const damping = -config.d * velocity;
-            const acceleration = (force + damping) / config.m;
-            velocity += acceleration * 0.016;
-            current += velocity * 0.016;
-            return [current, velocity];
-        }
-
-        function update() {
-            const dist = Math.abs(state.x - state.tx);
-            if (state.isMoving) {
-                if (dist > 10) {
-                    slider.classList.add('flying');
-                    state.tsy = 1.15; state.tsx = 0.9;
-                } else {
-                    slider.classList.remove('flying');
-                    state.tsx = 1; state.tsy = 1;
-                    if (Math.abs(state.vx) < 0.1) state.isMoving = false;
-                }
-            }
-            [state.x, state.vx] = spring(state.x, state.tx, state.vx, PHYSICS.pos);
-            [state.w, state.vw] = spring(state.w, state.tw, state.vw, PHYSICS.pos);
-            [state.sx, state.vsx] = spring(state.sx, state.tsx, state.vsx, PHYSICS.scale);
-            [state.sy, state.vsy] = spring(state.sy, state.tsy, state.vsy, PHYSICS.scale);
-
-            slider.style.left = `${state.x}px`;
-            slider.style.width = `${state.w}px`;
-            slider.style.transform = `scale(${state.sx}, ${state.sy})`;
-            requestAnimationFrame(update);
-        }
-
-        function switchView(targetId) {
+        function updateSlider(el) {
+            segments.forEach(s => s.classList.remove('active'));
+            el.classList.add('active');
+            
+            slider.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            slider.style.left = el.offsetLeft + 'px';
+            slider.style.width = el.offsetWidth + 'px';
+            
+            // Переключаем контент
             views.forEach(v => v.classList.remove('active'));
-            document.getElementById(targetId).classList.add('active');
+            document.getElementById(el.dataset.target).classList.add('active');
         }
 
         segments.forEach(seg => {
-            seg.addEventListener('click', () => {
-                segments.forEach(s => s.classList.remove('active'));
-                seg.classList.add('active');
-                state.tx = seg.offsetLeft;
-                state.tw = seg.offsetWidth;
-                state.isMoving = true;
-                switchView(seg.dataset.target);
-            });
+            seg.addEventListener('click', () => updateSlider(seg));
         });
 
-        // Init
-        const initial = segments[0];
-        state.x = state.tx = initial.offsetLeft;
-        state.w = state.tw = initial.offsetWidth;
-        requestAnimationFrame(update);
+        // Инициализация
+        window.onload = () => updateSlider(segments[0]);
     </script>
 </body>
 </html>
