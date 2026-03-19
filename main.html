@@ -3,249 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Hash</title>
-    <link rel="icon" type="image/png" href="Content/Logos/HashLogo.PNG">
+    <title>Hash — Главная</title>
     <style>
         :root {
             --ios-bg: #000000;
-            --accent: #00B689; 
+            --accent: #00B689;
             --sub-text: #8E8E93;
-            --separator: rgba(255, 255, 255, 0.18);
+            --glass-border: rgba(255, 255, 255, 0.22);
         }
 
         body, html {
             background: var(--ios-bg);
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif;
-            color: white; margin: 0; height: 100vh; width: 100vw;
-            overflow: hidden; -webkit-font-smoothing: antialiased;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+            color: white; margin: 0; height: 100vh; overflow: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .screen {
-            position: absolute; inset: 0; display: flex; flex-direction: column;
-            transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.4s;
+        .main-scroll {
+            height: 100vh;
+            overflow-y: auto;
             padding-top: env(safe-area-inset-top);
+            padding-bottom: 150px;
         }
-        .screen-hidden-left { transform: translateX(-30%) scale(0.95); opacity: 0; }
-        .screen-hidden-right { transform: translateX(100%); opacity: 0; }
 
         /* --- ЗАГОЛОВКИ --- */
         .section-header {
-            padding: 20px 24px 12px;
+            padding: 24px 24px 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .page-title {
-            font-size: 20px;
-            font-weight: 700;
-            letter-spacing: -0.4px;
-        }
 
-        /* --- ЗАКРЕП (Невидимый скролл) --- */
-        .pinned-scroll-container {
-            padding: 0 24px 10px;
-            overflow-x: auto;
-            display: flex;
-            gap: 20px;
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
-        }
-        .pinned-scroll-container::-webkit-scrollbar { display: none; } /* Chrome, Safari */
+        .title-main { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+        .title-secondary { font-size: 20px; font-weight: 700; letter-spacing: -0.4px; }
 
-        .pinned-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 7px;
-            flex-shrink: 0;
-        }
-        .pinned-ava {
-            width: 62px;
-            height: 62px;
-            border-radius: 19px;
-            background: #1c1c1e;
-            border: 0.5px solid rgba(255,255,255,0.1);
-            overflow: hidden;
-        }
-        .pinned-ava img { width: 100%; height: 100%; object-fit: cover; }
-        .pinned-label { font-size: 11px; font-weight: 500; opacity: 0.8; }
-
-        /* --- ЧАТЫ --- */
         .edit-icon {
-            width: 20px;
-            height: 20px;
-            background: var(--sub-text);
+            width: 20px; height: 20px; background: white;
             -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9883/9883181.png') no-repeat center / contain;
             mask: url('https://cdn-icons-png.flaticon.com/512/9883/9883181.png') no-repeat center / contain;
-            cursor: pointer;
+            cursor: pointer; opacity: 0.8;
         }
 
-        .chats-list {
-            flex: 1;
-            overflow-y: auto;
-            padding-bottom: 120px;
+        /* --- ЗАКРЕП (ГОРИЗОНТАЛЬНЫЙ СКРОЛЛ) --- */
+        .pinned-scroll-wrapper {
+            padding: 0 24px;
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            -ms-overflow-style: none;  /* IE/Edge */
+            scrollbar-width: none;  /* Firefox */
         }
+        .pinned-scroll-wrapper::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+
+        .pinned-item { display: flex; flex-direction: column; align-items: center; gap: 8px; flex-shrink: 0; }
+        .pinned-ava { 
+            width: 64px; height: 64px; border-radius: 20px; 
+            background: #1c1c1e; border: 1px solid rgba(255,255,255,0.1); overflow: hidden;
+        }
+        .pinned-ava img { width: 100%; height: 100%; object-fit: cover; }
+        .pinned-name { font-size: 11px; font-weight: 500; color: rgba(255,255,255,0.7); }
+
+        /* --- СПИСОК ЧАТОВ --- */
         .chat-cell {
             display: flex;
-            align-items: center;
-            padding: 10px 24px;
-            gap: 14px;
+            padding: 14px 24px;
+            gap: 16px;
+            align-items: stretch; /* Важно для выравнивания текста по краям авы */
         }
+
         .cell-ava {
-            width: 52px;
-            height: 52px;
-            border-radius: 14px;
-            background: #1c1c1e;
-            overflow: hidden;
+            width: 54px; height: 54px; border-radius: 15px;
+            overflow: hidden; flex-shrink: 0; background: #1c1c1e;
         }
         .cell-ava img { width: 100%; height: 100%; object-fit: cover; }
-        
-        .cell-content { display: flex; flex-direction: column; gap: 1px; }
-        .cell-name-row { display: flex; align-items: center; gap: 5px; }
-        .cell-name { font-size: 17px; font-weight: 500; letter-spacing: -0.3px; }
 
-        .badge {
-            font-size: 9px;
-            font-weight: 700;
-            padding: 2px 7px;
-            border-radius: 5px;
-            background: rgba(0, 182, 137, 0.25);
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 0.4px;
-            align-self: flex-start;
-            margin-top: 2px;
+        .cell-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Имя сверху, бейдж снизу */
+            padding: 2px 0;
         }
 
-        .v-icon {
-            width: 18px;
-            height: 18px;
-            background: var(--accent);
-            -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9918/9918743.png') no-repeat center / contain;
-            mask: url('https://cdn-icons-png.flaticon.com/512/9918/9918743.png') no-repeat center / contain;
+        .name-row { display: flex; align-items: center; gap: 6px; }
+        .name-txt { font-size: 17px; font-weight: 500; letter-spacing: -0.3px; }
+        
+        .badge {
+            font-size: 9px; font-weight: 800;
+            padding: 3px 7px; border-radius: 5px;
+            background: rgba(0, 182, 137, 0.25);
+            color: var(--accent);
+            text-transform: uppercase; letter-spacing: 0.5px;
+            width: fit-content;
         }
 
         .separator {
             height: 0.5px;
-            background: var(--separator);
-            margin-left: 90px;
+            background: var(--glass-border);
+            margin-left: 94px; /* Отступ под аватаром */
         }
 
-        /* --- ТАБ БАР (Пульт) --- */
-        .tab-bar-wrap {
-            position: fixed;
-            bottom: calc(25px + env(safe-area-inset-bottom));
-            left: 50%;
-            transform: translateX(-50%);
-            width: 240px;
-            z-index: 1000;
+        .v-icon {
+            width: 18px; height: 18px; background: var(--accent);
+            -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9918/9918743.png') no-repeat center / contain;
         }
-        .tab-bar-body {
-            background: rgba(30, 30, 32, 0.85);
+
+        /* --- МЕНЮ (ПУЛЬТ) --- */
+        .tab-bar {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            width: 240px; background: rgba(25, 25, 27, 0.8);
             backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-            border: 0.5px solid rgba(255,255,255,0.08);
-            border-radius: 32px;
-            display: flex; padding: 4px; position: relative;
+            border: 0.5px solid rgba(255,255,255,0.1); border-radius: 32px;
+            display: flex; padding: 4px; z-index: 1000;
         }
         .tab-btn {
             flex: 1; display: flex; flex-direction: column; align-items: center;
-            padding: 8px 0; border: none; background: none; z-index: 2;
+            padding: 8px 0; border: none; background: none; position: relative; z-index: 2;
         }
         .tab-icon {
             width: 22px; height: 22px; background: var(--sub-text);
-            -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center;
+            -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat;
         }
-        .tab-text { font-size: 10px; font-weight: 600; color: var(--sub-text); margin-top: 2px; }
         .tab-btn.active .tab-icon { background: var(--accent); }
-        .tab-btn.active .tab-text { color: var(--accent); }
-
         .slider {
-            position: absolute; background: rgba(255,255,255,0.1);
-            border-radius: 28px; height: calc(100% - 8px); top: 4px;
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); z-index: 1;
+            position: absolute; top: 4px; left: 4px; height: calc(100% - 8px);
+            width: 116px; background: rgba(255,255,255,0.1); border-radius: 28px;
+            transition: transform 0.3s cubic-bezier(0.2, 1, 0.3, 1); z-index: 1;
         }
     </style>
 </head>
 <body>
 
-    <div id="scr-home" class="screen">
+    <div class="main-scroll">
         <div class="section-header">
-            <span class="page-title">Hash</span>
+            <h1 class="title-main">Добро пожаловать в Hash</h1>
         </div>
 
-        <div class="pinned-scroll-container">
+        <div class="pinned-scroll-wrapper">
             <div class="pinned-item">
                 <div class="pinned-ava"><img src="Content/Logos/KeysAv.PNG"></div>
-                <span class="pinned-label">Ключи</span>
+                <span class="pinned-name">Ключи</span>
+            </div>
+            <div class="pinned-item">
+                <div class="pinned-ava"><img src="Content/Logos/TechAv.PNG"></div>
+                <span class="pinned-name">Поддержка</span>
             </div>
             </div>
 
-        <div class="section-header" style="padding-top: 30px;">
-            <span class="page-title">Чаты</span>
+        <div class="section-header" style="margin-top: 20px;">
+            <h2 class="title-secondary">Чаты</h2>
             <div class="edit-icon"></div>
         </div>
 
         <div class="chats-list">
             <div class="chat-cell">
                 <div class="cell-ava"><img src="Content/Logos/KeysAv.PNG"></div>
-                <div class="cell-content">
-                    <div class="cell-name-row">
-                        <span class="cell-name">Ключи</span>
+                <div class="cell-info">
+                    <div class="name-row">
+                        <span class="name-txt">Ключи</span>
                         <div class="v-icon"></div>
                     </div>
-                    <span class="badge">Бот</span>
+                    <div class="badge">Бот</div>
                 </div>
             </div>
             <div class="separator"></div>
+
             <div class="chat-cell">
                 <div class="cell-ava"><img src="Content/Logos/TechAv.PNG"></div>
-                <div class="cell-content">
-                    <div class="cell-name">ТехПоддержка</div>
-                    <span class="badge">Поддержка</span>
+                <div class="cell-info">
+                    <div class="name-line"><span class="name-txt">ТехПоддержка</span></div>
+                    <div class="badge">Поддержка</div>
                 </div>
             </div>
+            <div class="separator"></div>
         </div>
     </div>
 
-    <div id="scr-settings" class="screen screen-hidden-right">
-        <div class="section-header">
-            <span class="page-title">Настройки</span>
-        </div>
-    </div>
-
-    <div class="tab-bar-wrap">
-        <div class="tab-bar-body">
-            <div class="slider" id="slider"></div>
-            <button class="tab-btn active" onclick="nav('home', this)">
-                <div class="tab-icon" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/6997/6997164.png');"></div>
-                <span class="tab-text">Главная</span>
-            </button>
-            <button class="tab-btn" onclick="nav('settings', this)">
-                <div class="tab-icon" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/9959/9959489.png');"></div>
-                <span class="tab-text">Настройки</span>
-            </button>
-        </div>
+    <div class="tab-bar">
+        <div class="slider" id="slider"></div>
+        <button class="tab-btn active" onclick="moveSlider(0)">
+            <div class="tab-icon" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/6997/6997164.png');"></div>
+        </button>
+        <button class="tab-btn" onclick="moveSlider(1)">
+            <div class="tab-icon" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/9959/9959489.png');"></div>
+        </button>
     </div>
 
     <script>
-        const slider = document.getElementById('slider');
-        function updateSlider(btn) {
-            slider.style.left = btn.offsetLeft + 'px';
-            slider.style.width = btn.offsetWidth + 'px';
+        function moveSlider(index) {
+            const slider = document.getElementById('slider');
+            slider.style.transform = `translateX(${index * 116}px)`;
+            document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+                btn.classList.toggle('active', i === index);
+            });
         }
-        function nav(target, btn) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            updateSlider(btn);
-            if(target === 'home') {
-                document.getElementById('scr-home').classList.remove('screen-hidden-left');
-                document.getElementById('scr-settings').classList.add('screen-hidden-right');
-            } else {
-                document.getElementById('scr-home').classList.add('screen-hidden-left');
-                document.getElementById('scr-settings').classList.remove('screen-hidden-right');
-            }
-        }
-        window.onload = () => updateSlider(document.querySelector('.tab-btn.active'));
     </script>
+
 </body>
 </html>
