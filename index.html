@@ -3,19 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Hash — Вход</title>
+    <title>Hash — Private Messenger</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #000000;
             --accent: #00B689;
-            --ios-grey: rgba(28, 28, 30, 0.7);
             --modal-bg: #0C0C0C;
-            --input-bg: #1C1C1E;
+            /* Системные цвета iOS */
+            --ios-light-grey: rgba(242, 242, 247, 0.8); /* Светлая подложка с прозрачностью */
+            --ios-light-slider: rgba(0, 0, 0, 0.05); /* Светлый слайдер на темном фоне */
+            --ios-grey: #1C1C1E; /* Фон для групп полей ввода */
             --hint-color: #8E8E93;
+            --ios-dark-text: #1C1C1E; /* Темный текст для табов */
+            --ios-dark-text-inactive: rgba(28, 28, 30, 0.5); /* Темный неактивный текст для табов */
         }
 
-        /* Системные запреты */
+        /* Системные запреты для имитации нативного приложения */
         * {
             -webkit-tap-highlight-color: transparent;
             user-select: none;
@@ -31,7 +35,8 @@
 
         body, html {
             background-color: var(--bg);
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Manrope", sans-serif;
+            /* Устанавливаем Manrope как основной шрифт */
+            font-family: 'Manrope', -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
             color: white;
             margin: 0;
             height: 100vh;
@@ -43,7 +48,7 @@
             position: absolute;
             top: 0;
             width: 100%;
-            height: 25vh; /* Сократили высоту гифки */
+            height: 18vh; /* Уменьшили высоту гифки до аккуратной полосы */
             z-index: 1;
         }
         .header-visual img {
@@ -55,36 +60,36 @@
         /* Верхний блок: Лого + Табы */
         .header-stack {
             position: absolute;
-            top: 4vh;
+            top: 2vh; /* Опустили немного вниз от самого верха */
             width: 100%;
             z-index: 10;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
+            gap: 15px; /* Компактнее */
         }
 
         .branding {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
         .logo-img {
-            width: 42px;
-            height: 42px;
-            border-radius: 10px;
+            width: 38px;
+            height: 38px;
+            border-radius: 9px;
             object-fit: cover;
         }
         .logo-text {
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 800;
             letter-spacing: -0.05em;
         }
 
-        /* iOS Таб-бар */
+        /* Светлый iOS Таб-бар с темным текстом */
         .ios-tab-bar {
             position: relative;
-            background: var(--ios-grey);
+            background: var(--ios-light-grey);
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
             border-radius: 99px;
@@ -101,27 +106,27 @@
             text-align: center;
             font-size: 14px;
             font-weight: 600;
-            color: rgba(255,255,255,0.5);
+            color: var(--ios-dark-text-inactive);
             cursor: pointer;
             border: none;
             background: none;
             transition: color 0.2s;
         }
-        .tab-item.active { color: white; }
+        .tab-item.active { color: var(--ios-dark-text); }
 
         .liquid-slider {
             position: absolute;
             top: 3px; bottom: 3px;
-            background: rgba(255, 255, 255, 0.15);
+            background: var(--ios-light-slider);
             border-radius: 99px;
             z-index: 1;
         }
 
-        /* Модалка */
+        /* Модалка поднята выше */
         .modal-glass {
             position: relative;
-            height: 85vh;
-            margin-top: 18vh; /* Подняли выше */
+            height: calc(100vh - 12vh); /* Высота почти во весь экран */
+            margin-top: 10vh; /* Подняли модалку выше */
             background: var(--modal-bg);
             border-radius: 35px 35px 0 0;
             z-index: 5;
@@ -133,22 +138,24 @@
         .content-scroll {
             height: 100%;
             overflow-y: auto;
-            padding: 40px 24px 100px;
+            padding: 30px 24px 100px; /* Уменьшили верхний отступ */
         }
 
-        /* Поля ввода в стиле iOS */
-        .input-group {
+        /* Поля ввода в стиле iOS Групп настроек */
+        .ios-input-group {
+            background: var(--ios-grey);
+            border-radius: 12px;
             margin-bottom: 24px;
+            overflow: hidden; /* Чтобы разделители не вылезали */
         }
 
-        .input-pill {
-            background: var(--input-bg);
-            border-radius: 99px;
-            padding: 12px 20px;
+        .ios-input-row {
             display: flex;
             align-items: center;
-            border: 0.5px solid rgba(255,255,255,0.05);
+            padding: 14px 20px;
+            border-bottom: 0.5px solid rgba(255, 255, 255, 0.05); /* Тонкий разделитель */
         }
+        .ios-input-row:last-child { border-bottom: none; }
 
         .icon-field {
             width: 20px;
@@ -175,13 +182,22 @@
             line-height: 1.3;
         }
 
-        /* Кнопка */
+        /* Заголовки групп iOS */
+        .ios-group-label {
+            color: var(--hint-color);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin: 0 20px 8px;
+        }
+
+        /* Системная кнопка iOS */
         .btn-action {
             background: var(--accent);
             color: black;
-            border-radius: 99px;
-            padding: 17px;
-            font-weight: 700;
+            border-radius: 12px; /* Более прямые углы */
+            padding: 16px;
+            font-weight: 600; /* Менее жирная, более системная */
             width: 100%;
             border: none;
             margin-top: 10px;
@@ -189,27 +205,22 @@
         }
         .btn-action:active { opacity: 0.8; transform: scale(0.98); }
 
-        /* Документация */
-        .doc-card {
-            background: var(--input-bg);
-            border-radius: 24px;
-            padding: 20px;
-            margin-bottom: 16px;
-        }
-        .doc-card h3 { 
+        /* Документация в стиле iOS Статей */
+        .doc-item { margin-bottom: 24px; }
+        .doc-item h3 { 
             margin: 0 0 8px 0; 
-            font-size: 18px; 
+            font-size: 20px; 
             color: var(--accent);
             font-weight: 700;
         }
-        .doc-card p { 
+        .doc-item p { 
             margin: 0; 
             font-size: 15px; 
             color: rgba(255,255,255,0.6); 
             line-height: 1.4;
         }
 
-        /* Скроллбар */
+        /* Системный скроллбар */
         .content-scroll::-webkit-scrollbar { width: 4px; }
         .content-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
 
@@ -245,44 +256,43 @@
         <div class="content-scroll">
             
             <div id="sec-0" class="section active">
-                <div class="doc-card">
+                <div class="doc-item">
                     <h3>Что такое Hash?</h3>
                     <p>Закрытый мессенджер для своих. Без регистрации по номеру, без рекламы и без лишнего шума.</p>
                 </div>
-                <div class="doc-card">
+                <div class="doc-item">
                     <h3>Это безопасно?</h3>
                     <p>Твои сообщения — это только твоё дело. Мы используем локальное шифрование и не собираем метрики.</p>
                 </div>
-                <div class="doc-card">
+                <div class="doc-item">
                     <h3>Как войти?</h3>
                     <p>Выбери вкладку «Логин», введи свои данные и начни общение. Мы не храним пароли в открытом виде.</p>
                 </div>
             </div>
 
             <div id="sec-1" class="section">
-                <div class="input-group">
-                    <div class="input-pill">
+                
+                <h2 class="ios-group-label">Основные данные</h2>
+                <div class="ios-input-group">
+                    <div class="ios-input-row">
                         <img src="https://cdn-icons-png.flaticon.com/512/6997/6997204.png" class="icon-field" alt="user">
                         <input type="text" placeholder="Имя" autocomplete="off">
                     </div>
-                    <p class="hint">Напиши никнейм, который будут видеть другие</p>
-                </div>
-
-                <div class="input-group">
-                    <div class="input-pill">
+                    <div class="ios-input-row">
                         <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" class="icon-field" alt="tag">
                         <input type="text" placeholder="@юзер" autocomplete="off">
                     </div>
-                    <p class="hint">Твой уникальный идентификатор в системе</p>
                 </div>
+                <p class="hint">Напиши имя, которое увидят другие, и твой @юзер.</p>
 
-                <div class="input-group">
-                    <div class="input-pill">
+                <h2 class="ios-group-label" style="margin-top:24px;">Безопасность</h2>
+                <div class="ios-input-group">
+                    <div class="ios-input-row">
                         <img src="https://cdn-icons-png.flaticon.com/512/15773/15773700.png" class="icon-field" alt="pass">
                         <input type="password" placeholder="Пароль">
                     </div>
-                    <p class="hint">Используй надежный пароль из 8+ символов</p>
                 </div>
+                <p class="hint">Используй надежный пароль из 8+ символов.</p>
 
                 <button class="btn-action">Продолжить</button>
             </div>
@@ -312,7 +322,7 @@
             });
         });
 
-        // Инициализация
+        // Инициализация слайдера при загрузке
         window.onload = () => updateSlider(tabs[0]);
     </script>
 </body>
