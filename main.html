@@ -6,138 +6,133 @@
     <title>Hash — Chats</title>
     <style>
         :root {
-            --bg: #000000;
-            --glass-lite: rgba(255, 255, 255, 0.05);
+            --ios-bg: #000000;
+            /* Твои параметры из логин-экрана */
+            --ios-glass: rgba(28, 28, 30, 0.85); 
             --accent: #00B689;
             --sub: #8E8E93;
-            --border-color: rgba(255, 255, 255, 0.1);
+            --border-color: rgba(255, 255, 255, 0.12);
             
-            /* Новые ПЛАВНЫЕ градиенты аватарок */
             --g-orange: linear-gradient(135deg, rgba(255, 149, 0, 0.9) 0%, rgba(178, 80, 0, 0.6) 100%);
             --g-green: linear-gradient(135deg, rgba(52, 199, 89, 0.9) 0%, rgba(26, 99, 45, 0.6) 100%);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
-        body { background: var(--bg); font-family: -apple-system, system-ui, sans-serif; color: white; overflow-x: hidden; position: relative; }
+        body { background: var(--ios-bg); font-family: -apple-system, system-ui, sans-serif; color: white; overflow-x: hidden; position: relative; }
 
-        /* --- HEADER (ФИКСИРОВАННЫЙ) --- */
+        /* --- HEADER --- */
         .main-header {
             padding-top: env(safe-area-inset-top);
-            background: var(--bg);
-            position: sticky; top: 0; z-index: 200; /* Выше всего, кроме меню */
+            background: var(--ios-bg);
+            position: sticky; top: 0; z-index: 200;
         }
 
         .s-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px 10px; }
         
-        /* Заголовок с шевроном */
-        .title-wrap { display: flex; align-items: center; gap: 8px; cursor: pointer; position: relative; z-index: 220; }
+        /* Заголовок (НЕ размывается) */
+        .title-wrap { display: flex; align-items: center; gap: 8px; cursor: pointer; position: relative; z-index: 250; }
         .s-title { font-size: 26px; font-weight: 800; letter-spacing: -0.7px; }
         .chevron-icon { 
             width: 14px; height: 14px; background: var(--sub); 
             -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/32/32195.png') center/contain no-repeat;
-            margin-top: 6px;
-            transition: transform 0.3s ease;
+            margin-top: 6px; transition: transform 0.3s ease;
         }
         
-        /* Иконка Редактирования (РАЗМЫВАЕТСЯ) */
+        /* Группа иконки (РАЗМЫВАЕТСЯ) */
+        .header-actions { transition: filter 0.3s ease, opacity 0.3s; }
         .edit-icon { 
             width: 22px; height: 22px; background: var(--accent); 
             -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9883/9883181.png') center/contain no-repeat; 
             cursor: pointer;
-            transition: filter 0.3s ease, opacity 0.3s ease;
         }
 
         /* --- NAVIGATION & SHADOW --- */
         .nav-section { 
-            position: relative; background: var(--bg); 
-            transition: filter 0.3s ease, opacity 0.3s ease; /* Размывается */
+            position: relative; background: var(--ios-bg); 
+            transition: filter 0.3s ease, opacity 0.3s; 
         }
         .filter-container { padding: 5px 24px 12px; }
         .filter-bar { 
-            background: var(--glass-lite); border-radius: 999px; 
-            padding: 3px; display: flex; position: relative; border: 0.5px solid var(--border-color);
+            background: rgba(120, 120, 128, 0.22); /* Из твоего сегмент-контроллера */
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 999px; padding: 2px; display: flex; position: relative; 
+            border: 0.5px solid var(--border-color);
         }
-        .f-btn { flex: 1; border: none; background: none; color: var(--sub); font-size: 13px; font-weight: 700; padding: 8px 0; cursor: pointer; z-index: 2; display: flex; align-items: center; justify-content: center; }
+        .f-btn { flex: 1; border: none; background: none; color: rgba(255,255,255,0.4); font-size: 13px; font-weight: 600; padding: 8px 0; cursor: pointer; z-index: 2; display: flex; align-items: center; justify-content: center; }
         .f-btn.active { color: white; }
-        .f-slider { position: absolute; background: rgba(255, 255, 255, 0.12); border-radius: 999px; height: calc(100% - 6px); top: 3px; transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1); z-index: 1; }
+        .f-slider { position: absolute; background: rgba(255, 255, 255, 0.2); border-radius: 999px; height: calc(100% - 4px); top: 2px; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1; }
 
-        /* Уменьшенная, супер-плавная тень */
+        /* Плавная дымчатая тень */
         .header-shadow {
-            position: absolute; bottom: -20px; left: 0; width: 100%; height: 20px;
-            /* Более плавный градиент (длинный переход) */
-            background: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0) 100%);
+            position: absolute; bottom: -30px; left: 0; width: 100%; height: 30px;
+            background: linear-gradient(to bottom, var(--ios-bg) 0%, rgba(0,0,0,0.5) 40%, transparent 100%);
             pointer-events: none; z-index: 50;
         }
 
-        /* --- CHATS LIST (То, что размывается) --- */
-        .main-content { padding-top: 8px; transition: filter 0.3s ease, opacity 0.3s ease; }
-        .chat-item { overflow: hidden; }
+        /* --- CONTENT --- */
+        .main-content { padding-top: 8px; transition: filter 0.3s ease, opacity 0.3s; }
         .chat-row { display: flex; padding: 12px 24px; gap: 16px; align-items: center; cursor: pointer; }
         .chat-row:active { background: rgba(255,255,255,0.05); }
         
-        .ava-circle { width: 54px; height: 54px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; overflow: hidden; }
-        .ava-icon { background: white; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center; z-index: 2; position: relative; }
+        .ava-circle { width: 54px; height: 54px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .ava-icon { background: white; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center; }
         .bg-orange { background: var(--g-orange); }
         .bg-green { background: var(--g-green); }
 
-        .chat-info { flex: 1; display: flex; flex-direction: column; gap: 1px; }
-        .chat-name-row { display: flex; align-items: center; }
+        .chat-info { flex: 1; display: flex; flex-direction: column; }
         .chat-name { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; }
-        .v-badge { width: 16px; height: 16px; background: var(--accent); -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9918/9918743.png') center/contain no-repeat; margin-left: 4px; }
-        .chat-msg { font-size: 14px; color: var(--sub); }
+        .v-badge { width: 16px; height: 16px; background: var(--accent); -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9918/9918743.png') center/contain no-repeat; margin-left: 4px; display: inline-block; vertical-align: middle; }
+        .chat-msg { font-size: 14px; color: var(--sub); margin-top: 1px; }
         .divider { height: 0.5px; background: var(--border-color); margin-left: 94px; }
 
         /* ============================== */
-        /* = Context Menu iOS = */
+        /* = Context Menu (Modal Glass) = */
         /* ============================== */
         
-        /* Фон блюра */
         #menuBackdrop {
-            position: fixed; inset: 0; top: env(safe-area-inset-top);
-            background: rgba(0,0,0,0.1);
-            backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px);
-            z-index: 150; visibility: hidden; opacity: 0;
-            transition: visibility 0.3s, opacity 0.3s, backdrop-filter 0.3s ease;
+            position: fixed; inset: 0; z-index: 150; visibility: hidden; opacity: 0;
+            background: rgba(0,0,0,0.2); transition: 0.3s ease;
         }
         
-        /* Стеклянное Окно Меню */
         .ios-context-menu {
             position: fixed;
-            top: calc(75px + env(safe-area-inset-top)); /* Прямо под "Чаты" */
-            left: 24px; width: 190px;
-            background: rgba(25, 25, 27, 0.7);
-            backdrop-filter: blur(35px) saturate(210%); -webkit-backdrop-filter: blur(35px) saturate(210%);
+            top: calc(75px + env(safe-area-inset-top));
+            left: 24px; width: 200px;
+            /* Твой стиль из модалки регистрации */
+            background: var(--ios-glass);
+            backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%);
             border-radius: 14px;
-            border: 0.5px solid rgba(255,255,255,0.06);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-            z-index: 210; /* Выше всего */
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 15px 45px rgba(0,0,0,0.5);
+            z-index: 260;
             
-            /* Анимация увеличения из ничего */
             transform-origin: top left;
             transform: scale(0.8) translateY(-10px);
             opacity: 0; visibility: hidden;
-            transition: transform 0.25s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.25s, visibility 0.25s;
+            transition: transform 0.25s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.25s;
         }
         
-        /* Пункты меню */
         .menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; cursor: pointer; }
-        .menu-item:active { background: rgba(255,255,255,0.08); }
-        
-        .m-icon { width: 19px; height: 19px; background: white; opacity: 0.85; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center; }
-        .m-text { font-size: 15px; font-weight: 500; color: white; letter-spacing: -0.2px; }
-        .menu-divider { height: 0.5px; background: rgba(255,255,255,0.06); margin-left: 48px; }
+        .menu-item:active { background: rgba(255,255,255,0.1); }
+        .m-icon { width: 19px; height: 19px; background: white; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center; }
+        .m-text { font-size: 16px; font-weight: 500; color: white; }
+        .menu-divider { height: 0.5px; background: rgba(255,255,255,0.1); margin-left: 48px; }
 
         /* ============================== */
-        /* = Состояния Меню = */
+        /* = State: Menu Open = */
         /* ============================== */
         body.menu-open .chevron-icon { transform: rotate(180deg); }
         
-        /* Блюрятся все, кроме заголовка */
+        /* РАЗМЫВАЕМ ВСЁ КРОМЕ ЗАГОЛОВКА */
         body.menu-open .main-content, 
         body.menu-open .nav-section, 
-        body.menu-open .edit-icon { filter: blur(10px) saturate(140%); opacity: 0.6; pointer-events: none; }
+        body.menu-open .header-actions { 
+            filter: blur(10px) saturate(140%); 
+            opacity: 0.5; 
+            pointer-events: none; 
+        }
         
-        body.menu-open #menuBackdrop { visibility: visible; opacity: 1; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        body.menu-open #menuBackdrop { visibility: visible; opacity: 1; }
         body.menu-open .ios-context-menu { visibility: visible; opacity: 1; transform: scale(1) translateY(0); }
 
     </style>
@@ -148,13 +143,13 @@
 
     <div class="ios-context-menu" id="iosMenu">
         <div class="menu-item">
-            <div class="m-icon" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/7699/7699490.png');"></div>
+            <div class="m-icon" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/3019/3019014.png');"></div>
             <span class="m-text">Настройки</span>
         </div>
         <div class="menu-divider"></div>
         <div class="menu-item">
             <div class="m-icon" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/7263/7263334.png');"></div>
-            <span class="m-text">Выйти</span>
+            <span class="m-text" style="color: #FF453A;">Выйти</span>
         </div>
     </div>
 
@@ -164,7 +159,9 @@
                 <span class="s-title">Чаты</span>
                 <div class="chevron-icon"></div>
             </div>
-            <div class="edit-icon"></div>
+            <div class="header-actions">
+                <div class="edit-icon"></div>
+            </div>
         </div>
         
         <div class="nav-section">
@@ -221,15 +218,15 @@
             if(body.classList.contains('menu-open')) return;
             document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            fSlider.style.left = btn.offsetLeft + 'px';
-            fSlider.style.width = btn.offsetWidth + 'px';
+            fSlider.style.left = (btn.offsetLeft + 2) + 'px';
+            fSlider.style.width = (btn.offsetWidth - 4) + 'px';
         }
 
         window.onload = () => {
             const af = document.querySelector('.f-btn.active');
             if(af) {
-                fSlider.style.left = af.offsetLeft + 'px';
-                fSlider.style.width = af.offsetWidth + 'px';
+                fSlider.style.left = (af.offsetLeft + 2) + 'px';
+                fSlider.style.width = (af.offsetWidth - 4) + 'px';
             }
         };
     </script>
