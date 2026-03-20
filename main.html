@@ -3,25 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Hash — Chats v1.0</title>
+    <title>Hash — Chats v0.7 Pro</title>
     <style>
         :root {
             --ios-bg: #000000;
-            --ios-chat-bg: #000000;
-            --ios-glass: rgba(28, 28, 30, 0.8);
+            --ios-chat-bg: #1C1C1E;
+            --ios-menu-bg: rgba(28, 28, 30, 0.9);
             --ios-label: #FFFFFF;
             --ios-secondary: rgba(255, 255, 255, 0.45);
-            --ios-sep: rgba(255, 255, 255, 0.12);
+            --ios-sep: rgba(255, 255, 255, 0.1);
+            --ios-red: #FF453A;
             --accent: #00B689;
-            --msg-own: #00B689;
-            --msg-other: #262629;
+            --msg-other: rgba(255, 255, 255, 0.1);
+            --input-glass: rgba(120, 120, 128, 0.24);
             
             --g-sunset: linear-gradient(135deg, #FF9500 0%, #FF5E00 100%);
             --g-emerald: linear-gradient(135deg, #34C759 0%, #00A67E 100%);
             
-            --ease-ios: cubic-bezier(0.4, 0, 0.2, 1);
-            --ease-out: cubic-bezier(0.1, 0.9, 0.2, 1);
-            --ease-in: cubic-bezier(0.3, 0, 0.8, 0.15);
+            --anim-main: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --anim-menu: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            --anim-chat: all 0.45s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
@@ -30,118 +31,138 @@
             background: var(--ios-bg); 
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; 
             color: var(--ios-label); 
-            overflow: hidden; width: 100vw; height: 100vh;
+            overflow: hidden;
+            width: 100vw; height: 100vh;
         }
 
-        /* --- HEADER --- */
-        .main-header { padding-top: env(safe-area-inset-top); background: var(--ios-bg); position: sticky; top: 0; z-index: 200; transition: transform 0.3s var(--ease-ios); }
+        /* --- UI COMPONENTS --- */
+        .main-header { padding-top: env(safe-area-inset-top); background: var(--ios-bg); position: sticky; top: 0; z-index: 200; transition: var(--anim-main); }
         .s-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px 10px; }
         .title-wrap { display: flex; align-items: center; gap: 8px; cursor: pointer; position: relative; z-index: 250; }
         .s-title { font-size: 28px; font-weight: 800; letter-spacing: -0.03em; }
-        .chevron-menu { width: 14px; height: 14px; background: var(--ios-secondary); -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/32/32195.png') center/contain no-repeat; margin-top: 8px; transition: 0.3s var(--ease-ios); }
+        .chevron { width: 14px; height: 14px; background: var(--ios-secondary); -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/32/32195.png') center/contain no-repeat; margin-top: 8px; transition: 0.3s; }
         .edit-icon { width: 22px; height: 22px; background: var(--accent); -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9883/9883181.png') center/contain no-repeat; cursor: pointer; }
 
-        .nav-section { position: relative; background: var(--ios-bg); z-index: 190; transition: 0.3s var(--ease-ios); }
-        .filter-container { padding: 5px 24px 12px; position: relative; }
-        .filter-bar { background: rgba(120, 120, 128, 0.24); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 999px; padding: 2px; display: flex; position: relative; border: 0.5px solid var(--ios-sep); }
-        .f-btn { flex: 1; border: none; background: none; color: rgba(255,255,255,0.4); font-size: 13px; font-weight: 700; padding: 7px 0; cursor: pointer; z-index: 2; transition: color 0.2s; }
+        .nav-section { position: relative; background: var(--ios-bg); z-index: 190; transition: var(--anim-main); }
+        .filter-container { padding: 5px 24px 12px; position: relative; z-index: 2; }
+        .filter-bar { background: rgba(120, 120, 128, 0.24); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border-radius: 999px; padding: 2px; display: flex; position: relative; border: 0.5px solid var(--ios-sep); }
+        .f-btn { flex: 1; border: none; background: none; color: rgba(255,255,255,0.5); font-size: 13px; font-weight: 700; padding: 7px 0; cursor: pointer; z-index: 2; }
         .f-btn.active { color: var(--ios-label); }
-        .f-slider { position: absolute; background: rgba(255, 255, 255, 0.2); border-radius: 999px; height: calc(100% - 4px); top: 2px; transition: 0.35s cubic-bezier(0.19, 1, 0.22, 1); z-index: 1; }
+        .f-slider { position: absolute; background: rgba(255, 255, 255, 0.2); border-radius: 999px; height: calc(100% - 4px); top: 2px; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1; }
+        .header-shadow { position: absolute; bottom: -30px; left: 0; width: 100%; height: 30px; background: linear-gradient(to bottom, var(--ios-bg) 0%, rgba(0,0,0,0.6) 45%, transparent 100%); pointer-events: none; }
 
-        /* --- LIST --- */
-        .main-content { padding-top: 8px; height: calc(100vh - 150px); overflow-y: auto; transition: 0.3s var(--ease-ios); }
-        .chat-row { display: flex; padding: 12px 24px; gap: 16px; align-items: center; cursor: pointer; }
+        /* --- CHAT LIST --- */
+        .main-content { padding-top: 8px; height: calc(100vh - 150px); overflow-y: auto; transition: var(--anim-main); }
+        .chat-row { display: flex; padding: 12px 24px; gap: 16px; align-items: center; cursor: pointer; transition: background 0.2s; }
         .chat-row:active { background: rgba(255,255,255,0.05); }
-        
-        .ava { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; }
-        .ava-icon { background: white; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center; }
+        .ava { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; z-index: 10; }
+        .ava-icon { background: white; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center; transition: opacity 0.2s; }
         
         .unread-count { 
             position: absolute; top: -2px; right: -2px; background: var(--accent); color: white; 
             font-size: 11px; font-weight: 800; min-width: 18px; height: 18px; border-radius: 10px; 
             display: flex; align-items: center; justify-content: center; border: 2px solid var(--ios-bg);
-            opacity: 0; transform: scale(0.4); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2);
+            opacity: 0; transform: scale(0.5); transition: all 0.4s var(--anim-pop);
         }
         .unread-count.show { opacity: 1; transform: scale(1); }
-
         .chat-info { flex: 1; overflow: hidden; }
         .chat-name { font-size: 17px; font-weight: 600; display: flex; align-items: center; gap: 4px; }
-        .chat-msg { font-size: 15px; color: var(--ios-secondary); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0; transform: translateY(4px); transition: 0.5s var(--ease-out); }
+        .chat-msg { font-size: 15px; color: var(--ios-secondary); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; opacity: 0; transform: translateY(4px); transition: all 0.5s ease; }
         .chat-msg.show { opacity: 1; transform: translateY(0); }
         .sep { height: 0.5px; background: var(--ios-sep); margin-left: 94px; }
 
-        /* --- MENU --- */
-        #menuBackdrop { position: fixed; inset: 0; z-index: 150; visibility: hidden; opacity: 0; background: rgba(0,0,0,0.3); transition: opacity 0.3s var(--ease-ios); }
+        /* --- CONTEXT MENU --- */
+        #menuBackdrop { position: fixed; inset: 0; z-index: 150; visibility: hidden; opacity: 0; background: rgba(0,0,0,0.25); transition: var(--anim-main); }
         .context-menu {
             position: fixed; top: calc(72px + env(safe-area-inset-top)); left: 24px; 
-            width: 180px; background: var(--ios-glass); 
-            backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%);
+            width: 180px; background: var(--ios-menu-bg); 
+            backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
             border-radius: 14px; z-index: 260; border: 1px solid rgba(255, 255, 255, 0.08); 
             box-shadow: 0 15px 35px rgba(0,0,0,0.5); transform-origin: top left; 
             transform: translateY(-20px) scale(0.85); opacity: 0; visibility: hidden;
-            transition: transform 0.25s var(--ease-in), opacity 0.2s var(--ease-in);
+            transition: var(--anim-menu);
         }
-        body.menu-open .context-menu { visibility: visible; opacity: 1; transform: translateY(0) scale(1); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1), opacity 0.2s; }
-        body.menu-open .chevron-menu { transform: rotate(180deg); }
-        body.menu-open .main-content, body.menu-open .nav-section { filter: blur(5px); opacity: 0.6; pointer-events: none; }
+        .context-menu::before {
+            content: ""; position: absolute; inset: -1px; border-radius: 14px; padding: 1px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.25), rgba(255,255,255,0.02));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
+        }
+        .menu-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; cursor: pointer; }
+        .m-text { font-size: 17px; font-weight: 500; }
+        .m-icon { width: 20px; height: 20px; background: var(--ios-label); -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; }
+        .menu-sep { height: 0.5px; background: var(--ios-sep); margin: 0 16px; }
+
+        body.menu-open .context-menu { visibility: visible; opacity: 1; transform: translateY(0) scale(1); }
+        body.menu-open .chevron { transform: rotate(180deg); }
+        body.menu-open .main-content, body.menu-open .nav-section { filter: blur(4px); opacity: 0.7; pointer-events: none; }
         body.menu-open #menuBackdrop { visibility: visible; opacity: 1; }
 
-        .menu-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; cursor: pointer; }
-        .m-icon { width: 20px; height: 20px; background: var(--ios-label); -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; }
-
-        /* --- CHAT VIEW --- */
+        /* --- CHAT VIEW & TRANSITION --- */
         #chatPortal { position: fixed; inset: 0; z-index: 500; pointer-events: none; visibility: hidden; }
-        .expand-bg { position: absolute; width: 56px; height: 56px; border-radius: 50%; z-index: 510; transition: transform 0.45s var(--ease-ios), background 0.45s var(--ease-ios), opacity 0.3s; }
+        .transition-bg { position: absolute; width: 56px; height: 56px; border-radius: 50%; z-index: 510; transition: var(--anim-chat); opacity: 0; }
         
         #chatView { 
             position: fixed; inset: 0; background: var(--ios-chat-bg); z-index: 520; 
-            display: flex; flex-direction: column; opacity: 0; transform: scale(1.05); 
-            transition: opacity 0.3s var(--ease-ios), transform 0.4s var(--ease-ios); pointer-events: none;
+            display: flex; flex-direction: column; opacity: 0; transform: translateY(20px); 
+            transition: opacity 0.2s ease, transform 0.3s var(--anim-chat); pointer-events: none;
         }
-        #chatView.active { opacity: 1; transform: scale(1); pointer-events: auto; }
+        #chatView.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
 
         .chat-header { 
             padding-top: env(safe-area-inset-top); display: flex; align-items: center; 
-            justify-content: space-between; padding: 0 16px; height: calc(54px + env(safe-area-inset-top));
+            justify-content: space-between; padding-left: 16px; padding-right: 16px; 
+            height: calc(60px + env(safe-area-inset-top)); background: var(--ios-chat-bg);
+            position: sticky; top: 0; z-index: 530;
         }
-        .chat-back { width: 20px; height: 20px; background: #FFF; -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/2722/2722991.png') center/contain no-repeat; cursor: pointer; }
-        .chat-title { font-size: 17px; font-weight: 700; flex: 1; text-align: center; }
-        .chat-ava-right { width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; }
+        .chat-back { width: 12px; height: 20px; background: var(--ios-label); -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/2712/2712991.png') center/contain no-repeat; cursor: pointer; }
+        .chat-title { font-size: 17px; font-weight: 700; }
+        .chat-ava-small { width: 36px; height: 36px; border-radius: 50%; }
 
-        .chat-body { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-        .bubble { 
-            max-width: 75%; padding: 8px 12px 24px; font-size: 16px; border-radius: 18px; 
-            position: relative; line-height: 1.35; color: #FFF;
-        }
-        .bubble.other { background: var(--msg-other); align-self: flex-start; }
-        .bubble.own { background: var(--msg-own); align-self: flex-end; }
+        .chat-body { flex: 1; padding: 20px 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-bottom: 120px; }
+        .msg { max-width: 75%; padding: 10px 14px; font-size: 16px; border-radius: 18px; position: relative; line-height: 1.4; display: flex; flex-direction: column; gap: 4px; }
         
-        .msg-time { 
-            position: absolute; bottom: 4px; right: 8px; font-size: 10px; font-weight: 600;
-            background: rgba(0, 0, 0, 0.15); padding: 2px 6px; border-radius: 6px; color: rgba(255,255,255,0.6);
+        .msg.other { background: var(--msg-other); align-self: flex-start; }
+        .msg.own { background: var(--accent); align-self: flex-end; }
+        
+        .msg-time-wrap { align-self: flex-end; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.2); padding: 2px 6px; border-radius: 8px; margin-top: -6px; margin-right: -4px; margin-bottom: -2px;}
+        .msg-time { font-size: 10px; font-weight: 600; color: rgba(255, 255, 255, 0.5); font-variant-numeric: tabular-nums; }
+        
+        /* --- CHAT FOOTER (STYLISH GLASS) --- */
+        .chat-footer { 
+            position: fixed; bottom: 0; left: 0; width: 100%; z-index: 540;
+            padding: 10px 16px calc(15px + env(safe-area-inset-bottom));
+            background: rgba(44, 44, 46, 0.8);
+            backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 24px 24px 0 0;
+            border-top: 1px solid transparent;
+            background-clip: padding-box;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.3);
+        }
+        .chat-footer::before {
+            content: ""; position: absolute; inset: -1px; border-radius: 24px 24px 0 0; padding: 1px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.15), rgba(255,255,255,0.02));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
         }
 
-        /* --- GLASS INPUT --- */
-        .chat-footer { padding: 10px 16px calc(20px + env(safe-area-inset-bottom)); position: relative; }
-        .glass-input { 
-            background: var(--ios-glass); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-            border-radius: 24px; padding: 12px; border: 1px solid rgba(255,255,255,0.08);
-            display: flex; flex-direction: column; min-height: 90px; transition: height 0.2s var(--ease-ios);
-        }
-        .input-top { flex: 1; display: flex; align-items: flex-start; }
-        .input-area { 
-            width: 100%; background: none; border: none; color: #FFF; font-size: 16px; 
-            font-family: inherit; resize: none; outline: none; padding: 0 4px;
-            max-height: 72px; /* ~3 строки */
-        }
-        .input-area::placeholder { color: var(--ios-secondary); }
+        .input-area { display: flex; flex-direction: column; gap: 10px; }
         
-        .input-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
-        .btn-act { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s var(--ease-ios); }
-        .btn-act:active { transform: scale(0.9); }
-        .icon-plus { width: 20px; height: 20px; background: #FFF; -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9312/9312231.png') center/contain no-repeat; }
+        /* Автовысота до 3 строк */
+        .input-field { 
+            flex: 1; background: none; border: none; color: white; font-size: 16px; outline: none; 
+            resize: none; min-height: 24px; max-height: 72px; /* 24px * 3 */
+            line-height: 24px; font-family: inherit; overflow-y: auto;
+        }
+        .input-field::-webkit-scrollbar { display: none; }
+        .input-field::placeholder { color: var(--ios-secondary); }
+        
+        .input-bottom { display: flex; justify-content: space-between; align-items: center; }
+        .btn-circle { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
+        .btn-circle:active { transform: scale(0.9); opacity: 0.7; }
+        .icon-plus { width: 22px; height: 22px; background: var(--ios-label); -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9312/9312231.png') center/contain no-repeat; }
         .btn-send { background: var(--accent); }
-        .icon-send { width: 16px; height: 16px; background: #FFF; -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/608/608336.png') center/contain no-repeat; }
+        .icon-up { width: 18px; height: 18px; background: white; -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/608/608336.png') center/contain no-repeat; }
 
     </style>
 </head>
@@ -151,13 +172,15 @@
 
     <div class="context-menu" id="iosMenu">
         <div class="menu-item" onclick="app.toggleMenu()"><span>Чаты</span><div class="m-icon" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/6998/6998782.png');"></div></div>
-        <div class="menu-sep" style="height:0.5px; background:var(--ios-sep); margin:0 16px;"></div>
+        <div class="menu-sep"></div>
         <div class="menu-item" onclick="app.toggleMenu()"><span>Настройки</span><div class="m-icon" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/7698/7698891.png');"></div></div>
+        <div class="menu-sep"></div>
+        <div class="menu-item" onclick="app.toggleMenu()"><span style="color: var(--ios-red);">Выйти</span><div class="m-icon" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/7263/7263334.png'); background: var(--ios-red);"></div></div>
     </div>
 
     <header class="main-header">
         <div class="s-header">
-            <div class="title-wrap" onclick="app.toggleMenu()"><span class="s-title">Чаты</span><div class="chevron-menu"></div></div>
+            <div class="title-wrap" onclick="app.toggleMenu()"><span class="s-title">Чаты</span><div class="chevron"></div></div>
             <div class="header-actions"><div class="edit-icon"></div></div>
         </div>
         <div class="nav-section">
@@ -168,6 +191,7 @@
                     <button class="f-btn" onclick="app.filter(this)">Боты</button>
                     <button class="f-btn" onclick="app.filter(this)">Создать</button>
                 </div>
+                <div class="header-shadow"></div>
             </div>
         </div>
     </header>
@@ -180,27 +204,27 @@
         <div class="sep"></div>
         <div class="chat-row" onclick="app.openChat('Поддержка', 'var(--g-emerald)', 'https://cdn-icons-png.flaticon.com/512/11831/11831523.png', true)">
             <div class="ava" style="background: var(--g-emerald)"><div class="unread-count" id="sBadge">1</div><div class="ava-icon" style="width: 28px; height: 28px; -webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/11831/11831523.png');"></div></div>
-            <div class="chat-info"><div class="chat-name">Поддержка</div><span class="chat-msg" id="sMsg">...</span></div>
+            <div class="chat-info"><div class="chat-name">Поддержка</div><span class="chat-msg" id="sMsg">Чат пуст</span></div>
         </div>
     </div>
 
     <div id="chatPortal">
-        <div class="expand-bg" id="expBg"></div>
+        <div class="transition-bg" id="tBg"></div>
         <div id="chatView">
             <div class="chat-header">
                 <div class="chat-back" onclick="app.closeChat()"></div>
                 <div class="chat-title" id="cTitle">Name</div>
-                <div class="chat-ava-right" id="cAvaR"></div>
+                <div class="chat-ava-small" id="cAva"></div>
             </div>
             <div class="chat-body" id="cBody"></div>
             <div class="chat-footer">
-                <div class="glass-input">
+                <div class="input-area">
                     <div class="input-top">
-                        <textarea class="input-area" placeholder="Твое сообщение" rows="1" oninput="app.autoSize(this)"></textarea>
+                        <textarea class="input-field" placeholder="Твое сообщение" rows="1" oninput="app.autoHeight(this)"></textarea>
                     </div>
                     <div class="input-bottom">
-                        <div class="btn-act"><div class="icon-plus"></div></div>
-                        <div class="btn-act btn-send"><div class="icon-send"></div></div>
+                        <div class="btn-circle"><div class="icon-plus"></div></div>
+                        <div class="btn-circle btn-send"><div class="icon-up"></div></div>
                     </div>
                 </div>
             </div>
@@ -212,7 +236,7 @@
             el: document.getElementById('app'),
             slider: document.getElementById('fSlider'),
             portal: document.getElementById('chatPortal'),
-            expBg: document.getElementById('expBg'),
+            tBg: document.getElementById('tBg'),
             view: document.getElementById('chatView'),
 
             toggleMenu() { this.el.classList.toggle('menu-open'); },
@@ -225,48 +249,46 @@
                 this.slider.style.left = `${btn.offsetLeft}px`;
             },
 
-            autoSize(el) {
-                el.style.height = 'auto';
-                el.style.height = (el.scrollHeight) + 'px';
-            },
-
             openChat(name, color, icon, isSupport) {
                 const rect = event.currentTarget.querySelector('.ava').getBoundingClientRect();
                 this.portal.style.visibility = 'visible';
                 
-                // Сброс и позиционирование аватарки
-                this.expBg.style.transition = 'none';
-                this.expBg.style.top = rect.top + 'px';
-                this.expBg.style.left = rect.left + 'px';
-                this.expBg.style.background = color;
-                this.expBg.style.transform = 'scale(1)';
-                this.expBg.style.opacity = '1';
+                // Фикс начальной позиции транзиции
+                this.tBg.style.transition = 'none';
+                this.tBg.style.top = rect.top + 'px';
+                this.tBg.style.left = rect.left + 'px';
+                this.tBg.style.background = color;
+                this.tBg.style.transform = 'scale(1)';
+                this.tBg.style.opacity = '1';
 
                 document.getElementById('cTitle').innerText = name;
-                document.getElementById('cAvaR').style.background = `${color} center/60% no-repeat url('${icon}')`;
+                document.getElementById('cAva').style.background = `${color} center/60% no-repeat url('${icon}')`;
                 
                 const body = document.getElementById('cBody');
-                body.innerHTML = isSupport ? `
-                    <div class="bubble other">
-                        💡 Если у тебя возникнут проблемы или вопросы - смело пиши, и мы ответим
-                        <div class="msg-time">19:42</div>
-                    </div>` : '';
+                body.innerHTML = isSupport ? `<div class="msg other"><span>💡 Если у тебя возникнут проблемы или вопросы - смело пиши, и мы ответим</span><div class="msg-time-wrap"><span class="msg-time">14:02</span></div></div>` : '';
 
+                // Нативный супер-быстрый переход
                 requestAnimationFrame(() => {
-                    this.expBg.style.transition = 'transform 0.5s var(--ease-ios), background 0.5s var(--ease-ios)';
-                    this.expBg.style.transform = 'scale(25)';
-                    this.expBg.style.background = 'var(--ios-bg)';
-                    
+                    this.tBg.style.transition = 'all var(--anim-chat)';
+                    this.tBg.style.transform = 'scale(40)'; // Растет на весь экран
+                    this.tBg.style.background = 'var(--ios-chat-bg)'; // Меняет цвет на фон чата
                     setTimeout(() => {
                         this.view.classList.add('active');
-                        this.expBg.style.opacity = '0';
-                    }, 100);
+                        this.tBg.style.opacity = '0';
+                    }, 150); // Очень быстро
                 });
             },
 
             closeChat() {
                 this.view.classList.remove('active');
-                setTimeout(() => { this.portal.style.visibility = 'hidden'; }, 400);
+                setTimeout(() => { this.portal.style.visibility = 'hidden'; }, 300);
+            },
+
+            autoHeight(el) {
+                el.style.height = '24px'; // Сброс
+                const newHeight = Math.min(el.scrollHeight, 72); // Лимит 3 строки
+                el.style.height = newHeight + 'px';
+                // Скроллбар появляется автоматически если scrollHeight > 72
             },
 
             init() {
@@ -276,9 +298,8 @@
                     this.slider.style.left = `${activeBtn.offsetLeft}px`;
                 }
                 setTimeout(() => {
-                    const m = document.getElementById('sMsg');
-                    m.innerText = "💡 Если у тебя возникнут проблемы или вопросы...";
-                    m.classList.add('show');
+                    document.getElementById('sMsg').innerText = "💡 Если у тебя возникнут проблемы или вопросы...";
+                    document.getElementById('sMsg').classList.add('show');
                     document.getElementById('sBadge').classList.add('show');
                 }, 600);
             }
