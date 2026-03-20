@@ -12,7 +12,7 @@
             --sub: #8E8E93;
             --border-color: rgba(255, 255, 255, 0.1);
             
-            /* Новые ПЛАВНЫЕ градиенты */
+            /* Новые ПЛАВНЫЕ градиенты аватарок */
             --g-orange: linear-gradient(135deg, rgba(255, 149, 0, 0.9) 0%, rgba(178, 80, 0, 0.6) 100%);
             --g-green: linear-gradient(135deg, rgba(52, 199, 89, 0.9) 0%, rgba(26, 99, 45, 0.6) 100%);
         }
@@ -20,17 +20,17 @@
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
         body { background: var(--bg); font-family: -apple-system, system-ui, sans-serif; color: white; overflow-x: hidden; position: relative; }
 
-        /* --- HEADER --- */
+        /* --- HEADER (ФИКСИРОВАННЫЙ) --- */
         .main-header {
             padding-top: env(safe-area-inset-top);
             background: var(--bg);
-            position: sticky; top: 0; z-index: 200; /* Выше блюра */
+            position: sticky; top: 0; z-index: 200; /* Выше всего, кроме меню */
         }
 
         .s-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px 10px; }
         
         /* Заголовок с шевроном */
-        .title-wrap { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+        .title-wrap { display: flex; align-items: center; gap: 8px; cursor: pointer; position: relative; z-index: 220; }
         .s-title { font-size: 26px; font-weight: 800; letter-spacing: -0.7px; }
         .chevron-icon { 
             width: 14px; height: 14px; background: var(--sub); 
@@ -39,16 +39,20 @@
             transition: transform 0.3s ease;
         }
         
-        /* Группа иконок справа */
-        .header-actions { display: flex; gap: 16px; align-items: center; }
+        /* Иконка Редактирования (РАЗМЫВАЕТСЯ) */
         .edit-icon { 
             width: 22px; height: 22px; background: var(--accent); 
             -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9883/9883181.png') center/contain no-repeat; 
             cursor: pointer;
+            transition: filter 0.3s ease, opacity 0.3s ease;
         }
 
-        /* --- FILTER BAR --- */
-        .filter-container { padding: 5px 24px 20px; }
+        /* --- NAVIGATION & SHADOW --- */
+        .nav-section { 
+            position: relative; background: var(--bg); 
+            transition: filter 0.3s ease, opacity 0.3s ease; /* Размывается */
+        }
+        .filter-container { padding: 5px 24px 12px; }
         .filter-bar { 
             background: var(--glass-lite); border-radius: 999px; 
             padding: 3px; display: flex; position: relative; border: 0.5px solid var(--border-color);
@@ -57,14 +61,22 @@
         .f-btn.active { color: white; }
         .f-slider { position: absolute; background: rgba(255, 255, 255, 0.12); border-radius: 999px; height: calc(100% - 6px); top: 3px; transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1); z-index: 1; }
 
+        /* Уменьшенная, супер-плавная тень */
+        .header-shadow {
+            position: absolute; bottom: -20px; left: 0; width: 100%; height: 20px;
+            /* Более плавный градиент (длинный переход) */
+            background: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0) 100%);
+            pointer-events: none; z-index: 50;
+        }
+
         /* --- CHATS LIST (То, что размывается) --- */
         .main-content { padding-top: 8px; transition: filter 0.3s ease, opacity 0.3s ease; }
         .chat-item { overflow: hidden; }
         .chat-row { display: flex; padding: 12px 24px; gap: 16px; align-items: center; cursor: pointer; }
+        .chat-row:active { background: rgba(255,255,255,0.05); }
         
         .ava-circle { width: 54px; height: 54px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; overflow: hidden; }
-        .ava-circle::after { content: ''; position: absolute; inset: 0; background: inherit; filter: blur(10px); opacity: 0.3; }
-        .ava-icon { width: 24px; height: 24px; background: white; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center; z-index: 2; position: relative; }
+        .ava-icon { background: white; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center; z-index: 2; position: relative; }
         .bg-orange { background: var(--g-orange); }
         .bg-green { background: var(--g-green); }
 
@@ -108,27 +120,24 @@
         }
         
         /* Пункты меню */
-        .menu-item {
-            display: flex; align-items: center; gap: 12px;
-            padding: 12px 16px; cursor: pointer; transition: background 0.1s;
-        }
+        .menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; cursor: pointer; }
         .menu-item:active { background: rgba(255,255,255,0.08); }
         
-        .m-icon {
-            width: 19px; height: 19px;
-            background: white; opacity: 0.85;
-            -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center;
-        }
+        .m-icon { width: 19px; height: 19px; background: white; opacity: 0.85; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center; }
         .m-text { font-size: 15px; font-weight: 500; color: white; letter-spacing: -0.2px; }
-        
         .menu-divider { height: 0.5px; background: rgba(255,255,255,0.06); margin-left: 48px; }
 
         /* ============================== */
         /* = Состояния Меню = */
         /* ============================== */
         body.menu-open .chevron-icon { transform: rotate(180deg); }
-        body.menu-open .main-content { filter: blur(20px); opacity: 0.5; pointer-events: none; }
-        body.menu-open #menuBackdrop { visibility: visible; opacity: 1; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        
+        /* Блюрятся все, кроме заголовка */
+        body.menu-open .main-content, 
+        body.menu-open .nav-section, 
+        body.menu-open .edit-icon { filter: blur(10px) saturate(140%); opacity: 0.6; pointer-events: none; }
+        
+        body.menu-open #menuBackdrop { visibility: visible; opacity: 1; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
         body.menu-open .ios-context-menu { visibility: visible; opacity: 1; transform: scale(1) translateY(0); }
 
     </style>
@@ -139,7 +148,7 @@
 
     <div class="ios-context-menu" id="iosMenu">
         <div class="menu-item">
-            <div class="m-icon" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/3019/3019014.png');"></div>
+            <div class="m-icon" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/7699/7699490.png');"></div>
             <span class="m-text">Настройки</span>
         </div>
         <div class="menu-divider"></div>
@@ -158,13 +167,16 @@
             <div class="edit-icon"></div>
         </div>
         
-        <div class="filter-container">
-            <div class="filter-bar">
-                <div class="f-slider" id="fSlider"></div>
-                <button class="f-btn active" onclick="filter('all', this)">Все</button>
-                <button class="f-btn" onclick="filter('bots', this)">Боты</button>
-                <button class="f-btn" onclick="filter('create', this)">Создать</button>
+        <div class="nav-section">
+            <div class="filter-container">
+                <div class="filter-bar">
+                    <div class="f-slider" id="fSlider"></div>
+                    <button class="f-btn active" onclick="filter('all', this)">Все</button>
+                    <button class="f-btn" onclick="filter('bots', this)">Боты</button>
+                    <button class="f-btn" onclick="filter('create', this)">Создать</button>
+                </div>
             </div>
+            <div class="header-shadow"></div>
         </div>
     </header>
 
@@ -202,13 +214,11 @@
         const body = document.getElementById('mainBody');
         const fSlider = document.getElementById('fSlider');
 
-        // Меню
         function toggleMenu() { body.classList.toggle('menu-open'); }
         function closeMenu() { body.classList.remove('menu-open'); }
 
-        // Фильтры
         function filter(type, btn) {
-            if(body.classList.contains('menu-open')) return; // Не кликать при открытом меню
+            if(body.classList.contains('menu-open')) return;
             document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             fSlider.style.left = btn.offsetLeft + 'px';
