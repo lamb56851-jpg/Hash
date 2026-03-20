@@ -7,19 +7,20 @@
     <style>
         :root {
             --ios-bg: #000000;
-            --ios-menu-bg: rgba(28, 28, 30, 0.95);
+            --ios-menu-bg: rgba(28, 28, 30, 0.96);
             --ios-label: #FFFFFF;
             --ios-secondary: rgba(255, 255, 255, 0.45);
             --ios-sep: rgba(255, 255, 255, 0.1);
             --ios-red: #FF453A;
             --accent: #00B689;
             
-            /* Apple Palette с уходом в холодный правый нижний угол */
-            --g-sunset: linear-gradient(135deg, #FF9500 0%, #FF5E00 100%); /* Orange -> Deep Orange */
-            --g-emerald: linear-gradient(135deg, #34C759 0%, #00A67E 100%); /* Green -> Tealish */
+            --g-sunset: linear-gradient(135deg, #FF9500 0%, #FF5E00 100%);
+            --g-emerald: linear-gradient(135deg, #34C759 0%, #00A67E 100%);
             
-            --transition-main: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --menu-fall: cubic-bezier(0.175, 0.885, 0.32, 1.1); /* Эффект вываливания */
+            /* Быстрые и четкие кривые */
+            --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+            --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+            --menu-fall: cubic-bezier(0.175, 0.885, 0.32, 1.15);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
@@ -28,7 +29,7 @@
             background: var(--ios-bg); 
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; 
             color: var(--ios-label); 
-            overflow-x: hidden;
+            overflow: hidden;
             line-height: 1.2;
         }
 
@@ -37,61 +38,58 @@
         .s-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px 10px; }
         .title-wrap { display: flex; align-items: center; gap: 8px; cursor: pointer; position: relative; z-index: 250; }
         .s-title { font-size: 28px; font-weight: 800; letter-spacing: -0.03em; }
-        .chevron { width: 14px; height: 14px; background: var(--ios-secondary); -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/32/32195.png') center/contain no-repeat; margin-top: 8px; transition: var(--transition-main); }
-        .header-actions { transition: var(--transition-main); }
+        .chevron { width: 14px; height: 14px; background: var(--ios-secondary); -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/32/32195.png') center/contain no-repeat; margin-top: 8px; transition: transform 0.3s var(--ease-out-expo); }
         .edit-icon { width: 22px; height: 22px; background: var(--accent); -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9883/9883181.png') center/contain no-repeat; }
 
         /* --- NAVIGATION --- */
-        .nav-section { position: relative; background: var(--ios-bg); transition: var(--transition-main); }
+        .nav-section { position: relative; background: var(--ios-bg); transition: filter 0.3s, opacity 0.3s; }
         .filter-container { padding: 5px 24px 12px; position: relative; z-index: 2; }
-        .filter-bar { background: rgba(120, 120, 128, 0.24); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 999px; padding: 2px; display: flex; position: relative; border: 0.5px solid var(--ios-sep); }
-        .f-btn { flex: 1; border: none; background: none; color: rgba(255,255,255,0.5); font-size: 13px; font-weight: 700; padding: 7px 0; cursor: pointer; z-index: 2; transition: color 0.2s; }
+        .filter-bar { background: rgba(120, 120, 128, 0.24); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 999px; padding: 2px; display: flex; border: 0.5px solid var(--ios-sep); }
+        .f-btn { flex: 1; border: none; background: none; color: rgba(255,255,255,0.5); font-size: 13px; font-weight: 700; padding: 7px 0; cursor: pointer; z-index: 2; }
         .f-btn.active { color: var(--ios-label); }
-        .f-slider { position: absolute; background: rgba(255, 255, 255, 0.2); border-radius: 999px; height: calc(100% - 4px); top: 2px; transition: var(--transition-main); z-index: 1; }
+        .f-slider { position: absolute; background: rgba(255, 255, 255, 0.2); border-radius: 999px; height: calc(100% - 4px); top: 2px; transition: all 0.3s var(--ease-out-expo); z-index: 1; }
         .header-shadow { position: absolute; bottom: -30px; left: 0; width: 100%; height: 30px; background: linear-gradient(to bottom, var(--ios-bg) 0%, rgba(0,0,0,0.6) 45%, transparent 100%); pointer-events: none; z-index: 1; }
 
         /* --- CONTENT --- */
-        .main-content { padding-top: 8px; transition: var(--transition-main); }
-        .chat-row { display: flex; padding: 12px 24px; gap: 16px; align-items: center; cursor: pointer; transition: background 0.2s; }
-        .chat-row:active { background: rgba(255,255,255,0.05); }
+        .main-content { padding-top: 8px; transition: filter 0.3s, opacity 0.3s; }
+        .chat-row { display: flex; padding: 12px 24px; gap: 16px; align-items: center; cursor: pointer; }
         .ava { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; }
         .ava-icon { background: white; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center; }
         
-        .unread-count { position: absolute; top: -2px; right: -2px; background: var(--accent); color: white; font-size: 11px; font-weight: 800; min-width: 18px; height: 18px; border-radius: 10px; display: none; align-items: center; justify-content: center; border: 2px solid var(--ios-bg); }
+        /* Плавное появление кружка с единицей */
+        .unread-count { 
+            position: absolute; top: -2px; right: -2px; background: var(--accent); color: white; font-size: 11px; font-weight: 800; min-width: 18px; height: 18px; border-radius: 10px; 
+            display: flex; align-items: center; justify-content: center; border: 2px solid var(--ios-bg);
+            opacity: 0; transform: scale(0.5); transition: opacity 0.3s var(--ease-out-expo), transform 0.4s var(--menu-fall);
+        }
+        .unread-count.visible { opacity: 1; transform: scale(1); }
 
-        .chat-info { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+        .chat-info { flex: 1; overflow: hidden; }
         .chat-name { font-size: 17px; font-weight: 600; display: flex; align-items: center; gap: 4px; }
         
-        /* Многоточие если не влезает */
+        /* Плавное появление текста сообщения */
         .chat-msg { 
-            font-size: 15px; 
-            color: var(--ios-secondary); 
-            margin-top: 1px; 
-            white-space: nowrap; 
-            overflow: hidden; 
-            text-overflow: ellipsis; 
-            width: 100%;
+            font-size: 15px; color: var(--ios-secondary); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+            opacity: 0; transform: translateY(4px); transition: opacity 0.4s var(--ease-out-expo), transform 0.4s var(--ease-out-expo);
         }
-        
+        .chat-msg.visible { opacity: 1; transform: translateY(0); }
+
         .v-badge { width: 14px; height: 14px; background: var(--accent); -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9918/9918743.png') center/contain no-repeat; }
         .sep { height: 0.5px; background: var(--ios-sep); margin-left: 94px; }
 
-        /* --- MENU (Fall Animation) --- */
-        #menuBackdrop { position: fixed; inset: 0; z-index: 150; visibility: hidden; opacity: 0; background: rgba(0,0,0,0.2); transition: var(--transition-main); }
+        /* --- MENU --- */
+        #menuBackdrop { position: fixed; inset: 0; z-index: 150; visibility: hidden; opacity: 0; background: rgba(0,0,0,0.2); transition: opacity 0.2s var(--ease-in-out); }
         
         .context-menu {
-            position: fixed; top: calc(72px + env(safe-area-inset-top)); left: 24px; 
-            width: 180px; background: var(--ios-menu-bg); 
-            backdrop-filter: blur(10px) saturate(120%); -webkit-backdrop-filter: blur(10px) saturate(120%);
-            border-radius: 14px; z-index: 260;
-            border: 1px solid rgba(255, 255, 255, 0.08); 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            position: fixed; top: calc(72px + env(safe-area-inset-top)); left: 24px; width: 180px; 
+            background: var(--ios-menu-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border-radius: 14px; z-index: 260; border: 1px solid rgba(255, 255, 255, 0.08); 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5); transform-origin: top left;
             
-            /* Эффект вываливания */
-            transform-origin: top left; 
-            transform: translateY(-20px) scale(0.85); 
-            opacity: 0; visibility: hidden;
-            transition: transform 0.4s var(--menu-fall), opacity 0.2s ease;
+            /* Начальное состояние (закрыто) */
+            opacity: 0; visibility: hidden; transform: translateY(-15px) scale(0.9);
+            /* Разные транзишны для открытия и закрытия */
+            transition: transform 0.2s var(--ease-in-out), opacity 0.15s var(--ease-in-out), visibility 0.2s;
         }
 
         .context-menu::before {
@@ -102,17 +100,18 @@
         }
 
         .menu-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; cursor: pointer; }
-        .menu-item:active { background: rgba(255,255,255,0.1); }
         .m-text { font-size: 17px; font-weight: 500; }
         .m-icon { width: 20px; height: 20px; background: var(--ios-label); -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; }
         .menu-sep { height: 0.5px; background: var(--ios-sep); margin: 0 16px; }
 
-        /* --- STATES --- */
-        body.menu-open .chevron { transform: rotate(180deg); }
-        /* Размытие почти незаметно (5px вместо 15) */
-        body.menu-open .main-content, body.menu-open .nav-section, body.menu-open .header-actions { filter: blur(4px); opacity: 0.7; pointer-events: none; }
+        /* --- ACTIVE STATES --- */
         body.menu-open #menuBackdrop { visibility: visible; opacity: 1; }
-        body.menu-open .context-menu { visibility: visible; opacity: 1; transform: translateY(0) scale(1); }
+        body.menu-open .context-menu { 
+            visibility: visible; opacity: 1; transform: translateY(0) scale(1);
+            transition: transform 0.4s var(--menu-fall), opacity 0.2s ease; /* При открытии используем эффект падения */
+        }
+        body.menu-open .chevron { transform: rotate(180deg); }
+        body.menu-open .main-content, body.menu-open .nav-section { filter: blur(4px); opacity: 0.7; pointer-events: none; }
     </style>
 </head>
 <body id="app">
@@ -157,26 +156,26 @@
         </div>
     </header>
 
-    <div class="main-content" id="chatList">
+    <div class="main-content">
         <div class="chat-row">
             <div class="ava" style="background: var(--g-sunset)">
                 <div class="ava-icon" style="width: 24px; height: 24px; -webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/10812/10812271.png');"></div>
             </div>
             <div class="chat-info">
                 <div class="chat-name">Ключи <div class="v-badge"></div></div>
-                <span class="chat-msg">Чат пуст</span>
+                <span class="chat-msg visible" style="opacity: 1; transform: none;">Чат пуст</span>
             </div>
         </div>
         <div class="sep"></div>
         
-        <div class="chat-row" id="supportChat">
+        <div class="chat-row">
             <div class="ava" style="background: var(--g-emerald)">
-                <div class="unread-count" id="supportUnread">1</div>
+                <div class="unread-count" id="supportBadge">1</div>
                 <div class="ava-icon" style="width: 28px; height: 28px; -webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/11831/11831523.png');"></div>
             </div>
             <div class="chat-info">
                 <div class="chat-name">Поддержка</div>
-                <span class="chat-msg" id="supportLastMsg">Чат пуст</span>
+                <span class="chat-msg" id="supportMsg">Чат пуст</span>
             </div>
         </div>
     </div>
@@ -192,27 +191,28 @@
                 if (this.body.classList.contains('menu-open')) return;
                 document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                this.updateSlider(btn);
-            },
-
-            updateSlider(btn) {
                 this.slider.style.width = `${btn.offsetWidth}px`;
                 this.slider.style.left = `${btn.offsetLeft}px`;
             },
 
-            pushWelcome() {
-                const msg = "💡 Если у тебя возникнут проблемы или вопросы - смело пиши, и мы ответим";
-                document.getElementById('supportLastMsg').innerText = msg;
-                document.getElementById('supportUnread').style.display = 'flex';
-            },
-
-            init() {
-                const activeBtn = document.querySelector('.f-btn.active');
-                if (activeBtn) this.updateSlider(activeBtn);
-                setTimeout(() => this.pushWelcome(), 800);
+            incomingMessage() {
+                const badge = document.getElementById('supportBadge');
+                const msg = document.getElementById('supportMsg');
+                
+                // Плавное появление
+                setTimeout(() => {
+                    badge.classList.add('visible');
+                    msg.innerText = "💡 Если у тебя возникнут проблемы или вопросы - смело пиши, и мы ответим";
+                    msg.classList.add('visible');
+                }, 600);
             }
         };
-        window.onload = () => app.init();
+
+        window.onload = () => {
+            const af = document.querySelector('.f-btn.active');
+            if (af) { app.slider.style.width = `${af.offsetWidth}px`; app.slider.style.left = `${af.offsetLeft}px`; }
+            app.incomingMessage();
+        };
     </script>
 </body>
 </html>
