@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Hash — Chats</title>
+    <title>Hash</title>
     <style>
         :root {
             --bg: #000000;
@@ -12,32 +12,44 @@
             --sub: #8E8E93;
             --border-color: rgba(255, 255, 255, 0.1);
             
-            /* Цветовая палитра для аватарок */
-            --g-blue: linear-gradient(135deg, #007AFF 0%, #004094 100%);
+            /* Палитра градиентов */
             --g-orange: linear-gradient(135deg, #FF9500 0%, #B25000 100%);
             --g-green: linear-gradient(135deg, #34C759 0%, #1A632D 100%);
+            --g-blue: linear-gradient(135deg, #007AFF 0%, #004094 100%);
             --g-purple: linear-gradient(135deg, #AF52DE 0%, #5B2A74 100%);
             --g-white: linear-gradient(135deg, #FFFFFF 0%, #8E8E93 100%);
             --g-pink: linear-gradient(135deg, #FF2D55 0%, #921A31 100%);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
-        body { background: var(--bg); font-family: -apple-system, system-ui, sans-serif; color: white; overflow-x: hidden; }
+        body { background: var(--bg); font-family: -apple-system, system-ui, sans-serif; color: white; }
 
         /* --- HEADER --- */
         .main-header {
             padding-top: env(safe-area-inset-top);
             background: var(--bg);
-            position: sticky; top: 0; z-index: 100;
+            position: fixed; top: 0; left: 0; right: 0;
+            z-index: 1000;
+            transition: box-shadow 0.3s ease, border-color 0.3s ease;
+            border-bottom: 0.5px solid transparent;
+        }
+
+        /* Эффект тени при скролле */
+        .main-header.scrolled {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            border-bottom-color: var(--border-color);
         }
 
         .s-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px 10px; }
-        .title-wrap { display: flex; align-items: center; gap: 8px; }
+        
+        .title-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; }
         .s-title { font-size: 26px; font-weight: 800; letter-spacing: -0.7px; }
+        
+        /* Крупный шеврон */
         .chevron-icon { 
-            width: 14px; height: 14px; background: var(--sub); 
+            width: 18px; height: 18px; background: var(--sub); 
             -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/7065/7065868.png') center/contain no-repeat;
-            margin-top: 4px;
+            margin-top: 5px;
         }
         
         .edit-icon { 
@@ -46,51 +58,54 @@
             cursor: pointer;
         }
 
-        /* --- FILTER BAR --- */
         .filter-container { padding: 5px 24px 20px; }
         .filter-bar { 
             background: var(--glass-lite); border-radius: 999px; 
             padding: 3px; display: flex; position: relative; border: 0.5px solid var(--border-color);
         }
-        .f-btn { flex: 1; border: none; background: none; color: var(--sub); font-size: 13px; font-weight: 700; padding: 8px 0; cursor: pointer; z-index: 2; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .f-btn { flex: 1; border: none; background: none; color: var(--sub); font-size: 13px; font-weight: 700; padding: 8px 0; cursor: pointer; z-index: 2; display: flex; align-items: center; justify-content: center; }
         .f-btn.active { color: white; }
         .f-slider { position: absolute; background: rgba(255, 255, 255, 0.12); border-radius: 999px; height: calc(100% - 6px); top: 3px; transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1); z-index: 1; }
 
-        /* --- CHATS LIST --- */
-        .chat-item { overflow: hidden; transition: 0.3s ease; opacity: 1; max-height: 120px; }
-        .chat-item.hidden { max-height: 0; opacity: 0; pointer-events: none; }
+        /* --- CONTENT AREA --- */
+        .main-content { 
+            padding-top: 160px; /* Высота фикс-шапки */
+            min-height: 101vh; 
+        }
+
+        .chat-item { overflow: hidden; transition: opacity 0.3s ease; }
+        .chat-item.hidden { display: none; }
 
         .chat-row { display: flex; padding: 14px 24px; gap: 16px; align-items: center; cursor: pointer; }
         .chat-row:active { background: rgba(255,255,255,0.05); }
         
-        /* Градиентные аватарки */
         .ava-circle {
             width: 54px; height: 54px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             flex-shrink: 0;
         }
-        .ava-icon {
-            width: 24px; height: 24px; background: white;
-            -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center;
-        }
+        
+        /* Иконки: поддержка увеличена */
+        .ava-icon { background: white; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center; }
+        .icon-key { width: 24px; height: 24px; }
+        .icon-admin { width: 28px; height: 28px; } /* Крупнее по просьбе */
 
-        /* Применение цветов */
         .bg-orange { background: var(--g-orange); }
         .bg-green { background: var(--g-green); }
 
         .chat-info { flex: 1; display: flex; flex-direction: column; gap: 2px; }
-        .chat-name-row { display: flex; align-items: center; justify-content: space-between; }
+        .chat-name-row { display: flex; align-items: center; }
         .chat-name { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; }
-        .v-badge { width: 16px; height: 16px; background: var(--accent); -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9918/9918743.png') center/contain no-repeat; margin-left: 4px; display: inline-block; vertical-align: middle; }
+        .v-badge { width: 16px; height: 16px; background: var(--accent); -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9918/9918743.png') center/contain no-repeat; margin-left: 5px; }
         
-        .chat-msg { font-size: 14px; color: var(--sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px; }
+        .chat-msg { font-size: 14px; color: var(--sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 260px; min-height: 1.2em; }
         
-        .divider { height: 0.5px; background: var(--border-color); margin-left: 94px; margin-right: 0; }
+        .divider { height: 0.5px; background: var(--border-color); margin-left: 94px; }
     </style>
 </head>
 <body>
 
-    <header class="main-header">
+    <header class="main-header" id="header">
         <div class="s-header">
             <div class="title-wrap">
                 <span class="s-title">Чаты</span>
@@ -102,27 +117,26 @@
         <div class="filter-container">
             <div class="filter-bar">
                 <div class="f-slider" id="fSlider"></div>
-                <button class="f-btn active" onclick="filter('all', this)">Все</button>
-                <button class="f-btn" onclick="filter('bots', this)">Боты</button>
-                <button class="f-btn" onclick="filter('create', this)">Создать</button>
+                <button class="f-btn active" data-type="all">Все</button>
+                <button class="f-btn" data-type="bots">Боты</button>
+                <button class="f-btn" data-type="create">Создать</button>
             </div>
         </div>
     </header>
 
-    <div class="main-content">
-        <div class="chats-list" id="chatsList">
+    <main class="main-content">
+        <div class="chats-list">
             
             <div class="chat-item" data-type="bots">
                 <div class="chat-row">
                     <div class="ava-circle bg-orange">
-                        <div class="ava-icon" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/10812/10812271.png');"></div>
+                        <div class="ava-icon icon-key" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/10812/10812271.png');"></div>
                     </div>
                     <div class="chat-info">
                         <div class="chat-name-row">
-                            <span class="chat-name">Ключи<div class="v-badge"></div></span>
+                            <span class="chat-name">Ключи</span><div class="v-badge"></div>
                         </div>
-                        <span class="chat-msg">Ваш лицензионный ключ активирован</span>
-                    </div>
+                        <span class="chat-msg"></span> </div>
                 </div>
                 <div class="divider"></div>
             </div>
@@ -130,45 +144,60 @@
             <div class="chat-item" data-type="support">
                 <div class="chat-row">
                     <div class="ava-circle bg-green">
-                        <div class="ava-icon" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/11831/11831523.png');"></div>
+                        <div class="ava-icon icon-admin" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/11831/11831523.png');"></div>
                     </div>
                     <div class="chat-info">
                         <div class="chat-name-row">
                             <span class="chat-name">Поддержка</span>
                         </div>
-                        <span class="chat-msg">Здравствуйте! Чем я могу вам помочь?</span>
-                    </div>
+                        <span class="chat-msg"></span> </div>
                 </div>
                 <div class="divider"></div>
             </div>
 
         </div>
-    </div>
+    </main>
 
     <script>
+        const header = document.getElementById('header');
         const fSlider = document.getElementById('fSlider');
-        function filter(type, btn) {
-            document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+        const fBtns = document.querySelectorAll('.f-btn');
+
+        // Логика тени при скролле
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 10) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Фильтрация и слайдер
+        fBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                fBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                moveSlider(btn);
+                
+                const type = btn.getAttribute('data-type');
+                document.querySelectorAll('.chat-item').forEach(item => {
+                    if (type === 'all' || item.getAttribute('data-type') === type) {
+                        item.classList.remove('hidden');
+                    } else {
+                        item.classList.add('hidden');
+                    }
+                });
+            });
+        });
+
+        function moveSlider(btn) {
             fSlider.style.left = btn.offsetLeft + 'px';
             fSlider.style.width = btn.offsetWidth + 'px';
-
-            const items = document.querySelectorAll('.chat-item');
-            items.forEach(item => {
-                if (type === 'all' || item.dataset.type === type) {
-                    item.classList.remove('hidden');
-                } else {
-                    item.classList.add('hidden');
-                }
-            });
         }
 
         window.onload = () => {
-            const af = document.querySelector('.f-btn.active');
-            if(af) {
-                fSlider.style.left = af.offsetLeft + 'px';
-                fSlider.style.width = af.offsetWidth + 'px';
-            }
+            const activeBtn = document.querySelector('.f-btn.active');
+            moveSlider(activeBtn);
         };
     </script>
 </body>
