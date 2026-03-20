@@ -24,14 +24,23 @@
         }
 
         .s-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px 10px; }
+        
+        /* Заголовок с шевроном */
+        .title-wrap { display: flex; align-items: center; gap: 8px; cursor: pointer; }
         .s-title { font-size: 26px; font-weight: 800; letter-spacing: -0.7px; }
+        .chevron-icon { 
+            width: 14px; height: 14px; background: var(--sub); opacity: 0.6;
+            -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/7065/7065868.png') center/contain no-repeat;
+            margin-top: 4px;
+        }
         
-        .header-actions { display: flex; gap: 18px; align-items: center; }
-        .h-icon { width: 22px; height: 22px; cursor: pointer; transition: opacity 0.2s; }
-        .h-icon:active { opacity: 0.6; }
+        /* Иконки управления */
+        .header-actions { display: flex; gap: 20px; align-items: center; }
+        .h-icon { width: 22px; height: 22px; cursor: pointer; transition: transform 0.2s, opacity 0.2s; background: var(--accent); }
+        .h-icon:active { transform: scale(0.9); opacity: 0.8; }
         
-        .edit-icon { background: var(--accent); -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9883/9883181.png') center/contain no-repeat; }
-        .settings-icon { background: white; opacity: 0.9; -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/2040/2040504.png') center/contain no-repeat; }
+        .edit-icon { -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9883/9883181.png') center/contain no-repeat; }
+        .settings-icon { -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/8000/8000326.png') center/contain no-repeat; }
 
         /* --- FILTER BAR --- */
         .filter-container { padding: 5px 24px 15px; }
@@ -45,53 +54,26 @@
         .plus-icon { width: 13px; height: 13px; background: currentColor; -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/1828/1828925.png') center/contain no-repeat; }
         .f-slider { position: absolute; background: rgba(255, 255, 255, 0.12); border-radius: 999px; height: calc(100% - 6px); top: 3px; transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1); z-index: 1; }
 
-        /* --- COMPACT PINNED (НОВЫЙ ВИД) --- */
-        .pinned-section {
-            padding: 0 24px 20px;
-            display: flex; gap: 16px;
-            overflow-x: auto; scrollbar-width: none;
-        }
+        /* --- PINNED SECTION --- */
+        .pinned-section { padding: 0 24px 20px; display: flex; gap: 16px; overflow-x: auto; scrollbar-width: none; }
         .pinned-section::-webkit-scrollbar { display: none; }
 
         .p-item { display: flex; flex-direction: column; align-items: center; gap: 6px; flex-shrink: 0; }
-        
-        /* Стеклянные аватарки (линзы) */
         .glass-ava {
-            width: 54px; height: 54px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            position: relative; overflow: hidden;
+            width: 54px; height: 54px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.15); position: relative; overflow: hidden;
         }
-        
-        .ava-keys {
-            background: radial-gradient(circle at top left, rgba(255,255,255,0.1), transparent),
-                        linear-gradient(135deg, rgba(0, 182, 137, 0.15) 0%, rgba(0, 150, 255, 0.1) 100%);
-        }
-        .ava-support { 
-            background: radial-gradient(circle at top left, rgba(255,255,255,0.15), transparent),
-                        linear-gradient(135deg, rgba(94, 92, 230, 0.2) 0%, rgba(0, 150, 255, 0.15) 100%);
-        }
-
-        .glass-ava-icon {
-            width: 22px; height: 22px; background: white; opacity: 0.85;
-            -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center;
-        }
-
+        .ava-keys { background: radial-gradient(circle at top left, rgba(255,255,255,0.1), transparent), linear-gradient(135deg, rgba(0, 182, 137, 0.15) 0%, rgba(0, 150, 255, 0.1) 100%); }
+        .ava-support { background: radial-gradient(circle at top left, rgba(255,255,255,0.15), transparent), linear-gradient(135deg, rgba(94, 92, 230, 0.2) 0%, rgba(0, 150, 255, 0.15) 100%); }
+        .glass-ava-icon { width: 22px; height: 22px; background: white; opacity: 0.85; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center; }
         .p-name { font-size: 10px; font-weight: 600; color: var(--sub); }
 
         /* --- CHATS LIST --- */
-        .main-content { padding-bottom: 40px; }
         .chat-item { overflow: hidden; transition: 0.3s ease; opacity: 1; max-height: 100px; }
         .chat-item.hidden { max-height: 0; opacity: 0; pointer-events: none; }
-
         .chat-row { display: flex; padding: 12px 24px; gap: 16px; align-items: center; cursor: pointer; }
-        .chat-row:active { background: rgba(255,255,255,0.03); }
-        
-        .chat-info { flex: 1; display: flex; flex-direction: column; }
         .chat-name { font-size: 17px; font-weight: 500; letter-spacing: -0.2px; }
         .v-badge { width: 18px; height: 18px; background: var(--accent); -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9918/9918743.png') center/contain no-repeat; margin-left: 6px; display: inline-block; vertical-align: middle; }
-        
         .divider { height: 0.5px; background: rgba(255, 255, 255, 0.08); margin-left: 94px; margin-right: 24px; }
     </style>
 </head>
@@ -99,11 +81,13 @@
 
     <header class="main-header">
         <div class="s-header">
-            <span class="s-title">Чаты</span>
+            <div class="title-wrap">
+                <span class="s-title">Чаты</span>
+                <div class="chevron-icon"></div>
+            </div>
             <div class="header-actions">
                 <div class="h-icon edit-icon"></div>
-                <div class="h-icon settings-icon"></div>
-            </div>
+                <div class="h-icon settings-icon"></div> </div>
         </div>
         
         <div class="filter-container">
