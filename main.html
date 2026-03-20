@@ -3,14 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Hash — Home</title>
+    <title>Hash — Chats</title>
     <style>
         :root {
             --bg: #000000;
             --glass-lite: rgba(255, 255, 255, 0.05);
             --accent: #00B689;
             --sub: #8E8E93;
-            --border-color: rgba(255, 255, 255, 0.12);
+            --border-color: rgba(255, 255, 255, 0.1);
+            
+            /* Цветовая палитра для аватарок */
+            --g-blue: linear-gradient(135deg, #007AFF 0%, #004094 100%);
+            --g-orange: linear-gradient(135deg, #FF9500 0%, #B25000 100%);
+            --g-green: linear-gradient(135deg, #34C759 0%, #1A632D 100%);
+            --g-purple: linear-gradient(135deg, #AF52DE 0%, #5B2A74 100%);
+            --g-white: linear-gradient(135deg, #FFFFFF 0%, #8E8E93 100%);
+            --g-pink: linear-gradient(135deg, #FF2D55 0%, #921A31 100%);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
@@ -24,84 +32,60 @@
         }
 
         .s-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px 10px; }
-        
-        /* Заголовок с шевроном */
-        .title-wrap { display: flex; align-items: center; gap: 8px; cursor: pointer; transition: opacity 0.2s; }
-        .title-wrap:active { opacity: 0.7; }
+        .title-wrap { display: flex; align-items: center; gap: 8px; }
         .s-title { font-size: 26px; font-weight: 800; letter-spacing: -0.7px; }
         .chevron-icon { 
             width: 14px; height: 14px; background: var(--sub); 
             -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/7065/7065868.png') center/contain no-repeat;
-            margin-top: 4px; /* Выравнивание по базовой линии */
+            margin-top: 4px;
         }
         
-        /* Группа иконок справа */
-        .header-actions { display: flex; gap: 16px; align-items: center; }
-        .h-icon { width: 22px; height: 22px; cursor: pointer; transition: transform 0.2s; }
-        .h-icon:active { transform: scale(0.9); }
-        
-        .edit-icon { background: var(--accent); -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9883/9883181.png') center/contain no-repeat; }
-        .settings-icon { background: var(--accent); -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/3019/3019014.png') center/contain no-repeat; }
+        .edit-icon { 
+            width: 22px; height: 22px; background: var(--accent); 
+            -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9883/9883181.png') center/contain no-repeat; 
+            cursor: pointer;
+        }
 
         /* --- FILTER BAR --- */
-        .filter-container { padding: 5px 24px 15px; }
+        .filter-container { padding: 5px 24px 20px; }
         .filter-bar { 
             background: var(--glass-lite); border-radius: 999px; 
             padding: 3px; display: flex; position: relative; border: 0.5px solid var(--border-color);
-            backdrop-filter: blur(20px);
         }
         .f-btn { flex: 1; border: none; background: none; color: var(--sub); font-size: 13px; font-weight: 700; padding: 8px 0; cursor: pointer; z-index: 2; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .f-btn.active { color: white; }
-        .plus-icon { width: 13px; height: 13px; background: currentColor; -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/1828/1828925.png') center/contain no-repeat; }
         .f-slider { position: absolute; background: rgba(255, 255, 255, 0.12); border-radius: 999px; height: calc(100% - 6px); top: 3px; transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1); z-index: 1; }
 
-        /* --- COMPACT PINNED --- */
-        .pinned-section {
-            padding: 0 24px 20px;
-            display: flex; gap: 16px;
-            overflow-x: auto; scrollbar-width: none;
-        }
-        .pinned-section::-webkit-scrollbar { display: none; }
+        /* --- CHATS LIST --- */
+        .chat-item { overflow: hidden; transition: 0.3s ease; opacity: 1; max-height: 120px; }
+        .chat-item.hidden { max-height: 0; opacity: 0; pointer-events: none; }
 
-        .p-item { display: flex; flex-direction: column; align-items: center; gap: 6px; flex-shrink: 0; }
+        .chat-row { display: flex; padding: 14px 24px; gap: 16px; align-items: center; cursor: pointer; }
+        .chat-row:active { background: rgba(255,255,255,0.05); }
         
-        .glass-ava {
+        /* Градиентные аватарки */
+        .ava-circle {
             width: 54px; height: 54px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            position: relative; overflow: hidden;
+            flex-shrink: 0;
         }
-        
-        .ava-keys {
-            background: radial-gradient(circle at top left, rgba(255,255,255,0.1), transparent),
-                        linear-gradient(135deg, rgba(0, 182, 137, 0.15) 0%, rgba(0, 150, 255, 0.1) 100%);
-        }
-        .ava-support { 
-            background: radial-gradient(circle at top left, rgba(255,255,255,0.15), transparent),
-                        linear-gradient(135deg, rgba(94, 92, 230, 0.2) 0%, rgba(0, 150, 255, 0.15) 100%);
-        }
-
-        .glass-ava-icon {
-            width: 22px; height: 22px; background: white; opacity: 0.85;
+        .ava-icon {
+            width: 24px; height: 24px; background: white;
             -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center;
         }
 
-        .p-name { font-size: 10px; font-weight: 600; color: var(--sub); }
+        /* Применение цветов */
+        .bg-orange { background: var(--g-orange); }
+        .bg-green { background: var(--g-green); }
 
-        /* --- CHATS LIST --- */
-        .main-content { padding-bottom: 40px; }
-        .chat-item { overflow: hidden; transition: 0.3s ease; opacity: 1; max-height: 100px; }
-        .chat-item.hidden { max-height: 0; opacity: 0; pointer-events: none; }
-
-        .chat-row { display: flex; padding: 12px 24px; gap: 16px; align-items: center; cursor: pointer; }
-        .chat-row:active { background: rgba(255,255,255,0.03); }
+        .chat-info { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+        .chat-name-row { display: flex; align-items: center; justify-content: space-between; }
+        .chat-name { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; }
+        .v-badge { width: 16px; height: 16px; background: var(--accent); -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9918/9918743.png') center/contain no-repeat; margin-left: 4px; display: inline-block; vertical-align: middle; }
         
-        .chat-info { flex: 1; display: flex; flex-direction: column; }
-        .chat-name { font-size: 17px; font-weight: 500; letter-spacing: -0.2px; }
-        .v-badge { width: 18px; height: 18px; background: var(--accent); -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9918/9918743.png') center/contain no-repeat; margin-left: 6px; display: inline-block; vertical-align: middle; }
+        .chat-msg { font-size: 14px; color: var(--sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px; }
         
-        .divider { height: 0.5px; background: rgba(255, 255, 255, 0.08); margin-left: 94px; margin-right: 24px; }
+        .divider { height: 0.5px; background: var(--border-color); margin-left: 94px; margin-right: 0; }
     </style>
 </head>
 <body>
@@ -112,10 +96,7 @@
                 <span class="s-title">Чаты</span>
                 <div class="chevron-icon"></div>
             </div>
-            <div class="header-actions">
-                <div class="h-icon edit-icon"></div>
-                <div class="h-icon settings-icon"></div>
-            </div>
+            <div class="edit-icon"></div>
         </div>
         
         <div class="filter-container">
@@ -123,35 +104,24 @@
                 <div class="f-slider" id="fSlider"></div>
                 <button class="f-btn active" onclick="filter('all', this)">Все</button>
                 <button class="f-btn" onclick="filter('bots', this)">Боты</button>
-                <button class="f-btn" onclick="filter('create', this)"><div class="plus-icon"></div>Создать</button>
-            </div>
-        </div>
-
-        <div class="pinned-section">
-            <div class="p-item">
-                <div class="glass-ava ava-keys">
-                    <div class="glass-ava-icon" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/63/63432.png');"></div>
-                </div>
-                <span class="p-name">Ключи</span>
-            </div>
-            <div class="p-item">
-                <div class="glass-ava ava-support">
-                    <div class="glass-ava-icon" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/6528/6528598.png');"></div>
-                </div>
-                <span class="p-name">Поддержка</span>
+                <button class="f-btn" onclick="filter('create', this)">Создать</button>
             </div>
         </div>
     </header>
 
     <div class="main-content">
         <div class="chats-list" id="chatsList">
+            
             <div class="chat-item" data-type="bots">
                 <div class="chat-row">
-                    <div class="glass-ava ava-keys" style="width: 52px; height: 52px;">
-                        <div class="glass-ava-icon" style="width: 22px; height: 22px; -webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/63/63432.png');"></div>
+                    <div class="ava-circle bg-orange">
+                        <div class="ava-icon" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/10812/10812271.png');"></div>
                     </div>
                     <div class="chat-info">
-                        <span class="chat-name">Ключи<div class="v-badge"></div></span>
+                        <div class="chat-name-row">
+                            <span class="chat-name">Ключи<div class="v-badge"></div></span>
+                        </div>
+                        <span class="chat-msg">Ваш лицензионный ключ активирован</span>
                     </div>
                 </div>
                 <div class="divider"></div>
@@ -159,14 +129,19 @@
 
             <div class="chat-item" data-type="support">
                 <div class="chat-row">
-                    <div class="glass-ava ava-support" style="width: 52px; height: 52px;">
-                        <div class="glass-ava-icon" style="width: 22px; height: 22px; -webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/6528/6528598.png');"></div>
+                    <div class="ava-circle bg-green">
+                        <div class="ava-icon" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/11831/11831523.png');"></div>
                     </div>
                     <div class="chat-info">
-                        <span class="chat-name">Поддержка</span>
+                        <div class="chat-name-row">
+                            <span class="chat-name">Поддержка</span>
+                        </div>
+                        <span class="chat-msg">Здравствуйте! Чем я могу вам помочь?</span>
                     </div>
                 </div>
+                <div class="divider"></div>
             </div>
+
         </div>
     </div>
 
