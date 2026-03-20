@@ -14,7 +14,6 @@
             --ios-red: #FF453A;
             --accent: #00B689;
             
-            /* Чистые, сочные градиенты */
             --g-orange: linear-gradient(135deg, #FF9500 0%, #FF5E00 100%);
             --g-green: linear-gradient(135deg, #34C759 0%, #00B689 100%);
         }
@@ -32,9 +31,9 @@
         .header-actions { transition: filter 0.3s ease, opacity 0.3s; }
         .edit-icon { width: 22px; height: 22px; background: var(--accent); -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9883/9883181.png') center/contain no-repeat; cursor: pointer; }
 
-        /* --- NAVIGATION --- */
+        /* --- NAVIGATION & BLACK GRADIENT --- */
         .nav-section { position: relative; background: var(--ios-bg); transition: filter 0.3s ease, opacity 0.3s; }
-        .filter-container { padding: 5px 24px 12px; }
+        .filter-container { padding: 5px 24px 12px; position: relative; z-index: 2; }
         .filter-bar { 
             background: rgba(120, 120, 128, 0.24); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
             border-radius: 999px; padding: 2px; display: flex; position: relative; border: 0.5px solid var(--ios-separator);
@@ -43,10 +42,17 @@
         .f-btn.active { color: var(--ios-label); }
         .f-slider { position: absolute; background: rgba(255, 255, 255, 0.2); border-radius: 999px; height: calc(100% - 4px); top: 2px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1; }
 
+        /* Та самая черная дымка */
+        .header-shadow {
+            position: absolute; bottom: -30px; left: 0; width: 100%; height: 30px;
+            background: linear-gradient(to bottom, var(--ios-bg) 0%, rgba(0,0,0,0.5) 40%, transparent 100%);
+            pointer-events: none; z-index: 1;
+        }
+
         /* --- CHATS --- */
         .main-content { padding-top: 8px; transition: filter 0.3s ease, opacity 0.3s; }
         .chat-row { display: flex; padding: 12px 24px; gap: 16px; align-items: center; cursor: pointer; }
-        .ava-circle { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .ava-circle { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .ava-icon { background: white; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center; }
         .bg-orange { background: var(--g-orange); }
         .bg-green { background: var(--g-green); }
@@ -56,7 +62,7 @@
         .chat-msg { font-size: 15px; color: var(--ios-secondary-label); margin-top: 1px; }
         .divider { height: 0.5px; background: var(--ios-separator); margin-left: 94px; }
 
-        /* --- IOS CONTEXT MENU --- */
+        /* --- IOS CONTEXT MENU (True Gradient Border) --- */
         #menuBackdrop { position: fixed; inset: 0; z-index: 150; visibility: hidden; opacity: 0; background: rgba(0,0,0,0.3); transition: 0.3s ease; }
         
         .ios-context-menu {
@@ -64,10 +70,12 @@
             background: var(--ios-glass); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%);
             border-radius: 14px; z-index: 260;
             
-            /* Контур по всему периметру с градиентом */
+            /* Настоящий градиентный контур через border-image */
             border: 1px solid transparent;
+            border-image-source: linear-gradient(to bottom, rgba(255,255,255,0.3), rgba(255,255,255,0));
+            border-image-slice: 1;
+            /* Фикс скругления при использовании border-image (iOS hack) */
             background-clip: padding-box;
-            border-image: linear-gradient(to bottom, rgba(255,255,255,0.25), rgba(255,255,255,0.05)) 1;
             
             box-shadow: 0 20px 50px rgba(0,0,0,0.6);
             transform-origin: top left; transform: scale(0.8) translateY(-10px); opacity: 0; visibility: hidden;
@@ -76,13 +84,12 @@
         
         .menu-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; cursor: pointer; }
         .menu-item:active { background: rgba(255,255,255,0.1); }
-        .m-text { font-size: 17px; font-weight: 500; color: rgba(255,255,255,0.4); }
-        .m-text.active { color: var(--ios-label); }
-        .m-icon { width: 20px; height: 20px; background: rgba(255,255,255,0.4); -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; }
-        .m-icon.active { background: var(--ios-label); }
+        
+        .m-text { font-size: 17px; font-weight: 500; color: var(--ios-label); }
+        .m-icon { width: 20px; height: 20px; background: var(--ios-label); -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; }
         .menu-divider { height: 0.5px; background: var(--ios-separator); margin: 0 16px; }
 
-        /* Состояния открытия */
+        /* Состояния */
         body.menu-open .chevron-icon { transform: rotate(180deg); }
         body.menu-open .main-content, body.menu-open .nav-section, body.menu-open .header-actions { filter: blur(10px) saturate(140%); opacity: 0.4; pointer-events: none; }
         body.menu-open #menuBackdrop { visibility: visible; opacity: 1; }
@@ -96,8 +103,8 @@
 
     <div class="ios-context-menu" id="iosMenu">
         <div class="menu-item" onclick="closeMenu()">
-            <span class="m-text active">Чаты</span>
-            <div class="m-icon active" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/6998/6998782.png');"></div>
+            <span class="m-text">Чаты</span>
+            <div class="m-icon" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/6998/6998782.png');"></div>
         </div>
         <div class="menu-divider"></div>
         <div class="menu-item" onclick="closeMenu()">
@@ -106,14 +113,14 @@
         </div>
         <div class="menu-divider"></div>
         <div class="menu-item" onclick="closeMenu()">
-            <span class="m-text" style="color: var(--ios-red); opacity: 1;">Выйти</span>
-            <div class="m-icon" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/7263/7263334.png'); background: var(--ios-red); opacity: 1;"></div>
+            <span class="m-text" style="color: var(--ios-red);">Выйти</span>
+            <div class="m-icon" style="-webkit-mask-image: url('https://cdn-icons-png.flaticon.com/512/7263/7263334.png'); background: var(--ios-red);"></div>
         </div>
     </div>
 
     <header class="main-header">
         <div class="s-header">
-            <div class="title-wrap" id="titleTrigger">
+            <div class="title-wrap" onclick="toggleMenu()">
                 <span class="s-title">Чаты</span>
                 <div class="chevron-icon"></div>
             </div>
@@ -130,6 +137,7 @@
                     <button class="f-btn" onclick="filter('bots', this)">Боты</button>
                     <button class="f-btn" onclick="filter('create', this)">Создать</button>
                 </div>
+                <div class="header-shadow"></div>
             </div>
         </div>
     </header>
@@ -165,19 +173,12 @@
     <script>
         const body = document.getElementById('mainBody');
         const fSlider = document.getElementById('fSlider');
-        const titleTrigger = document.getElementById('titleTrigger');
-
-        titleTrigger.addEventListener('click', () => {
-            if (window.navigator?.vibrate) window.navigator.vibrate(10);
-            toggleMenu();
-        });
 
         function toggleMenu() { body.classList.toggle('menu-open'); }
         function closeMenu() { body.classList.remove('menu-open'); }
 
         function filter(type, btn) {
             if(body.classList.contains('menu-open')) return;
-            if (window.navigator?.vibrate) window.navigator.vibrate(5);
             document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             updateSlider(btn);
