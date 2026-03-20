@@ -28,14 +28,14 @@
         }
 
         .s-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px 10px; }
-        .title-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .title-wrap { display: flex; align-items: center; gap: 8px; cursor: pointer; }
         .s-title { font-size: 26px; font-weight: 800; letter-spacing: -0.7px; }
         
-        /* Крупный шеврон */
+        /* Новый тонкий шеврон */
         .chevron-icon { 
-            width: 18px; height: 18px; background: var(--sub); 
-            -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/7065/7065868.png') center/contain no-repeat;
-            margin-top: 5px;
+            width: 14px; height: 14px; background: var(--sub); 
+            -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/32/32195.png') center/contain no-repeat;
+            margin-top: 6px;
         }
         
         .edit-icon { 
@@ -45,8 +45,8 @@
         }
 
         /* --- NAVIGATION & SHADOW --- */
-        .nav-section { position: relative; background: var(--bg); padding-bottom: 5px; }
-        .filter-container { padding: 5px 24px 15px; }
+        .nav-section { position: relative; background: var(--bg); }
+        .filter-container { padding: 5px 24px 12px; }
         .filter-bar { 
             background: var(--glass-lite); border-radius: 999px; 
             padding: 3px; display: flex; position: relative; border: 0.5px solid var(--border-color);
@@ -55,17 +55,17 @@
         .f-btn.active { color: white; }
         .f-slider { position: absolute; background: rgba(255, 255, 255, 0.12); border-radius: 999px; height: calc(100% - 6px); top: 3px; transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1); z-index: 1; }
 
-        /* Тень градиентом вниз */
+        /* Уменьшенная тень */
         .header-shadow {
-            position: absolute; bottom: -25px; left: 0; width: 100%; height: 25px;
-            background: linear-gradient(to bottom, var(--bg) 0%, transparent 100%);
+            position: absolute; bottom: -12px; left: 0; width: 100%; height: 12px;
+            background: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
             pointer-events: none; z-index: 50;
         }
 
         /* --- CHATS LIST --- */
-        .main-content { padding-top: 10px; }
-        .chat-item { overflow: hidden; transition: 0.3s ease; }
-        .chat-row { display: flex; padding: 14px 24px; gap: 16px; align-items: center; cursor: pointer; }
+        .main-content { padding-top: 8px; }
+        .chat-item { overflow: hidden; }
+        .chat-row { display: flex; padding: 12px 24px; gap: 16px; align-items: center; cursor: pointer; }
         .chat-row:active { background: rgba(255,255,255,0.05); }
         
         .ava-circle {
@@ -81,7 +81,7 @@
         .bg-orange { background: var(--g-orange); }
         .bg-green { background: var(--g-green); }
 
-        .chat-info { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+        .chat-info { flex: 1; display: flex; flex-direction: column; gap: 1px; }
         .chat-name-row { display: flex; align-items: center; }
         .chat-name { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; }
         .v-badge { width: 16px; height: 16px; background: var(--accent); -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/9918/9918743.png') center/contain no-repeat; margin-left: 4px; }
@@ -159,7 +159,6 @@
             btn.classList.add('active');
             fSlider.style.left = btn.offsetLeft + 'px';
             fSlider.style.width = btn.offsetWidth + 'px';
-            // Здесь будет логика фильтрации реальных данных
         }
 
         window.onload = () => {
